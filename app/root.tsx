@@ -14,17 +14,29 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
+import sharedStylesheetUrl from "./styles/shared.css";
 import { getUser } from "./session.server";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 export const links: LinksFunction = () => {
   return [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     { rel: "preconnect", href: "https://fonts.gstatic.com" },
     { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: sharedStylesheetUrl },
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;700&display=swap",
     }, // IBM Plex Mono
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css",
+    }, // slick carousel
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css",
+    }, // slick carousel theme
   ];
 };
 
@@ -46,17 +58,19 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
-      <head>
-        <Meta />
-        <Links />
-      </head>
-      <body className="h-full selection:bg-stone-800 selection:text-stone-100">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <Provider store={store}>
+      <html lang="en" className="h-full">
+        <head>
+          <Meta />
+          <Links />
+        </head>
+        <body className="h-full selection:bg-stone-800 selection:text-stone-100">
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
+    </Provider>
   );
 }

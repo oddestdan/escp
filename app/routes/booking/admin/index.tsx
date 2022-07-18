@@ -37,7 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export default function Booking() {
+export default function AdminBooking() {
   const dispatch = useDispatch();
   const selectedDate = useSelector(
     (store: { booking: BookingState }) => store.booking.dateTime.date

@@ -58,21 +58,6 @@ Isn't it great?
 
 - I wish (Skee-Lo)
 - This Is How We Do It (Montell Jordan)
-- Everlong (Foo Fighters)
-- Ms. Jackson (Outkast)
-- Interstate Love Song (Stone Temple Pilots)
-- Killing Me Softly With His Song (Fugees, Ms. Lauryn Hill)
-- Just a Friend (Biz Markie)
-- The Man Who Sold The World (Nirvana)
-- Semi-Charmed Life (Third Eye Blind)
-- ...Baby One More Time (Britney Spears)
-- Better Man (Pearl Jam)
-- It's All Coming Back to Me Now (Céline Dion)
-- This Kiss (Faith Hill)
-- Fly Away (Lenny Kravits)
-- Scar Tissue (Red Hot Chili Peppers)
-- Santa Monica (Everclear)
-- C'mon N' Ride it (Quad City DJ's)
     `.trim(),
     },
   ];
@@ -82,6 +67,25 @@ Isn't it great?
       where: { slug: post.slug },
       update: post,
       create: post,
+    });
+  }
+
+  const appointments = [
+    {
+      date: "2022-07-15",
+      timeFrom: "2022-07-15T09:45:00",
+      timeTo: "2022-07-15T11:15:00",
+    },
+    {
+      date: "2022-07-20",
+      timeFrom: "2022-07-14T07:45:00",
+      timeTo: "2022-07-14T08:45:00",
+    },
+  ];
+
+  for (const appointment of appointments) {
+    await prisma.appointment.create({
+      data: { ...appointment },
     });
   }
 

@@ -2,38 +2,38 @@ import { Link } from "@remix-run/react";
 
 export default function NavBar({ active }: { active: string }) {
   return (
-    <nav className="my-4 flex w-full flex-row justify-between font-light">
+    <nav className="my-4 mx-auto flex w-full flex-row justify-between font-light sm:w-3/5">
       <Link
         to="/escp"
-        className={`text-stone-900 hover:text-stone-400 ${
-          active === "escp" ? "font-bold" : "underline"
+        className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
+          active === "escp" ? "invisible" : "underline"
         }`}
       >
         escp.90
       </Link>
       <Link
         to="/rules"
-        className={`text-stone-900 hover:text-stone-400 ${
-          active === "rules" ? "font-bold" : "underline"
+        className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
+          active === "rules" ? "invisible" : "underline"
         }`}
       >
         правила
       </Link>
       <Link
         to="/about"
-        className={`text-stone-900 hover:text-stone-400 ${
-          active === "about" ? "font-bold" : "underline"
+        className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
+          active === "about" ? "invisible" : "underline"
         }`}
       >
         про нас
       </Link>
       <Link
         to="/booking"
-        className={`text-stone-900 hover:text-stone-400 ${
-          active === "booking" ? "font-bold" : "underline"
+        className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
+          active === "booking" ? "invisible" : "underline"
         }`}
       >
-        бронювання
+        букінг
       </Link>
     </nav>
   );

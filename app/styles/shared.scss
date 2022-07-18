@@ -1,0 +1,381 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// stylelint-disable color-no-hex
+$blue: #008fb0;
+$red: #b72222;
+$green: #347636;
+$yellow: #ffde2f;
+// stylelint-enable color-no-hex
+// END REMOVE
+
+//Font size
+$base-font-size: 12px;
+$base-font-color: #000000;
+$base-hover-color: initial;
+
+// Font Weight
+$font-weight-normal: 400;
+$font-weight-bold: 600;
+$font-weight-semi-bold: 500;
+
+// Typography
+$base-font-family: "Lato", "Myriad Pro", "Trebuchet MS", "Ubuntu", sans-serif;
+$h1-font-weight: $font-weight-normal;
+$h2-font-weight: $font-weight-normal;
+$h3-font-weight: $font-weight-normal;
+
+//////////////////////////////
+
+// spacing
+$spacing-base: $base-font-size; // 16px
+$spacing-mini: $spacing-base * 0.25; // 4px
+$spacing-xs: $spacing-base * 0.5; // 8px
+$spacing-sm: $spacing-base * 1; // 16px;
+$spacing-md: $spacing-base * 2; // 32px;
+$spacing-lg: $spacing-base * 3; // 48px
+$spacing-xl: $spacing-base * 4; // 64px
+$spacing-xxl: $spacing-base * 5; // 80px
+$spacing-max: $spacing-base * 6.5; // 104pxs
+
+$base-desktop-size: 1rem;
+$base-mobile-size: 0.5rem;
+
+//////////////////////////////
+// colors
+
+// COLOUR PALETTE
+$soft-black: #262626 !default;
+$grey-65: #737373 !default;
+$grey-45: #999 !default;
+$grey-20: #d4d4d4 !default;
+$grey-10: #e5e5e5 !default;
+$grey-3: #f8f8f8 !default;
+$white: #fff !default;
+
+$text-link: #0078d1 !default;
+
+$success-shade-50: #4e816d !default;
+$success-shade-25: #60ad90 !default;
+$success-default: #73d9b2 !default;
+$success-tint-25: #96e2c5 !default;
+$success-tint-50: #b8ecd8 !default;
+$success-tint-75: #dcf6ec !default;
+$success-tint-85: #eaf9f3 !default;
+
+$caution-shade-50: #93632b !default;
+$caution-shade-25: #c7802c !default;
+$caution-default: #fd9d2d !default;
+$caution-tint-25: #fdb561 !default;
+$caution-tint-50: #fece95 !default;
+$caution-tint-75: #ffe6ca !default;
+$caution-tint-85: #fff0e0 !default;
+
+$clearance-shade-50: #948129 !default;
+$clearance-shade-25: #c9ad2a !default;
+$clearance-default: #ffd92a !default;
+$clearance-tint-25: #ffe25f !default;
+$clearance-tint-50: #ffec94 !default;
+$clearance-tint-75: #fff6c9 !default;
+$clearance-tint-85: #fff9df !default;
+
+$sale-shade-50: #771516 !default;
+$sale-shade-25: #9d0b0d !default;
+$sale-default: #c50003 !default;
+$sale-tint-25: #d63e3e !default;
+$sale-tint-50: #e47170 !default;
+$sale-tint-75: #fbbebb !default;
+$sale-tint-85: #ffe0df !default;
+
+$reviews-shade-50: #926e13 !default;
+$reviews-shade-25: #c89309 !default;
+$reviews-default: #ffb800 !default;
+$reviews-tint-25: #ffca40 !default;
+$reviews-tint-50: #ffdb7f !default;
+$reviews-tint-75: #ffedbf !default;
+$reviews-tint-85: #fff4d9 !default;
+
+$primary-shade-50: #155735 !default;
+$primary-shade-25: #0a6e3b !default;
+$primary-default: #008248 !default;
+$primary-tint-25: #40a471 !default;
+$primary-tint-50: #7fc2a0 !default;
+$primary-tint-75: #bfe0cf !default;
+$primary-tint-85: #d8ede3 !default;
+
+$accent-shade-50: #1a4d6a !default;
+$accent-shade-25: #12608b !default;
+$accent-default: #0b72ac !default;
+$accent-tint-25: #4895c1 !default;
+$accent-tint-50: #84b8d5 !default;
+$accent-tint-75: #c1dbea !default;
+$accent-tint-85: #daeaf3 !default;
+
+//TODO: need to remove added to prevent from build errors
+$black: $soft-black;
+$success-base: $success-default;
+$caution-base: $caution-default;
+$clearance-base: $clearance-default;
+$sale-base: $sale-default;
+$reviews-case: $reviews-default;
+$primary-base: $primary-default;
+$accent-base: $accent-default;
+
+// TODO: variables are used in other files need to remove those variable and use the variables mensioned above
+$yellow: $caution-tint-25;
+$red: #b72222;
+$a11y-red: #f1806b;
+$button-red: $red;
+$blue: #0078d1;
+$variant-black: $soft-black;
+$variant-white: $white;
+$variant-blue: #29578e;
+$variant-blue-light: #9ccbc9;
+$variant-pink: #ea8d90;
+$variant-lime-green: #b1c96b;
+$variant-cardigan: #5b2041;
+$variant-purple: #38247e;
+$variant-yellow: #ffd800;
+$variant-red: #b72222;
+$variant-brown: #cec6c3;
+$black-dark: #333;
+
+//////////////////////////////
+// variables
+
+// Brand Image
+$header-bg-color: $white;
+$banner-logo-width: 60px;
+$header-store-display: block;
+$header-select-container-display: block;
+$banner-logo-margin: 0;
+
+$header-search-cta-width: 33px;
+$header-search-cta-bg: $green;
+$header-search-cta-icon-right: $spacing-mini;
+$header-search-cta-icon-color: $white;
+$header-search-cta-hover-color: #28a745;
+
+$mega-menu-hover-decoration: underline;
+$mega-menu-hover-border: none;
+$mega-menu-highlight-padding-bottom: 5px;
+$mega-menu-highlight-color: $yellow;
+
+$header-utility-nav-display: flex;
+$header-pickup-nav-display: none;
+
+$header-search-input-border: 1px solid $green;
+
+// Banner
+$banner-bg-color: $red;
+$banner-font-family: $base-font-family;
+
+// Price
+$price-was-font-weight: $font-weight-normal;
+
+//////////////////////////////
+// AOA Date Time Picker
+
+$aoa-date-time-card-padding-mobile: 32px 12px;
+$aoa-date-time-card-padding-desktop: 32px 24px;
+
+$aoa-date-time-heading-font-size: 1.15rem;
+$aoa-date-time-heading-font-size-mobile: 0.8rem;
+$aoa-date-time-heading-margin-mobile: 0.625rem;
+$aoa-date-time-heading-margin-desktop: 1.5rem;
+
+$aoa-date-picker-margin-mobile: 1.5rem;
+
+$aoa-time-picker-border: 2px solid rgb(28 25 23);
+$aoa-time-picker-margin-mobile: 1.5rem;
+$aoa-time-picker-description-margin: 0.875rem;
+
+$aoa-time-option-radio-margin: 1.5rem;
+
+$aoa-date-time-container-desktop-width: 530px;
+
+.XXX-common-card.XXX-aoa-date-time-card {
+  padding: $aoa-date-time-card-padding-mobile;
+}
+
+.date-time-picker-container {
+  height: fit-content;
+
+  .XXX-aoa-date-picker {
+    margin-bottom: $aoa-date-picker-margin-mobile;
+  }
+
+  .XXX-aoa-time-picker {
+    border-bottom: $aoa-time-picker-border;
+    margin-bottom: $aoa-time-picker-margin-mobile;
+  }
+
+  .XXX-aoa-wait-option {
+    h4.XXX-aoa-date-time__heading {
+      text-align: inherit;
+    }
+
+    .XXX-radio:not(:last-of-type) {
+      margin-bottom: $aoa-time-option-radio-margin;
+    }
+  }
+
+  .XXX-radio__text {
+    font-size: 11px;
+  }
+}
+
+//////////////////////////////
+// Date Picker scss
+
+$date-carousel-disabled-color: #d5d5d5;
+
+$date-carousel-padding: 0 1rem 1.5rem;
+$date-carousel-small-padding: 0 0.2rem 1rem;
+$date-carousel-border-bottom: 1px solid rgb(28 25 23);
+
+$date-carousel-date-width-height-xs-mobile: 22px;
+$date-carousel-date-width-height-mobile: 30px;
+$date-carousel-date-width-height-desktop: 40px;
+$date-carousel-date-margin-top: 0.7rem;
+$date-carousel-date-xs-font-size: 12px;
+
+$date-carousel-arrows-size: 2rem;
+$date-carousel-arrows--middle-size: 1.5rem;
+$date-carousel-arrows-small-size: 1rem;
+
+$date-carousel-mobile-breakpoint: 335px;
+
+.XXX-date-carousel {
+  position: relative;
+  padding: $date-carousel-small-padding;
+  border-bottom: $date-carousel-border-bottom;
+  font-weight: 300;
+
+  .XXX-date__box {
+    font-weight: 300;
+  }
+
+  input[type="radio"] {
+    display: none;
+
+    &:checked {
+      + .XXX-date__box {
+        .XXX-numeral-date {
+          background-color: black;
+          color: white;
+        }
+      }
+    }
+
+    &:disabled {
+      + .XXX-date__box {
+        color: $date-carousel-disabled-color;
+        cursor: initial;
+      }
+    }
+  }
+
+  .XXX-week-day span:not(:first-child) {
+    display: none;
+  }
+
+  .XXX-date__box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+  }
+
+  .XXX-week-date {
+    font-weight: 300;
+  }
+
+  .XXX-numeral-date {
+    width: $date-carousel-date-width-height-xs-mobile;
+    height: $date-carousel-date-width-height-xs-mobile;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: $date-carousel-date-margin-top;
+  }
+}
+
+.XXX-carousel.XXX-date-carousel {
+  .slick {
+    &-list {
+      width: calc(100% - 1rem);
+      margin: auto;
+    }
+    &-prev {
+      left: 0;
+    }
+    &-next {
+      right: 0;
+    }
+
+    &-slide {
+      display: flex;
+      justify-content: center;
+    }
+
+    &-arrow {
+      box-shadow: none;
+      width: unset;
+      height: unset;
+      background-color: transparent;
+
+      svg {
+        width: $date-carousel-arrows-small-size;
+        height: $date-carousel-arrows-small-size;
+      }
+    }
+
+    &-next:before {
+      content: ">";
+      color: black;
+      font-weight: 600;
+    }
+    &-prev:before {
+      content: "<";
+      color: black;
+      font-weight: 600;
+    }
+
+    &-disabled {
+      .XXX-icon-ct-chevron {
+        &-right,
+        &-left {
+          fill: $date-carousel-disabled-color;
+          cursor: initial;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: $date-carousel-mobile-breakpoint) {
+  .XXX-date-carousel {
+    padding: $date-carousel-padding;
+
+    .XXX-numeral-date {
+      width: $date-carousel-date-width-height-mobile;
+      height: $date-carousel-date-width-height-mobile;
+    }
+  }
+
+  .XXX-carousel.XXX-date-carousel {
+    .slick {
+      &-arrow {
+        svg {
+          width: $date-carousel-arrows--middle-size;
+          height: $date-carousel-arrows--middle-size;
+        }
+      }
+    }
+  }
+}
