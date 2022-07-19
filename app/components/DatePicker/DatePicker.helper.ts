@@ -1,4 +1,4 @@
-import type { DateSlot } from "./DatePicker";
+import type { DateSlot } from "~/store/bookingSlice";
 
 const defaultTime = "T00:00:00";
 

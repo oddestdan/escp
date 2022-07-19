@@ -379,3 +379,12 @@ $date-carousel-mobile-breakpoint: 335px;
     }
   }
 }
+
+///////////////////////////////
+/// FullCalendar theming
+.fc .fc-button-primary {
+  // background-color: black;
+}
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+}

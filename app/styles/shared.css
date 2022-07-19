@@ -121,5 +121,8 @@
     height: 1.5rem;
   }
 }
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+}
 
 /*# sourceMappingURL=shared.css.map */

@@ -1,6 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import { mockDateSlots } from "~/components/DatePicker/mockDateSlots";
+import { addMonths, getDateFormat, getPrevMonday } from "~/utils/date";
+import { generateDateTimeSlots } from "~/utils/slots";
 
 export enum BookingStep {
   DateTime,
@@ -10,10 +11,16 @@ export enum BookingStep {
   Confirmation,
 }
 
+export interface DateSlot {
+  date: string;
+  dayOfWeek: string;
+  availableTimeSlots?: string[];
+}
+
 export interface DateTime {
   date: string;
   time: { start: string; end: string };
-  slots: Array<any>;
+  slots: DateSlot[];
 }
 
 export interface BookingState {
@@ -23,14 +30,19 @@ export interface BookingState {
   currentStep: BookingStep;
 }
 
+const get3MonthSlots = () => {
+  const fromDate = getPrevMonday();
+  const toDate = addMonths(fromDate, 3);
+
+  return generateDateTimeSlots(getDateFormat(fromDate), getDateFormat(toDate));
+};
+
 export const initialState: BookingState = {
   contact: null,
   dateTime: {
-    slots: [],
-    date: "2022-07-15", // TODO: get from todays date after BE complete
+    slots: get3MonthSlots(),
+    date: getDateFormat(),
     time: { start: "", end: "" },
-    // time: { start: "2022-07-15T09:30:00", end: "2022-07-15T10:00:00" },
-    // and we aren't using mocks, instead live data is sent from DB
   },
   services: null,
   currentStep: BookingStep.DateTime,
@@ -40,9 +52,6 @@ const bookingSlice = createSlice({
   name: "booking",
   initialState,
   reducers: {
-    fetchDateTimeSlots(state: BookingState) {
-      state.dateTime = { ...state.dateTime, slots: mockDateSlots };
-    },
     saveDate(state: BookingState, action: PayloadAction<string>) {
       state.dateTime = { ...state.dateTime, date: action.payload };
     },
@@ -55,5 +64,5 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { fetchDateTimeSlots, saveDate, saveTime } = bookingSlice.actions;
+export const { saveDate, saveTime } = bookingSlice.actions;
 export default bookingSlice.reducer;

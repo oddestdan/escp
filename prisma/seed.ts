@@ -70,24 +70,24 @@ Isn't it great?
     });
   }
 
-  const appointments = [
-    {
-      date: "2022-07-15",
-      timeFrom: "2022-07-15T09:45:00",
-      timeTo: "2022-07-15T11:15:00",
-    },
-    {
-      date: "2022-07-20",
-      timeFrom: "2022-07-14T07:45:00",
-      timeTo: "2022-07-14T08:45:00",
-    },
-  ];
+  // const appointments = [
+  //   {
+  //     date: "2022-07-15",
+  //     timeFrom: "2022-07-15T09:45:00",
+  //     timeTo: "2022-07-15T11:15:00",
+  //   },
+  //   {
+  //     date: "2022-07-20",
+  //     timeFrom: "2022-07-14T07:45:00",
+  //     timeTo: "2022-07-14T08:45:00",
+  //   },
+  // ];
 
-  for (const appointment of appointments) {
-    await prisma.appointment.create({
-      data: { ...appointment },
-    });
-  }
+  // for (const appointment of appointments) {
+  //   await prisma.appointment.create({
+  //     data: { ...appointment },
+  //   });
+  // }
 
   console.log(`Database has been seeded. 🌱`);
 }

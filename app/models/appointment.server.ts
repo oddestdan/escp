@@ -12,3 +12,16 @@ export async function createAppointment(
 ) {
   return prisma.appointment.create({ data: appointment });
 }
+
+export async function updateAppointment(
+  appointment: Pick<Appointment, "date" | "timeFrom" | "timeTo" | "id">
+) {
+  return prisma.appointment.update({
+    where: { id: appointment.id },
+    data: appointment,
+  });
+}
+
+export async function deleteAppointment(appointmentId: string) {
+  return prisma.appointment.delete({ where: { id: appointmentId } });
+}

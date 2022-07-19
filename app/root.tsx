@@ -24,7 +24,6 @@ export const links: LinksFunction = () => {
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     { rel: "preconnect", href: "https://fonts.gstatic.com" },
     { rel: "stylesheet", href: tailwindStylesheetUrl },
-    { rel: "stylesheet", href: sharedStylesheetUrl },
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;700&display=swap",
@@ -37,6 +36,15 @@ export const links: LinksFunction = () => {
       rel: "stylesheet",
       href: "https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css",
     }, // slick carousel theme
+    {
+      rel: "stylesheet",
+      href: "https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css",
+    }, // full calendar
+    // {
+    //   rel: "stylesheet",
+    //   href: "https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/locales-all.min.js",
+    // }, // full calendar locales
+    { rel: "stylesheet", href: sharedStylesheetUrl }, // MUST BE LAST
   ];
 };
 

@@ -1,18 +1,25 @@
-import { Form } from "@remix-run/react";
-import type { ActionFunction } from "@remix-run/server-runtime";
-import { useCallback, useEffect } from "react";
+import { Form, useLoaderData } from "@remix-run/react";
+import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import DatePicker from "~/components/DatePicker/DatePicker";
 import TimePicker from "~/components/TimePicker/TimePicker";
 import Header from "~/header";
+import type { Appointment } from "~/models/appointment.server";
 import {
   createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
 import NavBar from "~/navbar";
 import type { BookingState } from "~/store/bookingSlice";
-import { saveTime, saveDate, fetchDateTimeSlots } from "~/store/bookingSlice";
+import { saveTime, saveDate } from "~/store/bookingSlice";
+import { generateTimeSlots } from "~/utils/slots";
+
+type LoaderData = {
+  appointments: Appointment[];
+};
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -37,7 +44,16 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
+export const loader: LoaderFunction = async ({ request, params }) => {
+  const appointments = await getAppointments();
+  if (!appointments) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return json<LoaderData>({ appointments });
+};
+
 export default function Booking() {
+  const { appointments } = useLoaderData() as LoaderData;
   const dispatch = useDispatch();
   const selectedDate = useSelector(
     (store: { booking: BookingState }) => store.booking.dateTime.date
@@ -62,9 +78,27 @@ export default function Booking() {
     [dispatch]
   );
 
-  useEffect(() => {
-    dispatch(fetchDateTimeSlots());
-  }, [dispatch]);
+  const memoedTimeSlots = useMemo(() => {
+    const todaysSlots =
+      dateTimeSlots.find(({ date }) => date === selectedDate)
+        ?.availableTimeSlots || [];
+    const todaysAppointments =
+      appointments.filter(({ date }) => date === selectedDate) || [];
+
+    const takenSlots = todaysAppointments.map((app) => {
+      const timeFromArr = app.timeFrom.split("T")[1].split(":");
+      const timeToArr = app.timeTo.split("T")[1].split(":");
+      return generateTimeSlots(
+        new Date(selectedDate),
+        Number(timeFromArr[0]) + (timeFromArr[1] == "30" ? 0.5 : 0),
+        Number(timeToArr[0]) + (timeToArr[1] == "30" ? 0.5 : 0)
+      );
+    });
+
+    return todaysSlots.filter(
+      (slot) => !takenSlots.flat().find((taken) => taken === slot)
+    );
+  }, [dateTimeSlots, selectedDate, appointments]);
 
   return (
     <div className="flex w-full justify-center">
@@ -73,7 +107,7 @@ export default function Booking() {
 
         <div className="flex w-full flex-col items-center font-light">
           <Header current="booking" />
-          <div className="my-4 sm:w-3/5">
+          <div className="my-4 w-full sm:w-3/5">
             <div className={`date-time-picker-container`}>
               <DatePicker
                 selectedDate={selectedDate}
@@ -82,10 +116,7 @@ export default function Booking() {
               />
               <TimePicker
                 selectedDate={selectedDate}
-                timeSlots={
-                  dateTimeSlots.find(({ date }) => date === selectedDate)
-                    ?.availableTimeSlotList || []
-                }
+                timeSlots={memoedTimeSlots}
                 onChangeTime={onChangeTime}
               />
             </div>
