@@ -1,6 +1,6 @@
+import { NavBar } from "~/components/NavBar/NavBar";
 import WithBackgroundOverlay from "~/components/withBackgroundOverlay/withBackgroundOverlay";
-import Header from "~/header";
-import NavBar from "~/navbar";
+import Header from "~/components/Header/Header";
 
 export default function about() {
   return (

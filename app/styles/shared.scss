@@ -380,11 +380,172 @@ $date-carousel-mobile-breakpoint: 335px;
   }
 }
 
+//////////////////////////////
+// Progress Bar scss
+
+// LIB
+$progress-bar-height: 10px !default;
+$progress-bar-vertical-height: 100% !default;
+$progress-bar-line-height: 1 !default;
+$progress-bar-border-radius: 10px !default;
+$progress-bar-background-color: rgba(
+  $color: lightgrey,
+  $alpha: 0.6,
+) !default;
+$progression-left: 0 !default;
+$progression-top: 0 !default;
+$progression-bottom: 0 !default;
+$progression-border-radius: 10px !default;
+$progression-background-color: rgba(
+  $color: #0074d9,
+  $alpha: 0.8,
+) !default;
+$progression-z-index: -1 !default;
+$progression-transition: width 0.3s ease !default;
+
+// AOA
+$progress-bar-container-etire-width: 25% !default;
+$progress-bar-container-regular-width: 50% !default;
+$progress-bar-container-min-width: 400px !default;
+$etire-progress-bar-container-min-width: 200px !default;
+$progress-bar-container-height: 50px !default;
+$progress-bar-container-margin: 30px auto 10px auto !default;
+$aoa-stepbar-item-size: 40px !default;
+$aoa-stepbar-item-inactive-size: 35px !default;
+$aoa-stepbar-item-anim-duration: 0.3s !default;
+$aoa-stepbar-item-border-radius: 0px !default;
+$aoa-step-icon-size: 20px !default;
+$checkmark-icon-border-radius: 50% !default;
+$checkmark-icon-translate-by: -50% !default;
+$checkmark-icon-padding: 3px !default;
+$step-title-top: 100% !default;
+$step-title-margin-top: 5px !default;
+$step-title-font-size: 0.8em !default;
+$completed-background-color: #fff !default;
+$completed-border: 2px solid #2b2b2b !default;
+$active-background-color: #2b2b2b !default;
+$inactive-background-color: #cacaca !default;
+
+// LIB
+.XXX-progress-bar {
+  height: $progress-bar-height;
+  line-height: $progress-bar-line-height;
+  border-radius: $progress-bar-border-radius;
+  position: relative;
+  background-color: $progress-bar-background-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 0;
+
+  &--vertical {
+    flex-direction: column;
+    width: $progress-bar-height;
+    height: $progress-bar-vertical-height;
+  }
+
+  &__progression {
+    position: absolute;
+    left: $progression-left;
+    top: $progression-top;
+    bottom: $progression-bottom;
+    border-radius: $progression-border-radius;
+    background: $progression-background-color;
+    z-index: $progression-z-index;
+
+    @media screen and (prefers-reduced-motion: no-preference) {
+      transition: $progression-transition;
+    }
+  }
+}
+
+// AOA
+.XXX-progress-bar-container {
+  &--etire,
+  &--regular {
+    height: $progress-bar-container-height;
+    margin: $progress-bar-container-margin;
+  }
+
+  &--etire {
+    width: $progress-bar-container-etire-width;
+    min-width: $etire-progress-bar-container-min-width;
+  }
+
+  &--regular {
+    width: $progress-bar-container-regular-width;
+    min-width: $progress-bar-container-min-width;
+  }
+}
+
+.XXX-aoa-stepbar-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: $aoa-stepbar-item-size;
+  width: $aoa-stepbar-item-size;
+  transition: $aoa-stepbar-item-anim-duration all ease;
+  box-sizing: border-box;
+  border-radius: $aoa-stepbar-item-border-radius;
+
+  &__step-icon.inverted {
+    color: #fff;
+    .XXX-icon {
+      fill: #fff;
+    }
+  }
+
+  &__step-icon.completed {
+    color: black;
+    .XXX-icon {
+      fill: black;
+    }
+  }
+
+  &__checkmark-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(
+      $checkmark-icon-translate-by,
+      $checkmark-icon-translate-by
+    );
+    padding: $checkmark-icon-padding;
+    background-color: #ffffff;
+  }
+
+  &__step-title {
+    position: absolute;
+    top: $step-title-top;
+    margin-top: $step-title-margin-top;
+    font-size: $step-title-font-size;
+  }
+}
+
+.XXX-aoa-stepbar-item.completed {
+  background-color: $completed-background-color;
+  border: $completed-border;
+  cursor: pointer;
+}
+
+.XXX-aoa-stepbar-item.active {
+  background-color: $active-background-color;
+}
+
+.XXX-aoa-stepbar-item.inactive {
+  background-color: $inactive-background-color;
+  width: $aoa-stepbar-item-inactive-size;
+  height: $aoa-stepbar-item-inactive-size;
+}
+
+.XXX-aoa-stepbar__skeleton {
+  height: 100%;
+}
+
 ///////////////////////////////
 /// FullCalendar theming
-.fc .fc-button-primary {
-  // background-color: black;
-}
 .fc .fc-toolbar-title {
   font-size: 1.25rem;
 }

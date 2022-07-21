@@ -1,20 +1,22 @@
 import type { ActionFunction } from "@remix-run/node";
 import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import { createAppointment } from "~/models/appointment.server";
 import { updateAppointment } from "~/models/appointment.server";
 import { deleteAppointment } from "~/models/appointment.server";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Header from "~/header";
-import NavBar from "~/navbar";
 import AdminCalendar from "~/components/AdminCalendar/AdminCalendar";
 import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { getAppointments } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
 import { getIsMobile } from "~/utils/breakpoints";
+import { requireUserId } from "~/session.server";
+import { NavBar } from "~/components/NavBar/NavBar";
+import Header from "~/components/Header/Header";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -66,7 +68,11 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  const userId = await requireUserId(request);
   const appointments = await getAppointments();
+  if (!userId) {
+    return redirect("/login");
+  }
   if (!appointments) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -88,6 +94,7 @@ export default function AdminBooking() {
     },
     [submit]
   );
+
   const onChangeAppointment = useCallback(
     (event: AdminCalendarEvent) => {
       const formData = new FormData(formRef.current || undefined);
@@ -99,7 +106,7 @@ export default function AdminBooking() {
     },
     [submit]
   );
-  // TODO: How to invoke remove appointment???
+
   const onRemoveAppointment = useCallback(
     (eventId: string) => {
       const formData = new FormData(formRef.current || undefined);
@@ -121,26 +128,24 @@ export default function AdminBooking() {
 
         <div className="flex w-full flex-col items-center font-light">
           <Header current="admin" />
-          <div className="my-4 sm:w-3/5">
-            {appointments?.length > 0 && (
-              <Form ref={formRef} method="post">
-                <AdminCalendar
-                  isMobile={isMobile}
-                  events={appointments.map((app, i) => ({
-                    id: app.id,
-                    start: app.timeFrom,
-                    end: app.timeTo,
-                    description: `Test description ${app.id} #${i}`,
-                    // TODO: contact firstName and 1st letter of lastName
-                    // e.g.: Marina K
-                    title: app.id,
-                  }))}
-                  createEvent={onCreateAppointment}
-                  changeEvent={onChangeAppointment}
-                  removeEvent={onRemoveAppointment}
-                />
-              </Form>
-            )}
+          <div className="my-4 sm:w-4/5">
+            <Form ref={formRef} method="post">
+              <AdminCalendar
+                isMobile={isMobile}
+                events={appointments.map((app, i) => ({
+                  id: app.id,
+                  start: app.timeFrom,
+                  end: app.timeTo,
+                  description: `Test description ${app.id} #${i}`,
+                  // TODO: contact firstName and 1st letter of lastName
+                  // e.g.: Marina K
+                  title: app.id,
+                }))}
+                createEvent={onCreateAppointment}
+                changeEvent={onChangeAppointment}
+                removeEvent={onRemoveAppointment}
+              />
+            </Form>
           </div>
         </div>
       </main>

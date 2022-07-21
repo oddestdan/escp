@@ -121,6 +121,109 @@
     height: 1.5rem;
   }
 }
+.XXX-progress-bar {
+  height: 10px;
+  line-height: 1;
+  border-radius: 10px;
+  position: relative;
+  background-color: rgba(211, 211, 211, 0.6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 0;
+}
+.XXX-progress-bar--vertical {
+  flex-direction: column;
+  width: 10px;
+  height: 100%;
+}
+.XXX-progress-bar__progression {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: rgba(0, 116, 217, 0.8);
+  z-index: -1;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .XXX-progress-bar__progression {
+    transition: width 0.3s ease;
+  }
+}
+
+.XXX-progress-bar-container--etire, .XXX-progress-bar-container--regular {
+  height: 50px;
+  margin: 30px auto 10px auto;
+}
+.XXX-progress-bar-container--etire {
+  width: 25%;
+  min-width: 200px;
+}
+.XXX-progress-bar-container--regular {
+  width: 50%;
+  min-width: 400px;
+}
+
+.XXX-aoa-stepbar-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  transition: 0.3s all ease;
+  box-sizing: border-box;
+  border-radius: 0px;
+}
+.XXX-aoa-stepbar-item__step-icon.inverted {
+  color: #fff;
+}
+.XXX-aoa-stepbar-item__step-icon.inverted .XXX-icon {
+  fill: #fff;
+}
+.XXX-aoa-stepbar-item__step-icon.completed {
+  color: black;
+}
+.XXX-aoa-stepbar-item__step-icon.completed .XXX-icon {
+  fill: black;
+}
+.XXX-aoa-stepbar-item__checkmark-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  padding: 3px;
+  background-color: #ffffff;
+}
+.XXX-aoa-stepbar-item__step-title {
+  position: absolute;
+  top: 100%;
+  margin-top: 5px;
+  font-size: 0.8em;
+}
+
+.XXX-aoa-stepbar-item.completed {
+  background-color: #fff;
+  border: 2px solid #2b2b2b;
+  cursor: pointer;
+}
+
+.XXX-aoa-stepbar-item.active {
+  background-color: #2b2b2b;
+}
+
+.XXX-aoa-stepbar-item.inactive {
+  background-color: #cacaca;
+  width: 35px;
+  height: 35px;
+}
+
+.XXX-aoa-stepbar__skeleton {
+  height: 100%;
+}
+
 .fc .fc-toolbar-title {
   font-size: 1.25rem;
 }

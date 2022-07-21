@@ -4,18 +4,18 @@ import { json } from "@remix-run/server-runtime";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
-import DatePicker from "~/components/DatePicker/DatePicker";
-import TimePicker from "~/components/TimePicker/TimePicker";
-import Header from "~/header";
+import ActiveBookingStep from "~/components/BookingStep/BookingStep";
+import Header from "~/components/Header/Header";
 import type { Appointment } from "~/models/appointment.server";
 import {
   createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
-import NavBar from "~/navbar";
-import type { BookingState } from "~/store/bookingSlice";
-import { saveTime, saveDate } from "~/store/bookingSlice";
-import { generateTimeSlots } from "~/utils/slots";
+import { saveCurrentStep, BookingStep } from "~/store/bookingSlice";
+import type { StoreBooking } from "~/store/bookingSlice";
+import ProgressBar from "~/components/ProgressBar/ProgressBar";
+import { NavBar } from "~/components/NavBar/NavBar";
+import { ActionButton } from "~/components/ActionButton/ActionButton";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -23,13 +23,6 @@ type LoaderData = {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  console.log("formData");
-  console.log(Object.fromEntries(formData));
-
-  const allAppointments = await getAppointments();
-
-  console.log("allAppointments");
-  console.log(allAppointments);
 
   const date = formData.get("date");
   const timeFrom = formData.get("timeFrom");
@@ -54,51 +47,31 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function Booking() {
   const { appointments } = useLoaderData() as LoaderData;
+
   const dispatch = useDispatch();
-  const selectedDate = useSelector(
-    (store: { booking: BookingState }) => store.booking.dateTime.date
-  );
-  const selectedTime = useSelector(
-    (store: { booking: BookingState }) => store.booking.dateTime.time
-  );
-  const dateTimeSlots = useSelector(
-    (store: { booking: BookingState }) => store.booking.dateTime.slots
-  );
-  const onChangeDate = useCallback(
-    (date: string) => {
-      dispatch(saveDate(date));
+
+  const {
+    currentStep,
+    dateTime: { date: selectedDate, time: selectedTime },
+  } = useSelector((store: StoreBooking) => store.booking);
+
+  const memoedStepsData = useMemo(() => {
+    return [
+      { title: "час", icon: "ч" },
+      { title: "сервіси", icon: "с" },
+      { title: "інфо", icon: "і" },
+      { title: "оплата", icon: "o" },
+    ];
+  }, []);
+
+  const onStepClick = useCallback(
+    (step: BookingStep) => {
+      // if (currentStep > step) {
+      dispatch(saveCurrentStep(step));
+      // }
     },
-    [dispatch]
+    [dispatch, currentStep]
   );
-
-  const onChangeTime = useCallback(
-    (start: string, end: string) => {
-      dispatch(saveTime({ start, end }));
-    },
-    [dispatch]
-  );
-
-  const memoedTimeSlots = useMemo(() => {
-    const todaysSlots =
-      dateTimeSlots.find(({ date }) => date === selectedDate)
-        ?.availableTimeSlots || [];
-    const todaysAppointments =
-      appointments.filter(({ date }) => date === selectedDate) || [];
-
-    const takenSlots = todaysAppointments.map((app) => {
-      const timeFromArr = app.timeFrom.split("T")[1].split(":");
-      const timeToArr = app.timeTo.split("T")[1].split(":");
-      return generateTimeSlots(
-        new Date(selectedDate),
-        Number(timeFromArr[0]) + (timeFromArr[1] == "30" ? 0.5 : 0),
-        Number(timeToArr[0]) + (timeToArr[1] == "30" ? 0.5 : 0)
-      );
-    });
-
-    return todaysSlots.filter(
-      (slot) => !takenSlots.flat().find((taken) => taken === slot)
-    );
-  }, [dateTimeSlots, selectedDate, appointments]);
 
   return (
     <div className="flex w-full justify-center">
@@ -109,28 +82,25 @@ export default function Booking() {
           <Header current="booking" />
           <div className="my-4 w-full sm:w-3/5">
             <div className={`date-time-picker-container`}>
-              <DatePicker
-                selectedDate={selectedDate}
-                dateTimeSlots={dateTimeSlots}
-                onChangeDate={onChangeDate}
+              <ProgressBar
+                onStepClick={onStepClick}
+                activeIndex={currentStep}
+                stepData={memoedStepsData}
               />
-              <TimePicker
-                selectedDate={selectedDate}
-                timeSlots={memoedTimeSlots}
-                onChangeTime={onChangeTime}
-              />
+              <ActiveBookingStep appointments={appointments} />
             </div>
-            <Form method="post">
-              <input type="hidden" name="date" value={selectedDate} />
-              <input type="hidden" name="timeFrom" value={selectedTime.start} />
-              <input type="hidden" name="timeTo" value={selectedTime.end} />
-              <button
-                type="submit"
-                className="w-full bg-stone-800 py-3 px-4 text-stone-100 hover:bg-stone-700 focus:bg-stone-500"
-              >
-                забукати
-              </button>
-            </Form>
+            {currentStep === BookingStep.Payment && (
+              <Form method="post" className="my-4">
+                <input type="hidden" name="date" value={selectedDate} />
+                <input
+                  type="hidden"
+                  name="timeFrom"
+                  value={selectedTime.start}
+                />
+                <input type="hidden" name="timeTo" value={selectedTime.end} />
+                <ActionButton buttonType="submit">забукати</ActionButton>
+              </Form>
+            )}
           </div>
         </div>
       </main>

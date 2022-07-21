@@ -1,6 +1,6 @@
 import WithBackgroundOverlay from "~/components/withBackgroundOverlay/withBackgroundOverlay";
-import Header from "~/header";
-import NavBar from "~/navbar";
+import Header from "~/components/Header/Header";
+import { NavBar } from "~/components/NavBar/NavBar";
 
 export default function rules() {
   return (

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import Slider from "react-slick";
 import type { DateSlot } from "~/store/bookingSlice";
+import { getDateFormat } from "~/utils/date";
 
 import {
   getActiveSlideIndex,
@@ -31,11 +32,18 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
     initialSlide: activeSlideIndex,
   };
 
+  const today = getDateFormat();
+
   const onDateChangeHandler = (date: DateSlot) => {
-    if (date.availableTimeSlots?.length && date.date !== selectedDate) {
+    if (getIsDateValid(date) && date.date !== selectedDate) {
       onChangeDate(date.date);
     }
   };
+
+  const getIsDateValid = (date: DateSlot) =>
+    date.isValid &&
+    date.availableTimeSlots &&
+    date.availableTimeSlots?.length > 0;
 
   return (
     <>
@@ -48,9 +56,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
             <input
               type="radio"
               name="date"
-              disabled={
-                !(date.availableTimeSlots && date.availableTimeSlots.length > 0)
-              }
+              disabled={!getIsDateValid(date)}
               checked={date.date === selectedDate}
               readOnly={true}
             />
@@ -61,7 +67,11 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
               <div className={`XXX-week-date`}>
                 {getWeekDayFormat(date.date)}
               </div>
-              <div className={`XXX-numeral-date`}>
+              <div
+                className={`XXX-numeral-date ${
+                  date.date === today ? "underline underline-offset-4" : ""
+                }`}
+              >
                 <span>{getDate(date.date)}</span>
               </div>
             </button>

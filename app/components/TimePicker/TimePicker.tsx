@@ -1,31 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { getIsMobile } from "~/utils/breakpoints";
-import { addMinutes, formatTimeSlot } from "~/utils/date";
+import {
+  addMinutes,
+  formatCalculatedTimePeriod,
+  formatTimeSlot,
+} from "~/utils/date";
 
 export interface TimePickerProps {
   selectedDate: string;
   timeSlots: Array<string>;
-  onChangeTime: (start: string, end: string) => void;
+  onChangeTime: (start: string, end: string, diff: number) => void;
+  isMobile?: boolean;
 }
 
 const renderTimeSlotsRange = (
   timeSlots: Array<string>,
   start: number,
-  end: number
+  end: number,
+  isMobile = false
 ) => {
   return (
     <>
-      {timeSlots[start >= end ? end : start] &&
-        formatTimeSlot(timeSlots[start >= end ? end : start])}
-      {timeSlots[start] &&
-      timeSlots[end] &&
-      start !== end &&
-      addMinutes(timeSlots[start], 30) !== timeSlots[end] &&
-      addMinutes(timeSlots[end], 30) !== timeSlots[start]
-        ? " - ... - "
-        : " - "}
-      {timeSlots[start <= end ? end : start] &&
-        formatTimeSlot(addMinutes(timeSlots[start <= end ? end : start], 30))}
+      <span>
+        {timeSlots[start >= end ? end : start] &&
+          formatTimeSlot(timeSlots[start >= end ? end : start])}
+        {timeSlots[start] &&
+        timeSlots[end] &&
+        start !== end &&
+        addMinutes(timeSlots[start], 30) !== timeSlots[end] &&
+        addMinutes(timeSlots[end], 30) !== timeSlots[start]
+          ? " - ... - "
+          : " - "}
+        {timeSlots[start <= end ? end : start] &&
+          formatTimeSlot(addMinutes(timeSlots[start <= end ? end : start], 30))}
+      </span>{" "}
+      <span>
+        |{" "}
+        {formatCalculatedTimePeriod(
+          start <= end ? [start, end] : [end, start],
+          isMobile
+        )}
+      </span>
     </>
   );
 };
@@ -34,11 +49,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
   timeSlots,
   selectedDate,
   onChangeTime,
+  isMobile = false,
 }) => {
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(0);
   const [selecting, setSelecting] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const mouseDownHandler = (i: number) => {
     if (isMobile) {
@@ -82,7 +97,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
     }
     onChangeTime(
       timeSlots[start >= end ? end : start],
-      addMinutes(timeSlots[start <= end ? end : start], 30)
+      addMinutes(timeSlots[start <= end ? end : start], 30),
+      Math.abs((end - start) / 2) + 0.5
     );
   }, [start, end, onChangeTime, timeSlots]);
 
@@ -91,15 +107,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
     [selectedDate, timeSlots.length]
   );
 
-  useEffect(() => {
-    setIsMobile(getIsMobile());
-  }, []);
-
   return (
     <div className={`XXX-aoa-date-picker`}>
       <h4 className={`mb-4 text-center font-medium`}>
         {timeSlots?.length > 0
-          ? renderTimeSlotsRange(timeSlots, start, end)
+          ? renderTimeSlotsRange(timeSlots, start, end, isMobile)
           : "Немає вільних слотів"}
       </h4>
       <ul className={`flex w-full flex-wrap justify-start`}>

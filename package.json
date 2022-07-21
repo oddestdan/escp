@@ -22,7 +22,8 @@
     "typecheck": "tsc -b && tsc -b cypress",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "sass": "sass --watch app/:app/",
-    "lezgo": "concurrently \"npm run sass\" \"npm run dev\""
+    "lezgo": "concurrently \"npm run sass\" \"npm run dev\"",
+    "prisma:studio": "npx prisma studio"
   },
   "prettier": {},
   "eslintIgnore": [

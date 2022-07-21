@@ -1,5 +1,5 @@
-import Header from "~/header";
-import NavBar from "~/navbar";
+import Header from "~/components/Header/Header";
+import { NavBar } from "~/components/NavBar/NavBar";
 
 const image1Src = "https://i.imgur.com/2gUgtbh.jpg";
 const image2Src = "https://i.imgur.com/XcwX5jr.jpg";

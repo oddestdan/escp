@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 
-export default function NavBar({ active }: { active: string }) {
+export const NavBar: React.FC<{ active: string }> = ({ active }) => {
   return (
     <nav className="my-4 mx-auto flex w-full flex-row justify-between font-light sm:w-3/5">
       <Link
@@ -37,4 +37,4 @@ export default function NavBar({ active }: { active: string }) {
       </Link>
     </nav>
   );
-}
+};

@@ -4,6 +4,12 @@ export const getPrevMonday = () => {
   return prevMonday;
 };
 
+export const getTomorrow = () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+};
+
 export const addMonths = (date = new Date(), numOfMonths: number) => {
   const dateCopy = new Date(date.getTime());
   dateCopy.setMonth(dateCopy.getMonth() + numOfMonths);
@@ -31,10 +37,32 @@ export const formatTimeSlot = (time: string) => {
   );
 };
 
-const tzOffset = new Date().getTimezoneOffset() * 60000;
+// const tzOffset = new Date().getTimezoneOffset() * 60000;
 export const addMinutes = (time: string, minutes: number) => {
   const minutesOffset = minutes * 60000;
-  return new Date(new Date(time).getTime() - tzOffset + minutesOffset)
-    .toISOString()
-    .slice(0, -5);
+  return new Date(
+    // new Date(time).getTime() - tzOffset + minutesOffset
+    new Date(time).getTime() + minutesOffset
+  ).toISOString();
+};
+
+export const formatCalculatedTimePeriod = (
+  [start, end]: [number, number],
+  isMobile = false
+) => {
+  const diff = (end - start) / 2 + 0.5;
+  const hour = Math.floor(diff);
+
+  if (isMobile) {
+    return (
+      (hour > 0 ? `${hour} год. ` : "") + (diff % 1 === 0.5 ? "30 хв." : "")
+    );
+  }
+
+  const wordingMinute = diff % 1 === 0.5 ? "30 хвилин" : "";
+  let wordingHour = hour > 0 ? `${hour} година ` : ``;
+  wordingHour = hour > 1 ? `${hour} години ` : wordingHour;
+  wordingHour = hour > 4 ? `${hour} годин ` : wordingHour;
+
+  return wordingHour + wordingMinute;
 };

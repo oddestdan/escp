@@ -44,7 +44,6 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
   removeEvent,
   changeEvent,
 }) => {
-  console.log("AdminCalendar props/ events", events);
   const calendarRef = useRef<FullCalendar>(null);
 
   const onSelect = (data: DateSelectArg) => {

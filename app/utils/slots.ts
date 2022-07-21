@@ -21,7 +21,7 @@ export const generateTimeSlots = (
   return generateHalfArrayRange(from, to).map(
     (k) =>
       `${getDateFormat(day)}T${`${Math.floor(k)}`.padStart(2, "0")}:${
-        k % 1 == 0 ? "00" : "30"
+        k % 1 === 0 ? "00" : "30"
       }:00.000Z`
   );
 };
@@ -42,6 +42,7 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
   return getDaysArray(fromDate, toDate).map((day) => {
     return {
       date: day.toISOString().split("T")[0],
+      isValid: day.getTime() > new Date().getTime(),
       dayOfWeek: getDayOfWeek(day),
       availableTimeSlots: generateTimeSlots(day),
     };
