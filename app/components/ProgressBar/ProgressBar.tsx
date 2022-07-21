@@ -145,7 +145,7 @@ const ProgressBar: React.FC<IProgressBarProps> = ({ ...props }) => {
   );
 
   return (
-    <div className="min-w-24 mx-auto mb-16 mt-8 w-1/2">
+    <div className="min-w-24 mx-auto mb-16 mt-8 w-full sm:w-1/2">
       <DefaultProgressBar
         filledBackground={filledColor}
         unfilledBackground={unfilledColor}

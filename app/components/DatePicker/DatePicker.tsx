@@ -115,7 +115,7 @@ const TitledDatePicker: React.FC<AOADatePickerProps> = ({ ...props }) => {
   }, [selectedDate, dateTimeSlots]);
 
   return (
-    <div className={`XXX-aoa-date-picker`}>
+    <div className={`XXX-aoa-date-picker mb-8`}>
       <h4
         className={`mb-4 text-center font-medium`}
       >{`${selectedMonth} ${selectedYear}`}</h4>

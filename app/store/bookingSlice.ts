@@ -23,7 +23,7 @@ export enum BookingStep {
 export enum BookingService {
   service1 = "прибирання після зйомки",
   service2 = "допомога асистента",
-  service3 = "надання фону (вкажіть знизу які саме потрібні)",
+  service3 = "надання фону (додайте знизу які саме)",
 }
 const bookingServicesList = [
   BookingService.service1,
@@ -35,7 +35,7 @@ export interface ContactInfo {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  tel: string;
   instagramLink?: string;
   telegramNickname?: string;
 }
@@ -73,7 +73,7 @@ export const initialState: BookingState = {
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    tel: "",
     instagramLink: "",
     telegramNickname: "",
   },
@@ -83,7 +83,7 @@ export const initialState: BookingState = {
     time: { start: "", end: "", diff: 0 },
   },
   services: bookingServicesList,
-  currentStep: BookingStep.ContactInfo, // TODO: BookingStep.DateTime
+  currentStep: BookingStep.DateTime, // TODO: BookingStep.DateTime
 };
 
 const bookingSlice = createSlice({

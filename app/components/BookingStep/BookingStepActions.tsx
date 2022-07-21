@@ -14,24 +14,17 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
   hasSecondary,
 }) => {
   return (
-    <div className="my-4 flex justify-center">
+    <div className="my-4 flex flex-col justify-center">
       {hasSecondary && (
         <ActionButton
-          className={hasSecondary ? "mr-4" : ""}
+          className={hasPrimary ? "mb-4" : ""}
           inverted={true}
           onClick={onSecondaryClick}
         >
           назад
         </ActionButton>
       )}
-      {hasPrimary && (
-        <ActionButton
-          className={hasSecondary ? "ml-4" : ""}
-          onClick={onPrimaryClick}
-        >
-          далі
-        </ActionButton>
-      )}
+      {hasPrimary && <ActionButton onClick={onPrimaryClick}>далі</ActionButton>}
     </div>
   );
 };

@@ -81,15 +81,13 @@ export default function Booking() {
         <div className="flex w-full flex-col items-center font-light">
           <Header current="booking" />
           <div className="my-4 w-full sm:w-3/5">
-            <div className={`date-time-picker-container`}>
               <ProgressBar
                 onStepClick={onStepClick}
                 activeIndex={currentStep}
                 stepData={memoedStepsData}
               />
               <ActiveBookingStep appointments={appointments} />
-            </div>
-            {currentStep === BookingStep.Payment && (
+              {currentStep === BookingStep.Payment && (
               <Form method="post" className="my-4">
                 <input type="hidden" name="date" value={selectedDate} />
                 <input

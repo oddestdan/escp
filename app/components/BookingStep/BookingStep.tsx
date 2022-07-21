@@ -8,6 +8,7 @@ import { generateTimeSlots } from "~/utils/slots";
 import { ServicesStep } from "./Steps/ServicesStep";
 import { ContactInfoStep } from "./Steps/ContactInfoStep";
 import { getIsMobile } from "~/utils/breakpoints";
+import { PaymentStep } from "./Steps/PaymentStep";
 
 export function WithActiveStepHOC<T>(
   Component: React.ComponentType<T>,
@@ -87,6 +88,10 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
       ]),
     [currentStep]
   );
+  const MemoedPaymentStep = useMemo(
+    () => WithActiveStepHOC(PaymentStep, [currentStep, BookingStep.Payment]),
+    [currentStep]
+  );
 
   return (
     <>
@@ -100,6 +105,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
       />
       <MemoedServicesStep isMobile={isMobile} />
       <MemoedContactInfoStep isMobile={isMobile} />
+      <MemoedPaymentStep isMobile={isMobile} />
     </>
   );
 };
