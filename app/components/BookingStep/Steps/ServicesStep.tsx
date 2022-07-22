@@ -12,10 +12,15 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
   isMobile = false,
 }) => {
   const dispatch = useDispatch();
-  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
+  const { currentStep, services } = useSelector(
+    (store: StoreBooking) => store.booking
+  );
 
   const [checkedServices, setCheckedServices] = useState(
-    bookingServicesList.map((service) => ({ service, checked: false }))
+    bookingServicesList.map((service) => {
+      const checked = services.includes(service);
+      return { service, checked };
+    })
   );
   const [customService, setCustomService] = useState("");
 
@@ -97,6 +102,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
               ? " (фон / спеціалізована зйомка / велика группа людей тощо)"
               : ""}
           </span>
+          {/* TODO: save to Redux and set defaultValue from there */}
           <TextInput
             name="custom"
             type="text"

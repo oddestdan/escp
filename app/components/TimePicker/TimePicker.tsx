@@ -6,7 +6,6 @@ import {
 } from "~/utils/date";
 
 export interface TimePickerProps {
-  selectedDate: string;
   selectedTime: { start: string; end: string };
   timeSlots: Array<string>;
   onChangeTime: (start: string, end: string, diff: number) => void;
@@ -47,7 +46,6 @@ const renderTimeSlotsRange = (
 
 const TimePicker: React.FC<TimePickerProps> = ({
   timeSlots,
-  selectedDate,
   selectedTime,
   onChangeTime,
   isMobile = false,
@@ -67,9 +65,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
       : 0
   );
   const [selecting, setSelecting] = useState(false);
+  const [isDragMode, setIsDragMode] = useState(true);
 
   const mouseDownHandler = (i: number) => {
-    if (isMobile) {
+    if (isMobile || !isDragMode) {
       if (i > end) {
         setEnd(i);
       } else if (i < start) {
@@ -86,7 +85,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const mouseUpHandler = (i = end) => {
-    if (isMobile) {
+    if (isMobile || !isDragMode) {
       return;
     } else {
       setSelecting(false);
@@ -95,7 +94,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const mouseMoveHandler = (i: number) => {
-    if (isMobile) {
+    if (isMobile || !isDragMode) {
       return;
     } else {
       if (selecting) {
@@ -117,14 +116,33 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   return (
     <div className={`XXX-aoa-date-picker`}>
-      <pre>
-        start: {start}, end: {end}
-      </pre>
       <h4 className={`mb-4 text-center font-medium`}>
         {timeSlots?.length > 0
           ? renderTimeSlotsRange(timeSlots, start, end, isMobile)
           : "Немає вільних слотів"}
       </h4>
+      <div className="mb-4 text-center text-sm italic">
+        <label
+          htmlFor="mode"
+          className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
+          onClick={() => setIsDragMode(!isDragMode)}
+        >
+          <input
+            name="mode"
+            className="peer sr-only"
+            role="switch"
+            type="checkbox"
+            checked={isDragMode}
+            readOnly={true}
+          />
+          {!isMobile && (
+            <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+          )}
+          <span className="ml-3">
+            {isDragMode ? "Зажміть" : "Клікайте"} та обирайте слоти
+          </span>
+        </label>
+      </div>
       <ul className={`flex w-full flex-wrap justify-start`}>
         {timeSlots?.length > 0 &&
           timeSlots.map((slot, i) => (

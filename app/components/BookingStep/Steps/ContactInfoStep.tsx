@@ -53,7 +53,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
 
   const stepNext = useCallback(() => {
     const { firstName, lastName, email, tel } = localContactForm;
-    if (![firstName, lastName, email, tel].every(Boolean)) {
+    if (![firstName, lastName, email, tel, hasSeenTerms].every(Boolean)) {
       touched.firstName = firstName.length === 0 ? "" : touched.firstName;
       touched.lastName = lastName.length === 0 ? "" : touched.lastName;
       touched.email = email.length === 0 ? "" : touched.email;
@@ -102,46 +102,52 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
         контактна інформація{memoedInfo}
       </h4>
       <form className="my-4 flex flex-wrap justify-between">
-        {Object.entries(localContactForm).map(([key, value], i) => (
-          <label
-            key={key}
-            htmlFor={key}
-            className={`mt-2 block w-full sm:w-1/2 ${
-              !isMobile ? (i % 2 === 0 ? "pr-2" : "pl-2") : ""
-            }`}
-          >
-            <span className="block text-sm">
-              {getContactLabelByKey(key)}
-              {i < 4 ? " *" : ""}
-            </span>
-            <TextInput
-              name={key}
-              type={
-                key === "email"
-                  ? "email"
-                  : key === "tel"
-                  ? "tel"
-                  : key === "instagramLink"
-                  ? "url"
-                  : "text"
-              }
-              required={i < 4}
-              className="mt-2"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setContactFormProp(key, e.target.value)
-              }
-            />
-            <p
-              className={`mt-1 text-right text-sm text-pink-600 ${
-                i < 4 && touched[key as keyof RequiredContactInfo] === ""
-                  ? ""
-                  : "invisible"
+        {Object.entries(localContactForm).map(([key, defaultValue], i) => {
+          const isInvalid = touched[key as keyof RequiredContactInfo] === "";
+          return (
+            <label
+              key={key}
+              htmlFor={key}
+              className={`mt-2 block w-full sm:w-1/2 ${
+                !isMobile ? (i % 2 === 0 ? "pr-2" : "pl-2") : ""
               }`}
             >
-              {errorKeyMapper[key as keyof RequiredContactInfo]}
-            </p>
-          </label>
-        ))}
+              <span className="block text-sm">
+                {getContactLabelByKey(key)}
+                {i < 4 ? " *" : ""}
+              </span>
+              <TextInput
+                name={key}
+                type={
+                  key === "email"
+                    ? "email"
+                    : key === "tel"
+                    ? "tel"
+                    : key === "instagramLink"
+                    ? "url"
+                    : "text"
+                }
+                required={i < 4}
+                className={`mt-2 ${
+                  i < 4 && isInvalid
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                    : ""
+                }`}
+                defaultValue={defaultValue}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setContactFormProp(key, e.target.value)
+                }
+              />
+              <p
+                className={`text-left text-sm text-red-500 ${
+                  i < 4 && isInvalid ? "" : "invisible"
+                }`}
+              >
+                {errorKeyMapper[key as keyof RequiredContactInfo]}
+              </p>
+            </label>
+          );
+        })}
       </form>
       <p className="mb-8">
         <label
@@ -169,7 +175,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
           </span>
         </label>
         <p
-          className={`mt-1 text-left text-sm text-pink-600 ${
+          className={`text-left text-sm text-red-500 ${
             touched.terms === "" ? "" : "invisible"
           }`}
         >

@@ -60,7 +60,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         onChangeDate={onChangeDate}
       />
       <TimePicker
-        selectedDate={selectedDate}
         selectedTime={selectedTime}
         timeSlots={memoedTimeSlots}
         onChangeTime={onChangeTime}
