@@ -44,3 +44,19 @@ export const getWeekDayMobileFormat = (date: string): string => {
     .toLocaleLowerCase()
     .charAt(0);
 };
+
+export const getFormattedMonthAndYear = (
+  selectedDate: string | undefined
+): [string, number] => {
+  if (selectedDate && selectedDate.length) {
+    const formattedSelectedDate = new Date(`${selectedDate}T00:00:00`);
+    return [
+      formattedSelectedDate.toLocaleString("uk", {
+        month: "long",
+      }),
+      formattedSelectedDate.getFullYear(),
+    ];
+  }
+
+  return ["", 0];
+};

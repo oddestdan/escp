@@ -1,5 +1,6 @@
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,14 +28,19 @@ export const action: ActionFunction = async ({ request }) => {
   const date = formData.get("date");
   const timeFrom = formData.get("timeFrom");
   const timeTo = formData.get("timeTo");
+  const services = formData.get("services");
+  const contactInfo = formData.get("contactInfo");
 
   invariant(typeof date === "string", "date must be a string");
   invariant(typeof timeFrom === "string", "timeFrom must be a string");
   invariant(typeof timeTo === "string", "timeTo must be a string");
+  invariant(typeof services === "string", "services must be a string");
+  invariant(typeof contactInfo === "string", "contactInfo must be a string");
 
-  await createAppointment({ date, timeFrom, timeTo });
+  await createAppointment({ date, timeFrom, timeTo, services, contactInfo });
 
   return null;
+  // return redirect("/confirmation"); // TODO:
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -53,6 +59,8 @@ export default function Booking() {
   const {
     currentStep,
     dateTime: { date: selectedDate, time: selectedTime },
+    contact,
+    services,
   } = useSelector((store: StoreBooking) => store.booking);
 
   const memoedStepsData = useMemo(() => {
@@ -66,9 +74,9 @@ export default function Booking() {
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
-      // if (currentStep > step) {
-      dispatch(saveCurrentStep(step));
-      // }
+      if (currentStep > step) {
+        dispatch(saveCurrentStep(step));
+      }
     },
     [dispatch, currentStep]
   );
@@ -81,13 +89,13 @@ export default function Booking() {
         <div className="flex w-full flex-col items-center font-light">
           <Header current="booking" />
           <div className="my-4 w-full sm:w-3/5">
-              <ProgressBar
-                onStepClick={onStepClick}
-                activeIndex={currentStep}
-                stepData={memoedStepsData}
-              />
-              <ActiveBookingStep appointments={appointments} />
-              {currentStep === BookingStep.Payment && (
+            <ProgressBar
+              onStepClick={onStepClick}
+              activeIndex={currentStep}
+              stepData={memoedStepsData}
+            />
+            <ActiveBookingStep appointments={appointments} />
+            {currentStep === BookingStep.Payment && (
               <Form method="post" className="my-4">
                 <input type="hidden" name="date" value={selectedDate} />
                 <input
@@ -96,6 +104,17 @@ export default function Booking() {
                   value={selectedTime.start}
                 />
                 <input type="hidden" name="timeTo" value={selectedTime.end} />
+                <input
+                  type="hidden"
+                  name="services"
+                  value={JSON.stringify(services)}
+                />
+                <input
+                  type="hidden"
+                  name="contactInfo"
+                  value={JSON.stringify(contact)}
+                />
+                <input type="hidden" />
                 <ActionButton buttonType="submit">забукати</ActionButton>
               </Form>
             )}

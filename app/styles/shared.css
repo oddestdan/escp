@@ -28,7 +28,7 @@
 .XXX-date-carousel {
   position: relative;
   padding: 0 0.2rem 1rem;
-  border-bottom: 1px solid rgb(28, 25, 23);
+  border-bottom: 2px solid rgb(28, 25, 23);
   font-weight: 300;
 }
 .XXX-date-carousel .XXX-date__box {

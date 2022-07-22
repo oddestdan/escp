@@ -23,9 +23,9 @@ export enum BookingStep {
 export enum BookingService {
   service1 = "прибирання після зйомки",
   service2 = "допомога асистента",
-  service3 = "надання фону (додайте знизу які саме)",
+  service3 = "надання фону (вкажіть які саме)",
 }
-const bookingServicesList = [
+export const bookingServicesList = [
   BookingService.service1,
   BookingService.service2,
   BookingService.service3,
@@ -82,8 +82,8 @@ export const initialState: BookingState = {
     date: getDateFormat(getTomorrow()),
     time: { start: "", end: "", diff: 0 },
   },
-  services: bookingServicesList,
-  currentStep: BookingStep.DateTime, // TODO: BookingStep.DateTime
+  services: [],
+  currentStep: BookingStep.DateTime,
 };
 
 const bookingSlice = createSlice({

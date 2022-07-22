@@ -15,7 +15,7 @@ export default function Escp() {
 
           <div className="mx-auto flex flex-col sm:w-3/5">
             <img
-              className="my-4 w-full bg-stone-100"
+              className="my-4 aspect-[3/2] w-full bg-stone-100"
               src={image1Src}
               alt="Hall front"
             />
@@ -25,7 +25,7 @@ export default function Escp() {
               фото студія, бул. Вацлава Гавела 4.
             </p>
             <img
-              className="my-4 w-full bg-stone-100"
+              className="my-4 aspect-[3/2] w-full bg-stone-100"
               src={image2Src}
               alt="Hall back"
             />

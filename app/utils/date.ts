@@ -40,6 +40,7 @@ export const formatTimeSlot = (time: string) => {
 // const tzOffset = new Date().getTimezoneOffset() * 60000;
 export const addMinutes = (time: string, minutes: number) => {
   const minutesOffset = minutes * 60000;
+  if (!time) return time;
   return new Date(
     // new Date(time).getTime() - tzOffset + minutesOffset
     new Date(time).getTime() + minutesOffset

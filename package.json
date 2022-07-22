@@ -23,7 +23,8 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "sass": "sass --watch app/:app/",
     "lezgo": "concurrently \"npm run sass\" \"npm run dev\"",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "prisma:migrate": "npm prisma migrate dev"
   },
   "prettier": {},
   "eslintIgnore": [

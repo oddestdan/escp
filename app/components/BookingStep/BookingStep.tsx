@@ -4,7 +4,6 @@ import type { StoreBooking } from "~/store/bookingSlice";
 import { DateTimeStep } from "./Steps/DateTimeStep";
 import type { Appointment } from "~/models/appointment.server";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { generateTimeSlots } from "~/utils/slots";
 import { ServicesStep } from "./Steps/ServicesStep";
 import { ContactInfoStep } from "./Steps/ContactInfoStep";
 import { getIsMobile } from "~/utils/breakpoints";
@@ -27,10 +26,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
   appointments,
 }) => {
   const dispatch = useDispatch();
-  const {
-    currentStep,
-    dateTime: { date: selectedDate, slots },
-  } = useSelector((store: StoreBooking) => store.booking);
+  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -50,27 +46,6 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
     },
     [dispatch]
   );
-
-  const memoedTimeSlots = useMemo(() => {
-    const todaysSlots =
-      slots.find(({ date }) => date === selectedDate)?.availableTimeSlots || [];
-    const todaysAppointments =
-      appointments.filter(({ date }) => date === selectedDate) || [];
-
-    const takenSlots = todaysAppointments.map((app) => {
-      const timeFromArr = app.timeFrom.split("T")[1].split(":");
-      const timeToArr = app.timeTo.split("T")[1].split(":");
-      return generateTimeSlots(
-        new Date(selectedDate),
-        Number(timeFromArr[0]) + (timeFromArr[1] == "30" ? 0.5 : 0),
-        Number(timeToArr[0]) + (timeToArr[1] == "30" ? 0.5 : 0)
-      );
-    });
-
-    return todaysSlots.filter(
-      (slot) => !takenSlots.flat().find((taken) => taken === slot)
-    );
-  }, [slots, selectedDate, appointments]);
 
   const MemoedDateTimeStep = useMemo(
     () => WithActiveStepHOC(DateTimeStep, [currentStep, BookingStep.DateTime]),
@@ -96,9 +71,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
   return (
     <>
       <MemoedDateTimeStep
-        selectedDate={selectedDate}
-        slots={slots}
-        memoedTimeSlots={memoedTimeSlots}
+        appointments={appointments}
         onChangeDate={onChangeDate}
         onChangeTime={onChangeTime}
         isMobile={isMobile}

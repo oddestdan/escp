@@ -36,7 +36,13 @@ export const action: ActionFunction = async ({ request }) => {
       invariant(typeof timeFrom === "string", "timeFrom must be a string");
       invariant(typeof timeTo === "string", "timeTo must be a string");
       invariant(typeof date === "string", "date must be a string");
-      return await createAppointment({ timeFrom, timeTo, date });
+      return await createAppointment({
+        timeFrom,
+        timeTo,
+        date,
+        services: "[]",
+        contactInfo: "{}",
+      });
     }
     case "PUT": {
       // Change

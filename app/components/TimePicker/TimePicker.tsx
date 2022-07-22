@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getIsMobile } from "~/utils/breakpoints";
 import {
   addMinutes,
   formatCalculatedTimePeriod,
@@ -8,6 +7,7 @@ import {
 
 export interface TimePickerProps {
   selectedDate: string;
+  selectedTime: { start: string; end: string };
   timeSlots: Array<string>;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
@@ -48,11 +48,24 @@ const renderTimeSlotsRange = (
 const TimePicker: React.FC<TimePickerProps> = ({
   timeSlots,
   selectedDate,
+  selectedTime,
   onChangeTime,
   isMobile = false,
 }) => {
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(0);
+  const [start, setStart] = useState(
+    timeSlots.findIndex((slot) => slot === selectedTime.start) !== -1
+      ? timeSlots.findIndex((slot) => slot === selectedTime.start)
+      : 0
+  );
+  const [end, setEnd] = useState(
+    timeSlots.findIndex(
+      (slot) => slot === addMinutes(selectedTime.end, -30)
+    ) !== -1
+      ? timeSlots.findIndex(
+          (slot) => slot === addMinutes(selectedTime.end, -30)
+        )
+      : 0
+  );
   const [selecting, setSelecting] = useState(false);
 
   const mouseDownHandler = (i: number) => {
@@ -102,13 +115,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
     );
   }, [start, end, onChangeTime, timeSlots]);
 
-  useEffect(
-    () => [setStart, setEnd].forEach((f) => f(0)),
-    [selectedDate, timeSlots.length]
-  );
-
   return (
     <div className={`XXX-aoa-date-picker`}>
+      <pre>
+        start: {start}, end: {end}
+      </pre>
       <h4 className={`mb-4 text-center font-medium`}>
         {timeSlots?.length > 0
           ? renderTimeSlotsRange(timeSlots, start, end, isMobile)

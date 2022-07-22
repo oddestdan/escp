@@ -8,7 +8,10 @@ export async function getAppointments() {
 }
 
 export async function createAppointment(
-  appointment: Pick<Appointment, "date" | "timeFrom" | "timeTo">
+  appointment: Pick<
+    Appointment,
+    "date" | "timeFrom" | "timeTo" | "services" | "contactInfo"
+  >
 ) {
   return prisma.appointment.create({ data: appointment });
 }

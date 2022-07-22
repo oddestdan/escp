@@ -6,6 +6,7 @@ import { getDateFormat } from "~/utils/date";
 import {
   getActiveSlideIndex,
   getDate,
+  getFormattedMonthAndYear,
   getWeekDayFormat,
 } from "./DatePicker.helper";
 
@@ -80,22 +81,6 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
       </Slider>
     </>
   );
-};
-
-export const getFormattedMonthAndYear = (
-  selectedDate: string | undefined
-): [string, number] => {
-  if (selectedDate && selectedDate.length) {
-    const formattedSelectedDate = new Date(`${selectedDate}T00:00:00`);
-    return [
-      formattedSelectedDate.toLocaleString("uk", {
-        month: "long",
-      }),
-      formattedSelectedDate.getFullYear(),
-    ];
-  }
-
-  return ["", 0];
 };
 
 export interface AOADatePickerProps {

@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextInput } from "~/components/TextInput/TextInput";
 import type { StoreBooking } from "~/store/bookingSlice";
+import { bookingServicesList } from "~/store/bookingSlice";
 import { saveServices } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
@@ -11,12 +12,10 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
   isMobile = false,
 }) => {
   const dispatch = useDispatch();
-  const { services, currentStep } = useSelector(
-    (store: StoreBooking) => store.booking
-  );
+  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
 
   const [checkedServices, setCheckedServices] = useState(
-    services.map((service) => ({ service, checked: false }))
+    bookingServicesList.map((service) => ({ service, checked: false }))
   );
   const [customService, setCustomService] = useState("");
 
@@ -78,7 +77,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
           <label
             key={service}
             htmlFor={service}
-            className="my-4 flex cursor-pointer hover:text-stone-400"
+            className="my-4 flex cursor-pointer hover:text-stone-500"
             onClick={() => onChangeCheckbox(i)}
           >
             <input

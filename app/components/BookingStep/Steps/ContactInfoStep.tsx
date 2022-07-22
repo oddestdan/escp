@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextInput } from "~/components/TextInput/TextInput";
@@ -10,11 +11,12 @@ type RequiredContactInfo = Omit<
   ContactInfo,
   "instagramLink" | "telegramNickname"
 >;
-const errorKeyMapper: RequiredContactInfo = {
+const errorKeyMapper: RequiredContactInfo & { terms: string } = {
   firstName: "заповніть ім'я",
   lastName: "заповніть прізвище",
   email: "правильно заповніть імейл",
   tel: "заповніть номер телефону",
+  terms: "дайте згоду з нашими правилами",
 };
 
 const contactLabelKeyMapper: ContactInfo = {
@@ -38,11 +40,15 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     (store: StoreBooking) => store.booking
   );
   const [localContactForm, setLocalContactForm] = useState({ ...contact });
-  const [touched, setTouched] = useState<Partial<RequiredContactInfo>>({
+  const [hasSeenTerms, setHasSeenTerms] = useState(false);
+  const [touched, setTouched] = useState<
+    Partial<RequiredContactInfo & { terms: string }>
+  >({
     firstName: undefined,
     lastName: undefined,
     email: undefined,
     tel: undefined,
+    terms: undefined,
   });
 
   const stepNext = useCallback(() => {
@@ -52,15 +58,21 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
       touched.lastName = lastName.length === 0 ? "" : touched.lastName;
       touched.email = email.length === 0 ? "" : touched.email;
       touched.tel = tel.length === 0 ? "" : touched.tel;
+      touched.terms = hasSeenTerms ? undefined : "";
       return setTouched({ ...touched });
     }
     dispatch(saveCurrentStep(currentStep + 1));
     dispatch(saveContactInfo(localContactForm));
-  }, [dispatch, currentStep, localContactForm, touched]);
+  }, [dispatch, currentStep, localContactForm, touched, hasSeenTerms]);
 
   const stepBack = useCallback(() => {
     dispatch(saveCurrentStep(currentStep - 1));
   }, [dispatch, currentStep]);
+
+  const onCheckTerms = useCallback(() => {
+    touched.terms = hasSeenTerms ? "" : undefined;
+    setHasSeenTerms(!hasSeenTerms);
+  }, [hasSeenTerms, touched]);
 
   const setContactFormProp = useCallback(
     (key: string, value: string) => {
@@ -89,13 +101,13 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
       <h4 className={`mb-2 text-center font-medium`}>
         контактна інформація{memoedInfo}
       </h4>
-      <form className="my-4 mb-8 flex flex-wrap justify-between">
+      <form className="my-4 flex flex-wrap justify-between">
         {Object.entries(localContactForm).map(([key, value], i) => (
           <label
             key={key}
             htmlFor={key}
             className={`mt-2 block w-full sm:w-1/2 ${
-              !isMobile ? (i % 2 === 0 ? "pr-4" : "pl-4") : ""
+              !isMobile ? (i % 2 === 0 ? "pr-2" : "pl-2") : ""
             }`}
           >
             <span className="block text-sm">
@@ -131,6 +143,39 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
           </label>
         ))}
       </form>
+      <p className="mb-8">
+        <label
+          key="terms"
+          htmlFor="terms"
+          className="flex cursor-pointer hover:text-stone-500"
+          onClick={onCheckTerms}
+        >
+          <input
+            name="terms"
+            className="p-1"
+            type="checkbox"
+            checked={hasSeenTerms}
+            readOnly={true}
+          />
+          <span className="ml-2 block text-center text-sm italic">
+            ознайомлені та згодні з{" "}
+            <Link
+              className="text-stone-900 underline hover:text-stone-400"
+              target="_blank"
+              to="/rules"
+            >
+              правилами
+            </Link>
+          </span>
+        </label>
+        <p
+          className={`mt-1 text-left text-sm text-pink-600 ${
+            touched.terms === "" ? "" : "invisible"
+          }`}
+        >
+          {errorKeyMapper.terms}
+        </p>
+      </p>
       <BookingStepActions
         hasPrimary={true}
         onPrimaryClick={stepNext}

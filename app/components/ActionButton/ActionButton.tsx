@@ -1,8 +1,10 @@
 const baseClass = "w-full py-3 px-4";
 const filledClass =
   "bg-stone-800 text-stone-100 hover:bg-stone-700 focus:bg-stone-500";
+// const invertedClass =
+// "border-2 border-stone-800 text-stone-800 hover:text-stone-200 hover:bg-stone-800 focus:bg-stone-500 focus:border-stone-500";
 const invertedClass =
-  "border-2 border-stone-800 text-stone-800 hover:text-stone-200 hover:bg-stone-800 focus:bg-stone-500 focus:border-stone-500";
+  "border-2 border-stone-800 text-stone-800 hover:border-stone-400 hover:text-stone-400 focus:text-stone-700 focus:border-stone-700";
 
 export const ActionButton: React.FC<
   {
