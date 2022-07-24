@@ -52,6 +52,52 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
     <>
       <h4 className="mb-2 text-center font-medium">оплата</h4>
       <div className="my-4 flex flex-col">
+        {/* Date & Time */}
+        {memoedDateTime && (
+          <p className="mb-4">
+            <span className="font-medium">дата & час: </span>
+            {memoedDateTime}
+          </p>
+        )}
+
+        {/* Services */}
+        <p className="mb-4">
+          <span className="font-medium">додаткові сервіси: </span>
+          {services.length > 0 ? services.join(", ") : "-"}
+        </p>
+
+        {/* Services */}
+        {memoedContactInfo && (
+          <p className="mb-4">
+            <span className="font-medium">контактна інформація: </span>
+            {memoedContactInfo}
+          </p>
+        )}
+        <p className="mb-4 border-b-2 border-stone-900">{/* Separator */}</p>
+
+        {/* Credit card credentials / Copy */}
+        <p className="flex justify-center">
+          <input
+            className="inline cursor-text border-2 border-stone-900 bg-stone-100 py-2 pr-4 text-right text-stone-900"
+            defaultValue={paymentInfo}
+            readOnly={true}
+          />
+          <button
+            className="inline cursor-pointer border-2 border-l-0 border-stone-900 py-2 px-4 text-stone-900 text-stone-900 hover:border-stone-400 hover:text-stone-400"
+            onClick={copyToClipboard}
+          >
+            Скопіювати
+          </button>
+        </p>
+        <p
+          className={`mt-1 mb-4 text-center text-sm ${
+            hasCopied ? "" : "invisible"
+          }`}
+        >
+          номер скопійовано!
+        </p>
+
+        {/* Necessary information about payment */}
         <p className="mb-4">
           <span className="mb-2 block">
             бронювання є дійсним лише після оплати та її підтвердження.
@@ -61,6 +107,8 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
             нас про успішний переказ у приватні повідомлення.
           </span>
         </p>
+
+        {/* Contact info, links */}
         <p className="mb-4">
           <span className="mb-2 block">
             наша телега:{" "}
@@ -84,45 +132,6 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
               https://www.instagram.com/escp.90/
             </a>
           </span>
-        </p>
-        <p className="mt-4 flex justify-center">
-          <input
-            className="inline cursor-text border-2 border-stone-900 bg-stone-100 py-2 pr-4 text-right text-stone-900"
-            defaultValue={paymentInfo}
-            readOnly={true}
-          />
-          <button
-            className="inline cursor-pointer border-2 border-l-0 border-stone-900 py-2 px-4 text-stone-900 text-stone-900 hover:border-stone-400 hover:text-stone-400"
-            onClick={copyToClipboard}
-          >
-            Скопіювати
-          </button>
-        </p>
-        <p
-          className={`mt-1 mb-4 text-center text-sm ${
-            hasCopied ? "" : "invisible"
-          }`}
-        >
-          номер скопійовано!
-        </p>
-        <p className="mb-4 border-b-2 border-stone-900">{/* Separator */}</p>
-
-        {/* Date & Time */}
-        <p className="mb-4">
-          <span className="font-medium">дата & час: </span>
-          {memoedDateTime}
-        </p>
-
-        {/* Services */}
-        <p className="mb-4">
-          <span className="font-medium">сервіси: </span>
-          {services.join(", ")}
-        </p>
-
-        {/* Services */}
-        <p className="mb-4">
-          <span className="font-medium">контактна інформація: </span>
-          {memoedContactInfo}
         </p>
       </div>
       <BookingStepActions hasSecondary={true} onSecondaryClick={stepBack} />

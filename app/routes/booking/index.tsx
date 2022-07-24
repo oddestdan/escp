@@ -74,7 +74,13 @@ export default function Booking() {
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
+      // Can only go to previous steps or to next step
       if (currentStep > step) {
+        // if (currentStep + 1 === step) {
+        // TODO: place errors from ContactInfo into redux
+        // and validate this action while checking for redux errors
+        // Also, make next step appear unique (black border)
+        // so that user is aware that it might be clickable
         dispatch(saveCurrentStep(step));
       }
     },

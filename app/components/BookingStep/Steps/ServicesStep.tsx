@@ -67,7 +67,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
           : ""}
       </h4>
       <legend className="mx-auto mb-8 block text-center text-sm italic">
-        усі реквізити (описані{" "}
+        весь реквізит (описаний{" "}
         <Link
           className="text-stone-900 underline hover:text-stone-400"
           target="_blank"
@@ -75,7 +75,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
         >
           тут
         </Link>
-        ) доступні безкоштовно
+        ) доступний безкоштовно
       </legend>
       <form>
         {checkedServices.map(({ service, checked }, i) => (
@@ -97,7 +97,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
         ))}
         <label htmlFor="custom" className="my-8 block">
           <span className="block text-sm">
-            кастомний сервіс
+            додаткові побажання
             {!isMobile
               ? " (фон / спеціалізована зйомка / велика группа людей тощо)"
               : ""}

@@ -65,10 +65,16 @@ const TimePicker: React.FC<TimePickerProps> = ({
       : 0
   );
   const [selecting, setSelecting] = useState(false);
-  const [isDragMode, setIsDragMode] = useState(true);
+  const [isDragMode, setIsDragMode] = useState(!isMobile);
+  useEffect(() => {
+    if (isMobile) {
+      setIsDragMode(false);
+    }
+  }, [isMobile]);
 
   const mouseDownHandler = (i: number) => {
-    if (isMobile || !isDragMode) {
+    // if (isMobile || !isDragMode) {
+    if (isMobile) {
       if (i > end) {
         setEnd(i);
       } else if (i < start) {
@@ -85,7 +91,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const mouseUpHandler = (i = end) => {
-    if (isMobile || !isDragMode) {
+    // if (isMobile || !isDragMode) {
+    if (isMobile) {
       return;
     } else {
       setSelecting(false);
@@ -94,7 +101,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const mouseMoveHandler = (i: number) => {
-    if (isMobile || !isDragMode) {
+    // if (isMobile || !isDragMode) {
+    if (isMobile) {
       return;
     } else {
       if (selecting) {
@@ -127,7 +135,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
           className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
           onClick={() => setIsDragMode(!isDragMode)}
         >
-          <input
+          {/* Saved Switcher Toggle for possible later usage */}
+          {/* <input
             name="mode"
             className="peer sr-only"
             role="switch"
@@ -137,9 +146,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
           />
           {!isMobile && (
             <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
-          )}
+          )} */}
           <span className="ml-3">
-            {isDragMode ? "Зажміть" : "Клікайте"} та обирайте слоти
+            {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
+            Клікайте та обирайте тайм-слоти
           </span>
         </label>
       </div>

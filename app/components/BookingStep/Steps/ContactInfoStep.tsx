@@ -69,10 +69,13 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     dispatch(saveCurrentStep(currentStep - 1));
   }, [dispatch, currentStep]);
 
-  const onCheckTerms = useCallback(() => {
-    touched.terms = hasSeenTerms ? "" : undefined;
-    setHasSeenTerms(!hasSeenTerms);
-  }, [hasSeenTerms, touched]);
+  const onCheckTerms = useCallback(
+    (onlyTrue = false) => {
+      touched.terms = hasSeenTerms ? "" : undefined;
+      setHasSeenTerms(onlyTrue || !hasSeenTerms);
+    },
+    [hasSeenTerms, touched]
+  );
 
   const setContactFormProp = useCallback(
     (key: string, value: string) => {
@@ -138,13 +141,13 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
                   setContactFormProp(key, e.target.value)
                 }
               />
-              <p
+              <span
                 className={`text-left text-sm text-red-500 ${
                   i < 4 && isInvalid ? "" : "invisible"
                 }`}
               >
                 {errorKeyMapper[key as keyof RequiredContactInfo]}
-              </p>
+              </span>
             </label>
           );
         })}
@@ -153,8 +156,8 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
         <label
           key="terms"
           htmlFor="terms"
-          className="flex cursor-pointer hover:text-stone-500"
-          onClick={onCheckTerms}
+          className="inline-flex cursor-pointer hover:text-stone-500"
+          onClick={() => onCheckTerms()}
         >
           <input
             name="terms"
@@ -169,18 +172,19 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
               className="text-stone-900 underline hover:text-stone-400"
               target="_blank"
               to="/rules"
+              onClick={() => onCheckTerms(true)}
             >
               правилами
             </Link>
           </span>
         </label>
-        <p
-          className={`text-left text-sm text-red-500 ${
+        <span
+          className={`block text-left text-sm text-red-500 ${
             touched.terms === "" ? "" : "invisible"
           }`}
         >
           {errorKeyMapper.terms}
-        </p>
+        </span>
       </p>
       <BookingStepActions
         hasPrimary={true}
