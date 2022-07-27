@@ -16,8 +16,15 @@ export const addMonths = (date = new Date(), numOfMonths: number) => {
   return dateCopy;
 };
 
-export const getDayOfWeek = (date: Date) => {
+export const getDayOfWeek = (date: Date = new Date()) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
+};
+
+export const getLocaleTime = (date: Date = new Date()) => {
+  return date.toLocaleTimeString("uk", {
+    hour: "numeric",
+    minute: "numeric",
+  });
 };
 
 export const getDateFormat = (date: Date = new Date()) => {
@@ -29,12 +36,7 @@ const getUnpaddedTimeFormat = (time: string): string => {
 };
 
 export const formatTimeSlot = (time: string) => {
-  return getUnpaddedTimeFormat(
-    new Date(time).toLocaleTimeString("uk", {
-      hour: "numeric",
-      minute: "numeric",
-    })
-  );
+  return getUnpaddedTimeFormat(getLocaleTime(new Date(time)));
 };
 
 // const tzOffset = new Date().getTimezoneOffset() * 60000;

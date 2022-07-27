@@ -65,50 +65,41 @@ const TimePicker: React.FC<TimePickerProps> = ({
       : 0
   );
   const [selecting, setSelecting] = useState(false);
-  const [isDragMode, setIsDragMode] = useState(!isMobile);
-  useEffect(() => {
-    if (isMobile) {
-      setIsDragMode(false);
-    }
-  }, [isMobile]);
 
   const mouseDownHandler = (i: number) => {
-    // if (isMobile || !isDragMode) {
-    if (isMobile) {
-      if (i > end) {
-        setEnd(i);
-      } else if (i < start) {
-        setStart(i);
-      } else {
-        selecting ? setEnd(i) : setStart(i);
-        setSelecting(!selecting);
-      }
-    } else {
-      setSelecting(true);
+    // if (isMobile) {
+    if (i > end) {
+      setEnd(i);
+    } else if (i < start) {
       setStart(i);
-      mouseMoveHandler(i);
+    } else {
+      selecting ? setEnd(i) : setStart(i);
+      setSelecting(!selecting);
     }
+    // } else {
+    //   setSelecting(true);
+    //   setStart(i);
+    //   mouseMoveHandler(i);
+    // }
   };
 
   const mouseUpHandler = (i = end) => {
-    // if (isMobile || !isDragMode) {
-    if (isMobile) {
-      return;
-    } else {
-      setSelecting(false);
-      mouseMoveHandler(i);
-    }
+    // if (isMobile) {
+    //   return;
+    // } else {
+    //   setSelecting(false);
+    //   mouseMoveHandler(i);
+    // }
   };
 
   const mouseMoveHandler = (i: number) => {
-    // if (isMobile || !isDragMode) {
-    if (isMobile) {
-      return;
-    } else {
-      if (selecting) {
-        setEnd(i);
-      }
-    }
+    // if (isMobile) {
+    //   return;
+    // } else {
+    //   if (selecting) {
+    //     setEnd(i);
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -130,13 +121,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
           : "Немає вільних слотів"}
       </h4>
       <div className="mb-4 text-center text-sm italic">
-        <label
+        {/* <label
           htmlFor="mode"
           className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
           onClick={() => setIsDragMode(!isDragMode)}
-        >
-          {/* Saved Switcher Toggle for possible later usage */}
-          {/* <input
+        > */}
+        {/* Saved Switcher Toggle for possible later usage */}
+        {/* <input
             name="mode"
             className="peer sr-only"
             role="switch"
@@ -147,24 +138,24 @@ const TimePicker: React.FC<TimePickerProps> = ({
           {!isMobile && (
             <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
           )} */}
-          <span className="ml-3">
-            {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
-            Клікайте та обирайте тайм-слоти
-          </span>
-        </label>
+        <span className="ml-3">
+          {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
+          Клікайте та обирайте тайм-слоти
+        </span>
+        {/* </label> */}
       </div>
       <ul className={`flex w-full flex-wrap justify-start`}>
         {timeSlots?.length > 0 &&
           timeSlots.map((slot, i) => (
             <li
               key={`${i}-${slot}`}
-              className={`cursor-pointer inline-flex`}
+              className={`inline-flex cursor-pointer`}
               onMouseDown={() => mouseDownHandler(i)}
               onMouseUp={() => mouseUpHandler(i)}
               onMouseMove={() => mouseMoveHandler(i)}
             >
               <div
-                className={`select-none px-2 my-2 ${
+                className={`my-2 select-none px-2 ${
                   (end <= i && i <= start) || (start <= i && i <= end)
                     ? "bg-stone-800 text-stone-100"
                     : ""
@@ -172,7 +163,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
               >
                 {formatTimeSlot(slot)}
               </div>
-              <div className={`pr-2 h-[2px] bg-stone-800 self-center ${(end <= i && i < start) || (start <= i && i < end) ? '' : 'invisible'}`}>
+              <div
+                className={`h-[2px] self-center bg-stone-800 pr-2 ${
+                  (end <= i && i < start) || (start <= i && i < end)
+                    ? ""
+                    : "invisible"
+                }`}
+              >
                 {/* connector placeholder */}
               </div>
             </li>

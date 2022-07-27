@@ -1,7 +1,8 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
+import { useRef } from "react";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
@@ -12,7 +13,7 @@ import {
   createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
-import { saveCurrentStep, BookingStep } from "~/store/bookingSlice";
+import { saveCurrentStep, BookingStep, clearAll } from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import { NavBar } from "~/components/NavBar/NavBar";
@@ -53,8 +54,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function Booking() {
   const { appointments } = useLoaderData() as LoaderData;
-
   const dispatch = useDispatch();
+  const submit = useSubmit();
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     currentStep,
@@ -87,6 +90,11 @@ export default function Booking() {
     [dispatch, currentStep]
   );
 
+  const bookAppointment = useCallback(() => {
+    dispatch(clearAll());
+    submit(formRef.current);
+  }, [submit, dispatch]);
+
   return (
     <div className="flex w-full justify-center">
       <main className="flex w-full flex-col p-4 font-mono">
@@ -102,7 +110,7 @@ export default function Booking() {
             />
             <ActiveBookingStep appointments={appointments} />
             {currentStep === BookingStep.Payment && (
-              <Form method="post" className="my-4">
+              <Form method="post" className="my-4" ref={formRef}>
                 <input type="hidden" name="date" value={selectedDate} />
                 <input
                   type="hidden"
@@ -121,7 +129,9 @@ export default function Booking() {
                   value={JSON.stringify(contact)}
                 />
                 <input type="hidden" />
-                <ActionButton buttonType="submit">забукати</ActionButton>
+                <ActionButton buttonType="submit" onClick={bookAppointment}>
+                  забукати
+                </ActionButton>
               </Form>
             )}
           </div>

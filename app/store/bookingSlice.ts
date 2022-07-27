@@ -90,6 +90,12 @@ const bookingSlice = createSlice({
   name: "booking",
   initialState,
   reducers: {
+    clearAll(state: BookingState) {
+      state.contact = { ...initialState.contact };
+      state.dateTime = { ...initialState.dateTime };
+      state.services = initialState.services;
+      state.currentStep = initialState.currentStep;
+    },
     saveCurrentStep(state: BookingState, action: PayloadAction<BookingStep>) {
       state.currentStep = action.payload;
     },
@@ -115,6 +121,7 @@ const bookingSlice = createSlice({
 });
 
 export const {
+  clearAll,
   saveCurrentStep,
   saveDate,
   saveTime,

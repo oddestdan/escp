@@ -17,6 +17,7 @@ import { getIsMobile } from "~/utils/breakpoints";
 import { requireUserId } from "~/session.server";
 import { NavBar } from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
+import type { ContactInfo } from "~/store/bookingSlice";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -127,6 +128,14 @@ export default function AdminBooking() {
     setIsMobile(getIsMobile());
   }, []);
 
+  const getAppointmentTitle = (appointment: Appointment): string => {
+    const info: ContactInfo = JSON.parse(appointment.contactInfo);
+    if (info.firstName && info.lastName) {
+      return `${info.firstName} ${info.lastName[0]}.`;
+    }
+    return "Incognito";
+  };
+
   return (
     <div className="flex w-full justify-center">
       <main className="flex w-full flex-col p-4 font-mono">
@@ -138,14 +147,12 @@ export default function AdminBooking() {
             <Form ref={formRef} method="post">
               <AdminCalendar
                 isMobile={isMobile}
-                events={appointments.map((app, i) => ({
+                events={appointments.map((app) => ({
                   id: app.id,
                   start: app.timeFrom,
                   end: app.timeTo,
-                  description: `Test description ${app.id} #${i}`,
-                  // TODO: contact firstName and 1st letter of lastName
-                  // e.g.: Marina K
-                  title: app.id,
+                  description: JSON.parse(app.services).join(", ") || "-",
+                  title: `${getAppointmentTitle(app)}`,
                 }))}
                 createEvent={onCreateAppointment}
                 changeEvent={onChangeAppointment}
