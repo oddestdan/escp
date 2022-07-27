@@ -46,6 +46,8 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
     date.availableTimeSlots &&
     date.availableTimeSlots?.length > 0;
 
+  console.log(`today: ${today}`);
+
   return (
     <>
       <Slider

@@ -109,8 +109,6 @@ const bookingSlice = createSlice({
       state.services = action.payload;
     },
     saveContactInfo(state: BookingState, action: PayloadAction<ContactInfo>) {
-      console.log("setting contactInfo");
-      console.log(action.payload);
       state.contact = action.payload;
     },
   },

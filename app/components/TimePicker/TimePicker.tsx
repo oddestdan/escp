@@ -158,19 +158,22 @@ const TimePicker: React.FC<TimePickerProps> = ({
           timeSlots.map((slot, i) => (
             <li
               key={`${i}-${slot}`}
-              className={`cursor-pointer`}
+              className={`cursor-pointer inline-flex`}
               onMouseDown={() => mouseDownHandler(i)}
               onMouseUp={() => mouseUpHandler(i)}
               onMouseMove={() => mouseMoveHandler(i)}
             >
               <div
-                className={`${
+                className={`select-none px-2 my-2 ${
                   (end <= i && i <= start) || (start <= i && i <= end)
                     ? "bg-stone-800 text-stone-100"
                     : ""
-                } my-2 mr-2 select-none px-2`}
+                }`}
               >
                 {formatTimeSlot(slot)}
+              </div>
+              <div className={`pr-2 h-[2px] bg-stone-800 self-center ${(end <= i && i < start) || (start <= i && i < end) ? '' : 'invisible'}`}>
+                {/* connector placeholder */}
               </div>
             </li>
           ))}
