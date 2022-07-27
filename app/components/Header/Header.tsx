@@ -1,4 +1,4 @@
-export default function Header({ current }: { current: string }) {
+export default function Header({ current }: { current?: string }) {
   return (
     <h1 className="mx-auto flex w-full justify-between text-stone-900 sm:w-3/5">
       <span

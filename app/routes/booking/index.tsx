@@ -16,8 +16,9 @@ import {
 import { saveCurrentStep, BookingStep, clearAll } from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
-import { NavBar } from "~/components/NavBar/NavBar";
+import NavBar from "~/components/NavBar/NavBar";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
+import Footer from "~/components/Footer/Footer";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -40,8 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   await createAppointment({ date, timeFrom, timeTo, services, contactInfo });
 
-  return null;
-  // return redirect("/confirmation"); // TODO:
+  return redirect("/booking/confirmation");
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -96,47 +96,43 @@ export default function Booking() {
   }, [submit, dispatch]);
 
   return (
-    <div className="flex w-full justify-center">
-      <main className="flex w-full flex-col p-4 font-mono">
-        <NavBar active="booking" />
+    <main className="flex min-h-screen w-full flex-col p-4 font-mono">
+      <NavBar active="booking" />
 
-        <div className="flex w-full flex-col items-center font-light">
-          <Header current="booking" />
-          <div className="my-4 w-full sm:w-3/5">
-            <ProgressBar
-              onStepClick={onStepClick}
-              activeIndex={currentStep}
-              stepData={memoedStepsData}
-            />
-            <ActiveBookingStep appointments={appointments} />
-            {currentStep === BookingStep.Payment && (
-              <Form method="post" className="my-4" ref={formRef}>
-                <input type="hidden" name="date" value={selectedDate} />
-                <input
-                  type="hidden"
-                  name="timeFrom"
-                  value={selectedTime.start}
-                />
-                <input type="hidden" name="timeTo" value={selectedTime.end} />
-                <input
-                  type="hidden"
-                  name="services"
-                  value={JSON.stringify(services)}
-                />
-                <input
-                  type="hidden"
-                  name="contactInfo"
-                  value={JSON.stringify(contact)}
-                />
-                <input type="hidden" />
-                <ActionButton buttonType="submit" onClick={bookAppointment}>
-                  забукати
-                </ActionButton>
-              </Form>
-            )}
-          </div>
+      <div className="flex w-full flex-col items-center font-light">
+        <Header current="booking" />
+        <div className="my-4 w-full sm:w-3/5">
+          <ProgressBar
+            onStepClick={onStepClick}
+            activeIndex={currentStep}
+            stepData={memoedStepsData}
+          />
+          <ActiveBookingStep appointments={appointments} />
+          {currentStep === BookingStep.Payment && (
+            <Form method="post" className="my-4" ref={formRef}>
+              <input type="hidden" name="date" value={selectedDate} />
+              <input type="hidden" name="timeFrom" value={selectedTime.start} />
+              <input type="hidden" name="timeTo" value={selectedTime.end} />
+              <input
+                type="hidden"
+                name="services"
+                value={JSON.stringify(services)}
+              />
+              <input
+                type="hidden"
+                name="contactInfo"
+                value={JSON.stringify(contact)}
+              />
+              <input type="hidden" />
+              <ActionButton buttonType="submit" onClick={bookAppointment}>
+                забукати
+              </ActionButton>
+            </Form>
+          )}
         </div>
-      </main>
-    </div>
+      </div>
+
+      <Footer />
+    </main>
   );
 }

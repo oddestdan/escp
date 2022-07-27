@@ -15,7 +15,7 @@ import { getAppointments } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
 import { getIsMobile } from "~/utils/breakpoints";
 import { requireUserId } from "~/session.server";
-import { NavBar } from "~/components/NavBar/NavBar";
+import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
 import type { ContactInfo } from "~/store/bookingSlice";
 
