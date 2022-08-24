@@ -62,10 +62,10 @@ export const formatCalculatedTimePeriod = (
     );
   }
 
-  const wordingMinute = diff % 1 === 0.5 ? "30 хвилин" : "";
-  let wordingHour = hour > 0 ? `${hour} година ` : ``;
-  wordingHour = hour > 1 ? `${hour} години ` : wordingHour;
-  wordingHour = hour > 4 ? `${hour} годин ` : wordingHour;
+  const wordingMinute = diff % 1 === 0.5 ? " 30 хвилин" : "";
+  let wordingHour = hour > 0 ? `${hour} година` : ``;
+  wordingHour = hour > 1 ? `${hour} години` : wordingHour;
+  wordingHour = hour > 4 ? `${hour} годин` : wordingHour;
 
   return wordingHour + wordingMinute;
 };

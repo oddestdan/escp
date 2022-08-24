@@ -21,23 +21,20 @@ export enum BookingStep {
 }
 
 export enum BookingService {
-  service1 = "прибирання після зйомки",
-  service2 = "допомога асистента",
-  service3 = "надання фону (вкажіть які саме)",
+  assistance = "допомога",
+  // TODO: create (i) info popup for additional information description
+  additional = "інше",
 }
 export const bookingServicesList = [
-  BookingService.service1,
-  BookingService.service2,
-  BookingService.service3,
+  BookingService.assistance,
+  BookingService.additional,
 ];
 
 export interface ContactInfo {
   firstName: string;
   lastName: string;
-  email: string;
   tel: string;
-  instagramLink?: string;
-  telegramNickname?: string;
+  socialMedia?: string;
 }
 
 export interface DateSlot {
@@ -72,10 +69,8 @@ export const initialState: BookingState = {
   contact: {
     firstName: "",
     lastName: "",
-    email: "",
     tel: "",
-    instagramLink: "",
-    telegramNickname: "",
+    socialMedia: "",
   },
   dateTime: {
     slots: get3MonthSlots(),

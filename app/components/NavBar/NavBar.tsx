@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 export default function NavBar({ active }: { active?: string }) {
   return (
-    <nav className="my-4 mx-auto flex w-full flex-row justify-between font-light sm:w-3/5">
+    <nav className="mx-auto mt-4 flex w-full flex-row justify-between font-mono font-light sm:w-3/5">
       <Link
         to="/escp"
         className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
@@ -12,12 +12,12 @@ export default function NavBar({ active }: { active?: string }) {
         escp.90
       </Link>
       <Link
-        to="/rules"
+        to="/booking"
         className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
-          active === "rules" ? "invisible" : "underline"
+          active === "booking" ? "invisible" : "underline"
         }`}
       >
-        правила
+        бронювання
       </Link>
       <Link
         to="/about"
@@ -25,15 +25,7 @@ export default function NavBar({ active }: { active?: string }) {
           active === "about" ? "invisible" : "underline"
         }`}
       >
-        про нас
-      </Link>
-      <Link
-        to="/booking"
-        className={`mx-0.5 p-0.5 text-stone-900 hover:text-stone-400 ${
-          active === "booking" ? "invisible" : "underline"
-        }`}
-      >
-        букінг
+        про студію
       </Link>
     </nav>
   );

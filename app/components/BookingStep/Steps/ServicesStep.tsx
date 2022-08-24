@@ -3,16 +3,21 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextInput } from "~/components/TextInput/TextInput";
 import type { StoreBooking } from "~/store/bookingSlice";
+import { BookingService } from "~/store/bookingSlice";
 import { bookingServicesList } from "~/store/bookingSlice";
 import { saveServices } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 
-export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
-  isMobile = false,
-}) => {
+const servicesLabelKeyMapper = {
+  [BookingService.assistance]: "допомога асистента (200 грн/год)",
+  [BookingService.additional]:
+    "додаткові побажання (фон / спеціалізована зйомка / велика группа людей тощо)",
+};
+
+export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
-  const { currentStep, services } = useSelector(
+  const { currentStep, services, dateTime } = useSelector(
     (store: StoreBooking) => store.booking
   );
 
@@ -22,7 +27,9 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
       return { service, checked };
     })
   );
-  const [customService, setCustomService] = useState("");
+
+  const [assistanceHours, setAssistanceHours] = useState<number | null>(null);
+  const [additionalService, setAdditionalService] = useState("");
 
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));
@@ -31,10 +38,10 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
         ...checkedServices
           .filter(({ checked }) => checked)
           .map(({ service }) => service),
-        ...[customService].filter(Boolean),
+        ...[additionalService].filter(Boolean),
       ])
     );
-  }, [dispatch, currentStep, customService, checkedServices]);
+  }, [dispatch, currentStep, additionalService, checkedServices]);
 
   const stepBack = useCallback(() => {
     dispatch(saveCurrentStep(currentStep - 1));
@@ -50,23 +57,31 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
   );
 
   const memoedSelectedServicesList = useMemo(() => {
-    return [
-      ...checkedServices
-        .filter(({ checked }) => checked)
-        .map(({ service }) => service),
-      ...[customService].filter(Boolean),
+    const assistance = checkedServices.find(
+      ({ service }) => service === BookingService.assistance
+    );
+    const additional = checkedServices.find(
+      ({ service }) => service === BookingService.additional
+    );
+    const services = [
+      assistance?.checked &&
+        `${assistance.service} ${assistanceHours || 0} год`,
+      additional?.checked && `${additional.service}: ${additionalService}`,
     ];
-  }, [checkedServices, customService]);
+
+    return services.filter(Boolean).join(", ");
+  }, [checkedServices, additionalService, assistanceHours]);
 
   return (
     <>
-      <h4 className={`mb-2 text-center font-medium`}>
+      <h4 className={`mb-2 text-center font-mono font-medium`}>
         додаткові сервіси
         {memoedSelectedServicesList.length
-          ? " | " + memoedSelectedServicesList.length
+          ? " | " + memoedSelectedServicesList
           : ""}
       </h4>
-      <legend className="mx-auto mb-8 block text-center text-sm italic">
+      <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
+        {/* TODO: adapt to new link format after completing working on About page */}
         весь реквізит (описаний{" "}
         <Link
           className="text-stone-900 underline hover:text-stone-400"
@@ -77,43 +92,60 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = ({
         </Link>
         ) доступний безкоштовно
       </legend>
-      <form>
+      <form className="mb-8">
         {checkedServices.map(({ service, checked }, i) => (
-          <label
-            key={service}
-            htmlFor={service}
-            className="my-4 flex cursor-pointer hover:text-stone-500"
-            onClick={() => onChangeCheckbox(i)}
-          >
-            <input
-              name={service}
-              className="p-1"
-              type="checkbox"
-              checked={checked}
-              readOnly={true}
-            />
-            <span className="ml-2">{service}</span>
-          </label>
+          <>
+            {/* Checkmark + Label */}
+            <label
+              key={service}
+              htmlFor={service}
+              className="my-4 flex cursor-pointer hover:text-stone-500"
+              onClick={() => onChangeCheckbox(i)}
+            >
+              <input
+                name={service}
+                className="p-1"
+                type="checkbox"
+                checked={checked}
+                readOnly={true}
+              />
+              <span className="ml-2">{servicesLabelKeyMapper[service]}</span>
+            </label>
+
+            {/* Additional input */}
+            {service === BookingService.additional && checked && (
+              <label htmlFor="custom" className="my-4 block">
+                {/* TODO: save to Redux and set defaultValue from there */}
+                <TextInput
+                  name="custom"
+                  type="text"
+                  value={additionalService}
+                  placeholder="додаткові побажання"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAdditionalService(e.target.value)
+                  }
+                />
+              </label>
+            )}
+            {service === BookingService.assistance &&
+              checked &&
+              [...Array(Math.ceil(dateTime.time.diff)).keys()].map((hours) => {
+                return (
+                  <div
+                    key={hours}
+                    className={`mb-2 inline-flex cursor-pointer select-none px-2 ${
+                      assistanceHours === hours + 1
+                        ? "bg-stone-800 text-stone-100"
+                        : ""
+                    }`}
+                    onClick={() => setAssistanceHours(hours + 1)}
+                  >
+                    {hours + 1} год
+                  </div>
+                );
+              })}
+          </>
         ))}
-        <label htmlFor="custom" className="my-8 block">
-          <span className="block text-sm">
-            додаткові побажання
-            {!isMobile
-              ? " (фон / спеціалізована зйомка / велика группа людей тощо)"
-              : ""}
-          </span>
-          {/* TODO: save to Redux and set defaultValue from there */}
-          <TextInput
-            name="custom"
-            type="text"
-            className="mt-2"
-            value={customService}
-            placeholder="додаткові побажання"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setCustomService(e.target.value)
-            }
-          />
-        </label>
       </form>
       <BookingStepActions
         hasPrimary={true}

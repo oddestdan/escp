@@ -1,33 +1,26 @@
 export default function Header({ current }: { current?: string }) {
   return (
-    <h1 className="mx-auto flex w-full justify-between text-stone-900 sm:w-3/5">
+    <h1 className="mx-auto flex w-full justify-between font-mono text-stone-900 sm:w-3/5">
       <span
         className={`${
-          current === "escp" ? "font-bold" : "invisible"
+          current === "escp" ? "font-medium" : "invisible"
         } mx-0.5 p-0.5`}
       >
         escp.90
       </span>
       <span
         className={`${
-          current === "rules" ? "font-bold" : "invisible"
+          current === "booking" ? "font-medium" : "invisible"
         } mx-0.5 p-0.5`}
       >
-        правила
+        бронювання
       </span>
       <span
         className={`${
-          current === "about" ? "font-bold" : "invisible"
+          current === "about" ? "font-medium" : "invisible"
         } mx-0.5 p-0.5`}
       >
-        про нас
-      </span>
-      <span
-        className={`${
-          current === "booking" ? "font-bold" : "invisible"
-        } mx-0.5 p-0.5`}
-      >
-        букінг
+        про студію
       </span>
     </h1>
   );

@@ -156,7 +156,7 @@ const ProgressBar: React.FC<IProgressBarProps> = ({ ...props }) => {
           <Step key={i}>
             {({ index, completed }) => (
               <div
-                className={`XXX-aoa-stepbar-item ${
+                className={`XXX-aoa-stepbar-item font-mono ${
                   index === activeIndex
                     ? "active"
                     : completed

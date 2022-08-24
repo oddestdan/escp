@@ -39,6 +39,7 @@ const renderTimeSlotsRange = (
           start <= end ? [start, end] : [end, start],
           isMobile
         )}
+        , {((Math.abs(start - end) + 1) / 2) * 600} грн
       </span>
     </>
   );
@@ -115,12 +116,12 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   return (
     <div className={`XXX-aoa-date-picker`}>
-      <h4 className={`mb-4 text-center font-medium`}>
+      <h4 className={`mb-2 text-center font-mono font-medium`}>
         {timeSlots?.length > 0
           ? renderTimeSlotsRange(timeSlots, start, end, isMobile)
           : "Немає вільних слотів"}
       </h4>
-      <div className="mb-4 text-center text-sm italic">
+      <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
         {/* <label
           htmlFor="mode"
           className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
@@ -138,13 +139,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
           {!isMobile && (
             <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
           )} */}
-        <span className="ml-3">
-          {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
-          Клікайте та обирайте тайм-слоти
-        </span>
-        {/* </label> */}
-      </div>
-      <ul className={`flex w-full flex-wrap justify-start`}>
+        {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
+        Клікайте та обирайте тайм-слоти (600 грн/год)
+      </legend>
+      <ul className={`justify-star flex w-full flex-wrap font-mono`}>
         {timeSlots?.length > 0 &&
           timeSlots.map((slot, i) => (
             <li
@@ -165,7 +163,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
               </div>
               <div
                 className={`h-[2px] self-center bg-stone-800 pr-2 ${
-                  (end <= i && i < start) || (start <= i && i < end)
+                  (end <= i && i < start + 1) || (start <= i && i < end + 1)
                     ? ""
                     : "invisible"
                 }`}

@@ -13,7 +13,7 @@ import {
   createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
-import { saveCurrentStep, BookingStep, clearAll } from "~/store/bookingSlice";
+import { saveCurrentStep, BookingStep } from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import NavBar from "~/components/NavBar/NavBar";
@@ -91,15 +91,14 @@ export default function Booking() {
   );
 
   const bookAppointment = useCallback(() => {
-    dispatch(clearAll());
     submit(formRef.current);
-  }, [submit, dispatch]);
+  }, [submit]);
 
   return (
-    <main className="flex min-h-screen w-full flex-col p-4 font-mono">
+    <main className="flex min-h-screen w-full flex-col p-4">
       <NavBar active="booking" />
 
-      <div className="flex w-full flex-col items-center font-light">
+      <div className="flex w-full flex-1 flex-col items-center font-light ">
         <Header current="booking" />
         <div className="my-4 w-full sm:w-3/5">
           <ProgressBar
@@ -125,7 +124,7 @@ export default function Booking() {
               />
               <input type="hidden" />
               <ActionButton buttonType="submit" onClick={bookAppointment}>
-                забукати
+                забронювати
               </ActionButton>
             </Form>
           )}

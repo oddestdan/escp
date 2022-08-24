@@ -8,7 +8,7 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   return (
-    <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
+    <main className="font-sans relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
       <div className="relative sm:pb-16 sm:pt-8">
         <div className="mx-auto mt-16 max-w-7xl text-center">
           <Link to="/escp" className="text-xl text-stone-900 underline">

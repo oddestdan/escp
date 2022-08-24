@@ -67,7 +67,7 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
   const onSelect = (data: DateSelectArg) => {
     const { start, end } = data;
     const result = prompt(
-      `${prettyFormatDate(start, end)}назва івенту:`,
+      `${prettyFormatDate(start, end)} назва івенту:`,
       defaultEventTitle
     );
 
@@ -114,7 +114,7 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
 
   const onEventRemove = (data: EventRemoveArg) => {
     const { title, start, end } = data.event;
-    alert(`Івент удалений: ${title}\n${prettyFormatDate(start, end)}`);
+    alert(`Івент видалений: ${title}\n${prettyFormatDate(start, end)}`);
   };
 
   return (

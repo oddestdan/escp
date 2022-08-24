@@ -1,50 +1,47 @@
-import WithBackgroundOverlay from "~/components/withBackgroundOverlay/withBackgroundOverlay";
-import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
 import Footer from "~/components/Footer/Footer";
 
 export default function rules() {
   return (
-    <main className="flex min-h-screen w-full flex-col items-center p-4 font-mono">
+    <main className="flex min-h-screen w-full flex-col items-center p-4">
       <NavBar active="rules" />
-      <div className="flex w-full flex-col font-light">
-        <Header current="rules" />
-        <WithBackgroundOverlay
-          imageSrc="https://i.imgur.com/QVy6C5f.jpg"
-          imageAlt="Admin board"
-        >
-          <p className="my-4">
+      <div className="flex w-full flex-1 flex-col font-light">
+        <h1 className="mx-auto mt-16 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
+          Правила
+        </h1>
+        <div className="my-4 mx-auto flex flex-col sm:w-3/5">
+          <p className="mt-4">
             <span className="bg-white">
-              бронювання здійснюється після повної оплати. оплата за бронювання
+              Бронювання здійснюється після повної оплати. оплата за бронювання
               студії не повертається.
             </span>
           </p>
-          <p className="my-4">
+          <p className="mt-4">
             <span className="bg-white">
-              перенести бронювання можливо не менш ніж за 48 годин до зйомки. в
+              Перенести бронювання можливо не менш ніж за 48 годин до зйомки. в
               інших випадках оплата згорає.
             </span>
           </p>
-          <p className="my-4">
+          <p className="mt-4">
             <span className="bg-white">
-              фактичний час оренди при бронюванні однієї години -- 55 хвилин.
+              Фактичний час оренди при бронюванні однієї години -- 55 хвилин.
             </span>
           </p>
-          <p className="my-4">
+          <p className="mt-4">
             <span className="bg-white">
-              в залі можна знаходитись тільки в змінному взутті або в наших
+              В залі можна знаходитись тільки в змінному взутті або в Наших
               капцях.
             </span>
           </p>
-          <p className="my-4">
+          <p className="mt-4">
             <span className="bg-white">
-              здавати зал адміністратору потрібно в чистому вигляді та з усіма
-              предметами на своїх місцях. інші нюанси (використання блискіток,
+              Здавати зал адміністратору потрібно в чистому вигляді та з усіма
+              предметами на своїх місцях. Інші нюанси (використання блискіток,
               землі і т.п.) потрібно обов'язково узгоджувати з адміністратором
               та закладати додатковий час для прибирання.
             </span>
           </p>
-        </WithBackgroundOverlay>
+        </div>
       </div>
 
       <Footer />

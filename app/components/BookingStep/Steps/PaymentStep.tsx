@@ -1,19 +1,16 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
+import { Separator } from "~/components/Separator/Separator";
 import type { StoreBooking } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
-import { addMinutes } from "~/utils/date";
 import { BookingStepActions } from "../BookingStepActions";
 
 const paymentInfo = "4149 6090 1440 7540";
 
-export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
-  isMobile = false,
-}) => {
+export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
-  const { currentStep, dateTime, services, contact } = useSelector(
-    (store: StoreBooking) => store.booking
-  );
+  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
 
   const [hasCopied, setHasCopied] = useState(false);
 
@@ -28,52 +25,13 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
     setTimeout(() => setHasCopied(false), 3000);
   }, []);
 
-  const memoedDateTime = useMemo(() => {
-    return `${new Date(dateTime.date).toLocaleDateString("uk")} | ${[
-      dateTime.time.start,
-      addMinutes(dateTime.time.end || dateTime.time.start, 30),
-    ]
-      .map((date) => new Date(date).toLocaleTimeString("uk").slice(0, -3))
-      .join(" - ")}`;
-  }, [dateTime]);
-
-  const memoedContactInfo = useMemo(() => {
-    const { firstName, lastName, email, tel } = contact;
-
-    if ([firstName, lastName, email, tel].filter(Boolean).length === 0) {
-      return "";
-    }
-
-    const fullName = firstName ? firstName + " " + (lastName[0] || "") : "";
-    return [fullName, email, tel].filter(Boolean).join(", ");
-  }, [contact]);
-
   return (
     <>
-      <h4 className="mb-2 text-center font-medium">оплата</h4>
+      <h4 className="mb-2 text-center font-mono font-medium">оплата</h4>
       <div className="my-4 flex flex-col">
-        {/* Date & Time */}
-        {memoedDateTime && (
-          <p className="mb-4">
-            <span className="font-medium">дата & час: </span>
-            {memoedDateTime}
-          </p>
-        )}
+        <BookingSummary />
 
-        {/* Services */}
-        <p className="mb-4">
-          <span className="font-medium">додаткові сервіси: </span>
-          {services.length > 0 ? services.join(", ") : "-"}
-        </p>
-
-        {/* Services */}
-        {memoedContactInfo && (
-          <p className="mb-4">
-            <span className="font-medium">контактна інформація: </span>
-            {memoedContactInfo}
-          </p>
-        )}
-        <p className="mb-4 border-b-2 border-stone-900">{/* Separator */}</p>
+        <Separator />
 
         {/* Credit card credentials / Copy */}
         <p className="flex justify-center">
@@ -100,10 +58,10 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
         {/* Necessary information about payment */}
         <p className="mb-4">
           <span className="mb-2 block">
-            бронювання є дійсним лише після оплати та її підтвердження.
+            Бронювання є дійсним лише після оплати та її підтвердження.
           </span>
           <span className="block">
-            будь-ласка, надайте скрін оплати або певним іншим чином повідомте
+            Будь-ласка, надайте скрін оплати або певним іншим чином повідомте
             нас про успішний переказ у приватні повідомлення.
           </span>
         </p>
@@ -111,7 +69,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
         {/* Contact info, links */}
         <p className="mb-4">
           <span className="mb-2 block">
-            наша телега:{" "}
+            Наш Телеграм:{" "}
             <a
               className="mb-2 text-stone-900 underline hover:text-stone-400"
               target="_blank"
@@ -122,7 +80,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = ({
             </a>
           </span>
           <span className="mb-2 block">
-            наша інста:{" "}
+            Наш Інстаграм:{" "}
             <a
               className="mb-2 text-stone-900 underline hover:text-stone-400"
               target="_blank"

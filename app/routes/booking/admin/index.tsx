@@ -153,6 +153,7 @@ export default function AdminBooking() {
                   end: app.timeTo,
                   description: JSON.parse(app.services).join(", ") || "-",
                   title: `${getAppointmentTitle(app)}`,
+                  allDay: !app.timeFrom?.length || !app.timeTo?.length,
                 }))}
                 createEvent={onCreateAppointment}
                 changeEvent={onChangeAppointment}

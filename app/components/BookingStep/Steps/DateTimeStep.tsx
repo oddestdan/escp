@@ -35,7 +35,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     const todaysSlots =
       slots.find(({ date }) => date === selectedDate)?.availableTimeSlots || [];
     const todaysAppointments =
-      appointments.filter(({ date }) => date === selectedDate) || [];
+      appointments.filter(
+        ({ date, timeFrom, timeTo }) =>
+          timeFrom && timeTo && date === selectedDate
+      ) || [];
 
     const takenSlots = todaysAppointments.map((app) => {
       const timeFromArr = app.timeFrom.split("T")[1].split(":");
@@ -51,6 +54,9 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       (slot) => !takenSlots.flat().find((taken) => taken === slot)
     );
   }, [slots, selectedDate, appointments]);
+
+  // console.log(appointments);
+  // console.log(appointments.filter(({ date }) => date === selectedDate) || []);
 
   return (
     <>

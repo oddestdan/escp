@@ -24,10 +24,24 @@ export const links: LinksFunction = () => {
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     { rel: "preconnect", href: "https://fonts.gstatic.com" },
     { rel: "stylesheet", href: tailwindStylesheetUrl },
+
+    // Monostyled fonts
+    // {
+    //   rel: "stylesheet",
+    //   href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;700&display=swap",
+    // }, // IBM Plex Mono
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;200;300;400;500;700&display=swap",
-    }, // IBM Plex Mono
+      href: "https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500&display=swap",
+    }, // Roboto Mono
+
+    // Regular fonts
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap",
+    }, // Roboto Flex
+
+    // Other CSS
     {
       rel: "stylesheet",
       href: "https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css",
