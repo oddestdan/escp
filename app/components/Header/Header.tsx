@@ -1,6 +1,6 @@
 export default function Header({ current }: { current?: string }) {
   return (
-    <h1 className="mx-auto flex w-full justify-between font-mono text-stone-900 sm:w-3/5">
+    <h1 className="mx-auto flex w-full justify-between font-mono font-light text-stone-900 sm:w-3/5">
       <span
         className={`${
           current === "escp" ? "font-medium" : "invisible"

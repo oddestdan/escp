@@ -5,7 +5,9 @@ import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
 
-const imageSrcFront = "https://i.imgur.com/2gUgtbh.jpg";
+// TODO: Use two adjacent photos
+const imageSrcFront = "https://i.imgur.com/vXQjup8.jpg";
+const imageSrcBack = "https://i.imgur.com/SLE4MrH.jpg";
 
 export default function Escp() {
   const navigate = useNavigate();
@@ -21,17 +23,24 @@ export default function Escp() {
         <Header current="escp" />
 
         <div className="mx-auto mb-4 flex flex-col text-center sm:w-3/5">
-          <img
-            className="mt-4 aspect-[3/2] w-full bg-stone-100"
-            src={imageSrcFront}
-            alt="Hall front"
-          />
+          <span>
+            <img
+              className="ml-auto mt-4 inline aspect-[3/2] w-fit bg-stone-100 xl:w-1/2"
+              src={imageSrcFront}
+              alt="Hall front"
+            />
+            <img
+              className="ml-auto mt-4 hidden aspect-[3/2] w-1/2 bg-stone-100 xl:inline"
+              src={imageSrcBack}
+              alt="Hall back"
+            />
+          </span>
 
-          <p className="mt-4 font-mono">Kyiv based photo studio / 90 m²</p>
+          <p className="mt-8 font-mono">Kyiv based photo studio / 90 m²</p>
 
-          <p className="mt-4 font-mono">вартість оренди: 600 грн/год</p>
+          <p className="mt-2 font-mono">вартість оренди: 600 грн/год</p>
 
-          <p className="mt-8">
+          <p className="mt-16">
             <ActionButton inverted={true} onClick={navigateToBooking}>
               забронювати
             </ActionButton>

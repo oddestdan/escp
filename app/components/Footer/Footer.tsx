@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 export default function Footer() {
   return (
-    <div className="mt-4 flex justify-center text-center">
+    <div className="mt-4 flex justify-center text-center font-light">
       {/* TODO: Add clickable instagram/telegram icons */}
       <Link
         to="/rules"
