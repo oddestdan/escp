@@ -132,7 +132,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
               />
               <span
                 className={`text-left text-sm text-red-500 ${
-                  isInvalid ? "" : "invisible"
+                  isRequiredContactInfo(key) && isInvalid ? "" : "invisible"
                 }`}
               >
                 {errorKeyMapper[key as keyof RequiredContactInfo] ||
