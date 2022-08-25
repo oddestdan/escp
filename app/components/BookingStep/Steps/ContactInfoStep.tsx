@@ -13,9 +13,6 @@ const isRequiredContactInfo = (
 ): keyInput is keyof RequiredContactInfo => {
   return ["firstName", "tel"].includes(keyInput);
 };
-// function isRequiredContactInfo (key: string): key is TabTypes {
-//   return typeof RequiredContactInfo.includes(key);
-// }
 
 const errorKeyMapper: RequiredContactInfo & { terms: string } = {
   firstName: "заповніть ім'я",
@@ -52,8 +49,8 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
   });
 
   const stepNext = useCallback(() => {
-    const { firstName, lastName, tel } = localContactForm;
-    if (![firstName, lastName, tel, hasSeenTerms].every(Boolean)) {
+    const { firstName, tel } = localContactForm;
+    if (![firstName, tel, hasSeenTerms].every(Boolean)) {
       touched.firstName = firstName.length === 0 ? "" : touched.firstName;
       touched.tel = tel.length === 0 ? "" : touched.tel;
       touched.terms = hasSeenTerms ? undefined : "";
@@ -122,9 +119,9 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
                 type={
                   key === "tel" ? "tel" : key === "socialMedia" ? "url" : "text"
                 }
-                required={i < 4}
+                required={isRequiredContactInfo(key)}
                 className={`mt-2 ${
-                  i < 4 && isInvalid
+                  isRequiredContactInfo(key) && isInvalid
                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                     : ""
                 }`}
@@ -135,10 +132,11 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
               />
               <span
                 className={`text-left text-sm text-red-500 ${
-                  i < 4 && isInvalid ? "" : "invisible"
+                  isInvalid ? "" : "invisible"
                 }`}
               >
-                {errorKeyMapper[key as keyof RequiredContactInfo]}
+                {errorKeyMapper[key as keyof RequiredContactInfo] ||
+                  "placeholder"}
               </span>
             </label>
           );

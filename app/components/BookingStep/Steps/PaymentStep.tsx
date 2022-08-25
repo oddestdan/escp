@@ -36,15 +36,15 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         {/* Credit card credentials / Copy */}
         <p className="flex justify-center">
           <input
-            className="inline cursor-text border-2 border-stone-900 bg-stone-100 py-2 pr-4 text-right text-stone-900"
+            className={`w-pcard inline cursor-text border-2 border-stone-900 bg-stone-100 py-2 px-2 text-center text-stone-900`}
             defaultValue={paymentInfo}
             readOnly={true}
           />
           <button
-            className="inline cursor-pointer border-2 border-l-0 border-stone-900 py-2 px-4 text-stone-900 text-stone-900 hover:border-stone-400 hover:text-stone-400"
+            className="inline cursor-pointer border-2 border-l-0 border-stone-900 py-2 px-2 text-stone-900 text-stone-900 hover:border-stone-400 hover:text-stone-400"
             onClick={copyToClipboard}
           >
-            Скопіювати
+            скопіювати
           </button>
         </p>
         <p
