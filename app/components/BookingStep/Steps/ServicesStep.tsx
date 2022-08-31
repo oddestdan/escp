@@ -65,7 +65,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     );
     const services = [
       assistance?.checked &&
-        `${assistance.service} ${assistanceHours || 0} год`,
+        `${assistance.service} ${assistanceHours || 0} год.`,
       additional?.checked && `${additional.service}: ${additionalService}`,
     ];
 
@@ -140,7 +140,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                     }`}
                     onClick={() => setAssistanceHours(hours + 1)}
                   >
-                    {hours + 1} год
+                    {hours + 1} год.
                   </div>
                 );
               })}

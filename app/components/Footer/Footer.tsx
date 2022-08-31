@@ -11,7 +11,9 @@ export default function Footer() {
         правила
       </Link>
       <span className="px-2">|</span>
-      🇺🇦
+      <a href="https://savelife.in.ua/donate/" target="_blank" rel="noreferrer">
+        🇺🇦
+      </a>
     </div>
   );
 }

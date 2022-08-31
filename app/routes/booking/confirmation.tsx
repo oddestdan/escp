@@ -57,7 +57,9 @@ export default function Confirmation() {
             alt="Hurray"
           />
           <h2 className="my-4 text-center font-mono font-medium">
-            ура! замовлення успішно створено
+            ура!
+            <br />
+            замовлення успішно створено
           </h2>
 
           <BookingSummary />
