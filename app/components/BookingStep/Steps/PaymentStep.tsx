@@ -36,7 +36,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         {/* Credit card credentials / Copy */}
         <p className="flex justify-center">
           <input
-            className={`w-pcard inline cursor-text border-2 border-stone-900 bg-stone-100 py-2 px-2 text-center text-stone-900`}
+            className={`inline w-pcard cursor-text border-2 border-stone-900 bg-stone-100 py-2 px-2 text-center text-stone-900`}
             defaultValue={paymentInfo}
             readOnly={true}
           />
@@ -69,7 +69,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         {/* Contact info, links */}
         <p className="mb-4">
           <span className="mb-2 block">
-            Наш Телеграм:{" "}
+            Телеграм:{" "}
             <a
               className="mb-2 text-stone-900 underline hover:text-stone-400"
               target="_blank"
@@ -80,7 +80,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
             </a>
           </span>
           <span className="mb-2 block">
-            Наш Інстаграм:{" "}
+            Інстаграм:{" "}
             <a
               className="mb-2 text-stone-900 underline hover:text-stone-400"
               target="_blank"

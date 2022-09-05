@@ -1,11 +1,9 @@
 import { Link } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-// import { redirect } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 
 export const loader: LoaderFunction = async () => {
-  // TODO: Update at some point in time?
-  // return redirect("/escp");
-  return null;
+  return redirect("/escp");
 };
 
 export default function Index() {
