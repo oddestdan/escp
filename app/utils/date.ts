@@ -53,7 +53,7 @@ export const formatCalculatedTimePeriod = (
   [start, end]: [number, number],
   isMobile = false
 ) => {
-  const diff = (end - start) / 2 + 0.5;
+  const diff = end - start + 1; // for 30 minute timeslots: (end - start) / 2 + 0.5;
   const hour = Math.floor(diff);
 
   if (isMobile) {

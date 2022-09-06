@@ -4,10 +4,14 @@ import { getDateFormat, getDayOfWeek } from "./date";
 const timeStart = Number(businessHoursStart.split(":")[0]) - 3; // 7
 const timeEnd = Number(businessHoursEnd.split(":")[0]) - 3; // 21
 
-export const generateHalfArrayRange = (from = timeStart, to = timeEnd) => {
+export const generateArrayRangeWithStep = (
+  from = timeStart,
+  to = timeEnd,
+  step = 1 // can also be half-hourly by using step === 0.5
+) => {
   const arr = [];
   let start = from;
-  for (; start < to; start += 0.5) {
+  for (; start < to; start += step) {
     arr.push(start);
   }
   return arr;
@@ -18,7 +22,7 @@ export const generateTimeSlots = (
   from = timeStart,
   to = timeEnd
 ) => {
-  return generateHalfArrayRange(from, to).map(
+  return generateArrayRangeWithStep(from, to).map(
     (k) =>
       `${getDateFormat(day)}T${`${Math.floor(k)}`.padStart(2, "0")}:${
         k % 1 === 0 ? "00" : "30"

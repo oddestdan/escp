@@ -90,6 +90,8 @@ export default function AdminBooking() {
   const { appointments } = useLoaderData() as LoaderData;
   const submit = useSubmit();
   const formRef = useRef<HTMLFormElement>(null);
+  console.log("appointments loaded:");
+  console.log(appointments);
 
   const onCreateAppointment = useCallback(
     (event: Omit<AdminCalendarEvent, "id">) => {

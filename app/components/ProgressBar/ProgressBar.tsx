@@ -76,7 +76,7 @@ export const DefaultProgressBar: React.FC<ProgressBarProps> = (props) => {
 
   return (
     <div
-      className={`XXX-progress-bar ${verticalClass}`}
+      className={`XXX-progress-bar flex items-center justify-between ${verticalClass}`}
       data-testid={`XXX-progress-bar`}
       style={{ background: unfilledBackground, [sizeProp]: thickness }}
     >

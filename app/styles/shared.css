@@ -34,14 +34,17 @@
 .XXX-date-carousel .XXX-date__box {
   font-weight: 300;
 }
-.XXX-date-carousel input[type=radio] {
+.XXX-date-carousel input[type="radio"] {
   display: none;
 }
-.XXX-date-carousel input[type=radio]:checked + .XXX-date__box .XXX-numeral-date {
+.XXX-date-carousel
+  input[type="radio"]:checked
+  + .XXX-date__box
+  .XXX-numeral-date {
   background-color: black;
   color: white;
 }
-.XXX-date-carousel input[type=radio]:disabled + .XXX-date__box {
+.XXX-date-carousel input[type="radio"]:disabled + .XXX-date__box {
   color: #d5d5d5;
   cursor: initial;
 }
@@ -103,7 +106,8 @@
   color: black;
   font-weight: 600;
 }
-.XXX-carousel.XXX-date-carousel .slick-disabled .XXX-icon-ct-chevron-right, .XXX-carousel.XXX-date-carousel .slick-disabled .XXX-icon-ct-chevron-left {
+.XXX-carousel.XXX-date-carousel .slick-disabled .XXX-icon-ct-chevron-right,
+.XXX-carousel.XXX-date-carousel .slick-disabled .XXX-icon-ct-chevron-left {
   fill: #d5d5d5;
   cursor: initial;
 }
@@ -127,9 +131,6 @@
   border-radius: 10px;
   position: relative;
   background-color: rgba(211, 211, 211, 0.6);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   z-index: 0;
 }
 .XXX-progress-bar--vertical {
@@ -152,7 +153,8 @@
   }
 }
 
-.XXX-progress-bar-container--etire, .XXX-progress-bar-container--regular {
+.XXX-progress-bar-container--etire,
+.XXX-progress-bar-container--regular {
   height: 50px;
   margin: 30px auto 10px auto;
 }

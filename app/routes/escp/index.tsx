@@ -4,6 +4,7 @@ import { ActionButton } from "~/components/ActionButton/ActionButton";
 import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
+import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 // TODO: Use two adjacent photos
 const imageSrcFront = "https://i.imgur.com/vXQjup8.jpg";
@@ -38,7 +39,9 @@ export default function Escp() {
 
           <p className="mt-8 font-mono">Kyiv based photo studio / 90 m²</p>
 
-          <p className="mt-2 font-mono">вартість оренди: 600 грн/год</p>
+          <p className="mt-2 font-mono">
+            вартість оренди: {BOOKING_HOURLY_PRICE} грн/год
+          </p>
 
           <p className="mt-16">
             <ActionButton inverted={true} onClick={navigateToBooking}>

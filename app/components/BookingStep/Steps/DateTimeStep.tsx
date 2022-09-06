@@ -25,6 +25,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const {
     currentStep,
     dateTime: { date: selectedDate, time: selectedTime, slots },
+    total,
   } = useSelector((store: StoreBooking) => store.booking);
 
   const stepNext = useCallback(() => {
@@ -68,6 +69,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       <TimePicker
         selectedTime={selectedTime}
         timeSlots={memoedTimeSlots}
+        total={total}
         onChangeTime={onChangeTime}
         isMobile={isMobile}
       />

@@ -25,6 +25,7 @@ type LoaderData = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  console.log("******** IN ACTION **********");
   const formData = await request.formData();
 
   const date = formData.get("date");
@@ -61,6 +62,7 @@ export default function Booking() {
 
   const {
     currentStep,
+    maxStepVisited,
     dateTime: { date: selectedDate, time: selectedTime },
     contact,
     services,
@@ -77,22 +79,22 @@ export default function Booking() {
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
-      // Can only go to previous steps or to next step
+      // Can only go to previous steps OR
+      // TODO: step that has been filled already
       if (currentStep > step) {
-        // if (currentStep + 1 === step) {
-        // TODO: place errors from ContactInfo into redux
-        // and validate this action while checking for redux errors
-        // Also, make next step appear unique (black border)
-        // so that user is aware that it might be clickable
         dispatch(saveCurrentStep(step));
       }
     },
     [dispatch, currentStep]
   );
 
-  const bookAppointment = useCallback(() => {
-    submit(formRef.current);
-  }, [submit]);
+  const bookAppointment = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      submit(formRef.current);
+    },
+    [submit]
+  );
 
   return (
     <main className="flex min-h-screen w-full flex-col p-4">

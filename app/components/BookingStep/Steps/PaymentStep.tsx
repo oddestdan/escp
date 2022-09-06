@@ -10,7 +10,9 @@ const paymentInfo = "4149 6090 1440 7540";
 
 export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
-  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
+  const { currentStep, total } = useSelector(
+    (store: StoreBooking) => store.booking
+  );
 
   const [hasCopied, setHasCopied] = useState(false);
 
@@ -28,6 +30,9 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   return (
     <>
       <h4 className="mb-2 text-center font-mono font-medium">оплата</h4>
+      <h4 className="mb-2 text-center font-mono font-medium underline">
+        {total} грн
+      </h4>
       <div className="my-4 flex flex-col">
         <BookingSummary />
 

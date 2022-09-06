@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
+  BOOKING_HOURLY_PRICE,
+  TIMESLOT_OFFSET_MINUTES,
+} from "~/utils/constants";
+import {
   addMinutes,
   formatCalculatedTimePeriod,
   formatTimeSlot,
@@ -8,6 +12,7 @@ import {
 export interface TimePickerProps {
   selectedTime: { start: string; end: string };
   timeSlots: Array<string>;
+  total: number;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
 }
@@ -16,6 +21,7 @@ const renderTimeSlotsRange = (
   timeSlots: Array<string>,
   start: number,
   end: number,
+  total: number,
   isMobile = false
 ) => {
   return (
@@ -26,12 +32,18 @@ const renderTimeSlotsRange = (
         {timeSlots[start] &&
         timeSlots[end] &&
         start !== end &&
-        addMinutes(timeSlots[start], 30) !== timeSlots[end] &&
-        addMinutes(timeSlots[end], 30) !== timeSlots[start]
+        addMinutes(timeSlots[start], TIMESLOT_OFFSET_MINUTES) !==
+          timeSlots[end] &&
+        addMinutes(timeSlots[end], TIMESLOT_OFFSET_MINUTES) !== timeSlots[start]
           ? " - ... - "
           : " - "}
         {timeSlots[start <= end ? end : start] &&
-          formatTimeSlot(addMinutes(timeSlots[start <= end ? end : start], 30))}
+          formatTimeSlot(
+            addMinutes(
+              timeSlots[start <= end ? end : start],
+              TIMESLOT_OFFSET_MINUTES
+            )
+          )}
       </span>{" "}
       <span>
         |{" "}
@@ -39,7 +51,7 @@ const renderTimeSlotsRange = (
           start <= end ? [start, end] : [end, start],
           isMobile
         )}
-        , {((Math.abs(start - end) + 1) / 2) * 600} грн
+        , {total} грн
       </span>
     </>
   );
@@ -48,6 +60,7 @@ const renderTimeSlotsRange = (
 const TimePicker: React.FC<TimePickerProps> = ({
   timeSlots,
   selectedTime,
+  total,
   onChangeTime,
   isMobile = false,
 }) => {
@@ -58,10 +71,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
   );
   const [end, setEnd] = useState(
     timeSlots.findIndex(
-      (slot) => slot === addMinutes(selectedTime.end, -30)
+      (slot) => slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
     ) !== -1
       ? timeSlots.findIndex(
-          (slot) => slot === addMinutes(selectedTime.end, -30)
+          (slot) =>
+            slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
         )
       : 0
   );
@@ -69,10 +83,17 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   const mouseDownHandler = (i: number) => {
     // if (isMobile) {
+    console.log(`i-${i}, start-${start}, end-${end}`);
     if (i > end) {
       setEnd(i);
     } else if (i < start) {
       setStart(i);
+    } else if (
+      (i === start && i === end - 1) ||
+      (i === end && i === start + 1)
+    ) {
+      setStart(i);
+      setEnd(i);
     } else {
       selecting ? setEnd(i) : setStart(i);
       setSelecting(!selecting);
@@ -109,8 +130,11 @@ const TimePicker: React.FC<TimePickerProps> = ({
     }
     onChangeTime(
       timeSlots[start >= end ? end : start],
-      addMinutes(timeSlots[start <= end ? end : start], 30),
-      Math.abs((end - start) / 2) + 0.5
+      addMinutes(
+        timeSlots[start <= end ? end : start],
+        TIMESLOT_OFFSET_MINUTES
+      ),
+      Math.abs(end - start) + 1
     );
   }, [start, end, onChangeTime, timeSlots]);
 
@@ -118,7 +142,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
     <div className={`XXX-aoa-date-picker`}>
       <h4 className={`mb-2 text-center font-mono font-medium`}>
         {timeSlots?.length > 0
-          ? renderTimeSlotsRange(timeSlots, start, end, isMobile)
+          ? renderTimeSlotsRange(timeSlots, start, end, total, isMobile)
           : "Немає вільних слотів"}
       </h4>
       <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
@@ -140,38 +164,43 @@ const TimePicker: React.FC<TimePickerProps> = ({
             <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
           )} */}
         {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
-        Клікайте та обирайте тайм-слоти (600 грн/год)
+        Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год)
       </legend>
       <ul className={`justify-star flex w-full flex-wrap font-mono`}>
         {timeSlots?.length > 0 &&
-          timeSlots.map((slot, i) => (
-            <li
-              key={`${i}-${slot}`}
-              className={`inline-flex cursor-pointer`}
-              onMouseDown={() => mouseDownHandler(i)}
-              onMouseUp={() => mouseUpHandler(i)}
-              onMouseMove={() => mouseMoveHandler(i)}
-            >
-              <div
-                className={`my-2 select-none px-2 ${
-                  (end <= i && i <= start) || (start <= i && i <= end)
-                    ? "bg-stone-800 text-stone-100"
-                    : ""
-                }`}
-              >
-                {formatTimeSlot(slot)}
-              </div>
-              <div
-                className={`h-[2px] self-center bg-stone-800 pr-2 ${
-                  (end <= i && i < start + 1) || (start <= i && i < end + 1)
-                    ? ""
-                    : "invisible"
-                }`}
-              >
+          timeSlots.map((slot, i) => {
+            const isActive =
+              (end <= i && i <= start) || (start <= i && i <= end);
+            return (
+              <li key={`${i}-${slot}`} className="flex">
+                {/* actual time slot */}
+                <div
+                  className={`my-2 inline-flex cursor-pointer border-b-[1px] border-stone-800 px-1 ${
+                    isActive ? "bg-stone-800 text-stone-100" : ""
+                  }`}
+                  onMouseDown={() => mouseDownHandler(i)}
+                  onMouseUp={() => mouseUpHandler(i)}
+                  onMouseMove={() => mouseMoveHandler(i)}
+                >
+                  {/* actual time slot start */}
+                  <div className={`select-none px-1 py-1`}>
+                    {formatTimeSlot(slot)}
+                    <span className="px-1">-</span>
+                    {formatTimeSlot(addMinutes(slot, TIMESLOT_OFFSET_MINUTES))}
+                  </div>
+                </div>
+
                 {/* connector placeholder */}
-              </div>
-            </li>
-          ))}
+                <div
+                  className={`h-[2px] self-center bg-stone-800 px-2 ${
+                    (end <= i && i < start) || (start <= i && i < end)
+                      ? ""
+                      : "invisible"
+                  }`}
+                ></div>
+              </li>
+            );
+          })}
       </ul>
     </div>
   );

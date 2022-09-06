@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { addMinutes } from "~/utils/date";
 
 import type { StoreBooking } from "~/store/bookingSlice";
 
@@ -12,7 +11,7 @@ export const BookingSummary: React.FC = () => {
   const memoedDateTime = useMemo(() => {
     return `${new Date(dateTime.date).toLocaleDateString("uk")} | ${[
       dateTime.time.start,
-      addMinutes(dateTime.time.end || dateTime.time.start, 30),
+      dateTime.time.end || dateTime.time.start,
     ]
       .map((date) => new Date(date).toLocaleTimeString("uk").slice(0, -3))
       .join(" - ")}`;

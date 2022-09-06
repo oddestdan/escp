@@ -21,7 +21,7 @@ export enum BookingStep {
 }
 
 export enum BookingService {
-  assistance = "допомога",
+  assistance = "допомога асистента",
   // TODO: create (i) info popup for additional information description
   additional = "інше",
 }
@@ -56,6 +56,8 @@ export interface BookingState {
   dateTime: DateTime;
   services: CustomizableBookingService[];
   currentStep: BookingStep;
+  maxStepVisited: BookingStep;
+  total: number;
 }
 
 const get3MonthSlots = () => {
@@ -79,6 +81,8 @@ export const initialState: BookingState = {
   },
   services: [],
   currentStep: BookingStep.DateTime,
+  maxStepVisited: BookingStep.DateTime,
+  total: 0,
 };
 
 const bookingSlice = createSlice({
@@ -93,6 +97,9 @@ const bookingSlice = createSlice({
     },
     saveCurrentStep(state: BookingState, action: PayloadAction<BookingStep>) {
       state.currentStep = action.payload;
+      if (state.maxStepVisited < action.payload) {
+        state.maxStepVisited = action.payload;
+      }
     },
     saveDate(state: BookingState, action: PayloadAction<string>) {
       state.dateTime = { ...state.dateTime, date: action.payload };
@@ -102,6 +109,9 @@ const bookingSlice = createSlice({
       action: PayloadAction<{ start: string; end: string; diff: number }>
     ) {
       state.dateTime = { ...state.dateTime, time: action.payload };
+    },
+    saveTotal(state: BookingState, action: PayloadAction<number>) {
+      state.total = action.payload;
     },
     saveServices(
       state: BookingState,
@@ -120,6 +130,7 @@ export const {
   saveCurrentStep,
   saveDate,
   saveTime,
+  saveTotal,
   saveServices,
   saveContactInfo,
 } = bookingSlice.actions;

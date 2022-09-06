@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { BookingStep, saveDate, saveTime } from "~/store/bookingSlice";
+import {
+  BookingStep,
+  saveDate,
+  saveTime,
+  saveTotal,
+} from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import { DateTimeStep } from "./Steps/DateTimeStep";
 import type { Appointment } from "~/models/appointment.server";
@@ -8,6 +13,7 @@ import { ServicesStep } from "./Steps/ServicesStep";
 import { ContactInfoStep } from "./Steps/ContactInfoStep";
 import { getIsMobile } from "~/utils/breakpoints";
 import { PaymentStep } from "./Steps/PaymentStep";
+import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 export function WithActiveStepHOC<T>(
   Component: React.ComponentType<T>,
@@ -43,6 +49,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
   const onChangeTime = useCallback(
     (start: string, end: string, diff: number) => {
       dispatch(saveTime({ start, end, diff }));
+      dispatch(saveTotal(Math.abs(diff) * BOOKING_HOURLY_PRICE));
     },
     [dispatch]
   );
