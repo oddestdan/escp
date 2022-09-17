@@ -12,11 +12,19 @@ import { saveCurrentStep } from "~/store/bookingSlice";
 import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
 import { ABOUT_PAGE_PARAM } from "~/utils/pageParams";
 import { BookingStepActions } from "../BookingStepActions";
+import ReactTooltip from "react-tooltip";
 
 const servicesLabelKeyMapper = {
   [BookingService.assistance]: "допомога асистента (200 грн/год)",
   [BookingService.extra]:
     "додаткові побажання (фон / спеціалізована зйомка / велика группа людей тощо)",
+};
+
+const servicesDetailsMapper = {
+  [BookingService.assistance]:
+    "Асистент допоможе вам з реквізитом, світлом та іншими питаннями",
+  [BookingService.extra]:
+    "Додайте важливі побажання або інформацію, <br />деталі або категорію вашої зйомки, <br />хто та у якій кількості має бути присутнім на зйомці і т.д.",
 };
 
 export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
@@ -137,13 +145,28 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 checked={checked}
                 readOnly={true}
               />
-              <span className="ml-2">{servicesLabelKeyMapper[service]}</span>
+              <span className="ml-2">
+                {servicesLabelKeyMapper[service]}
+                {/* https://www.npmjs.com/package/react-tooltip */}
+                <span
+                  className="radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full bg-stone-300 text-center font-mono text-stone-100"
+                  data-tip={servicesDetailsMapper[service]}
+                >
+                  i
+                </span>
+                <ReactTooltip
+                  backgroundColor="#2b2b2b"
+                  textColor="#ffffff"
+                  place="top"
+                  effect="solid"
+                  multiline
+                />
+              </span>
             </label>
 
             {/* Additional input */}
             {service === BookingService.extra && checked && (
               <label htmlFor="custom" className="my-4 block">
-                {/* TODO: save to Redux and set defaultValue from there */}
                 <TextInput
                   name="custom"
                   type="text"

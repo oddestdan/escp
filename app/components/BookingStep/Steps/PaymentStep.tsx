@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
 import { Separator } from "~/components/Separator/Separator";
+import { InstagramIcon, TelegramIcon } from "~/icons";
 import type { StoreBooking } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
@@ -72,27 +73,27 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         </p>
 
         {/* Contact info, links */}
-        <p className="mb-4">
-          <span className="mb-2 block">
+        <p className="mb-4 flex">
+          <span className="flex items-center">
             Телеграм:{" "}
             <a
-              className="mb-2 text-stone-900 underline hover:text-stone-400"
+              className="ml-1 text-stone-900 underline hover:text-stone-400"
               target="_blank"
               rel="noreferrer"
               href="https://t.me/escp90"
             >
-              https://t.me/escp90
+              <TelegramIcon height="32px" width="32px" />
             </a>
           </span>
-          <span className="mb-2 block">
+          <span className="ml-4 flex items-center">
             Інстаграм:{" "}
             <a
-              className="mb-2 text-stone-900 underline hover:text-stone-400"
+              className="ml-1 text-stone-900 underline hover:text-stone-400"
               target="_blank"
               rel="noreferrer"
               href="https://www.instagram.com/escp.90/"
             >
-              https://www.instagram.com/escp.90/
+              <InstagramIcon height="32px" width="32px" />
             </a>
           </span>
         </p>

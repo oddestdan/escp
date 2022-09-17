@@ -22,7 +22,6 @@ export enum BookingStep {
 
 export enum BookingService {
   assistance = "допомога асистента",
-  // TODO: create (i) info popup for extra information description
   extra = "інше",
 }
 export interface AdditionalServices {

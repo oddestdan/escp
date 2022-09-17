@@ -137,8 +137,8 @@ export default function AdminBooking() {
 
   const getAppointmentTitle = (appointment: Appointment): string => {
     const info: ContactInfo = JSON.parse(appointment.contactInfo);
-    if (info.firstName && info.lastName) {
-      return `${info.firstName} ${info.lastName[0]}.`;
+    if (info.firstName) {
+      return `${info.firstName} ${info.lastName ? info.lastName[0] + "." : ""}`;
     }
     return "Incognito";
   };
