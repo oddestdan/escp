@@ -1,13 +1,8 @@
-import type { ActionFunction } from "@remix-run/node";
-import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
-import type { LoaderFunction } from "@remix-run/server-runtime";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { redirect } from "@remix-run/server-runtime";
-import type { Appointment } from "~/models/appointment.server";
 import { createAppointment } from "~/models/appointment.server";
 import { updateAppointment } from "~/models/appointment.server";
 import { deleteAppointment } from "~/models/appointment.server";
-
-import { useCallback, useEffect, useRef, useState } from "react";
 import AdminCalendar from "~/components/AdminCalendar/AdminCalendar";
 import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
@@ -17,7 +12,16 @@ import { getIsMobile } from "~/utils/breakpoints";
 import { requireUserId } from "~/session.server";
 import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
-import type { ContactInfo } from "~/store/bookingSlice";
+
+import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
+import type { ActionFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { Appointment } from "~/models/appointment.server";
+import type {
+  AdditionalServices,
+  BookingService,
+  ContactInfo,
+} from "~/store/bookingSlice";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -43,6 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
         date,
         services: "[]",
         contactInfo: "{}",
+        price: "0",
       });
     }
     case "PUT": {
@@ -138,6 +143,25 @@ export default function AdminBooking() {
     return "Incognito";
   };
 
+  const getAppointmentDescription = (description: {
+    services: BookingService[];
+    additionalServices: AdditionalServices;
+  }) => {
+    const {
+      // services: _,
+      additionalServices: { assistance, extra },
+    } = description;
+
+    return (
+      [
+        `${assistance ? `ассистент: ${assistance} год` : ""}`,
+        `${extra ? `додатково: "${extra}"` : ""}`,
+      ]
+        .filter((x) => x.length)
+        .join(" | ") || "--"
+    );
+  };
+
   return (
     <div className="flex w-full justify-center">
       <main className="flex w-full flex-col p-4 font-mono">
@@ -153,7 +177,9 @@ export default function AdminBooking() {
                   id: app.id,
                   start: app.timeFrom,
                   end: app.timeTo,
-                  description: JSON.parse(app.services).join(", ") || "-",
+                  description: getAppointmentDescription(
+                    JSON.parse(app.services)
+                  ),
                   title: `${getAppointmentTitle(app)}`,
                   allDay: !app.timeFrom?.length || !app.timeTo?.length,
                 }))}

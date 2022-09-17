@@ -3,7 +3,7 @@ import {
   BookingStep,
   saveDate,
   saveTime,
-  saveTotal,
+  saveTotalPrice,
 } from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import { DateTimeStep } from "./Steps/DateTimeStep";
@@ -49,7 +49,11 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
   const onChangeTime = useCallback(
     (start: string, end: string, diff: number) => {
       dispatch(saveTime({ start, end, diff }));
-      dispatch(saveTotal(Math.abs(diff) * BOOKING_HOURLY_PRICE));
+      dispatch(
+        saveTotalPrice({
+          booking: Math.abs(diff) * BOOKING_HOURLY_PRICE,
+        })
+      );
     },
     [dispatch]
   );

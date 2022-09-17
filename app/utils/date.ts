@@ -58,7 +58,7 @@ export const formatCalculatedTimePeriod = (
 
   if (isMobile) {
     return (
-      (hour > 0 ? `${hour} год. ` : "") + (diff % 1 === 0.5 ? "30 хв." : "")
+      (hour > 0 ? `${hour} год.` : "") + (diff % 1 === 0.5 ? " 30 хв." : "")
     );
   }
 

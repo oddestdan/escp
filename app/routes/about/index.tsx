@@ -1,13 +1,24 @@
 import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
 import Footer from "~/components/Footer/Footer";
+import ImageGallery from "react-image-gallery";
 import { useState } from "react";
+import { useSearchParams } from "@remix-run/react";
+import { ABOUT_PAGE_PARAM } from "~/utils/pageParams";
 
 // import { ls } from "~/utils/localStorage.service";
 // const lsCurrentTab = "current_tab";
 
 // const imageSrcRoute = "https://i.imgur.com/kb7520L.png";
 const imageSrcRoute = "https://i.imgur.com/2hX0UrQ.png";
+const galleryImages = [
+  "https://i.imgur.com/KxlfINW.jpg",
+  "https://i.imgur.com/2gUgtbh.jpg",
+  "https://i.imgur.com/XcwX5jr.jpg",
+  "https://i.imgur.com/YYAubFa.jpg",
+  "https://i.imgur.com/29AZC8j.jpg",
+  "https://i.imgur.com/INmYrJG.jpg",
+];
 
 const renderTab0 = () => (
   <>
@@ -72,40 +83,59 @@ const renderTab0 = () => (
 
 const renderTab1 = () => (
   <>
-    <p className="mb-4">Фото студія, бул. Вацлава Гавела 4, 90 м²</p>
-    <div className="mb-4">
-      Що входить у вартість та який є реквізит:
-      <ul>
-        {[
-          "2 світла godox fv150",
-          "чорно-білі прапори",
-          "бумажні фони",
-          "вентилятор",
-          "диван на коліщатках",
-          "стільці",
-          "крісло",
-          "стіл на коліщатках",
-          "дзеркало",
-          "матрац",
-          "килим",
-          "блекаут штори",
-          "колонка jbl",
-          "пульверизатор",
-          "відпарювач",
-          "гардероб",
-        ].map((good) => (
-          <li key={good}>
-            <span className="bg-white">- {good}</span>
-          </li>
-        ))}
-      </ul>
+    <p className="mb-4">Фотостудія 90 м², бул. Вацлава Гавела 4</p>
+    <div className="mb-4 flex flex-col-reverse justify-between lg:flex-row">
+      <div className="mb-4 mt-4 w-full lg:mt-0 lg:w-1/3">
+        Що входить у вартість та який є реквізит:
+        {/* desktop/left-side mobile/bottom*/}
+        <ul className="">
+          {[
+            "2 світла godox fv150",
+            "чорно-білі прапори",
+            "бумажні фони",
+            "вентилятор",
+            "диван на коліщатках",
+            "стільці",
+            "крісло",
+            "стіл на коліщатках",
+            "дзеркало",
+            "матрац",
+            "килим",
+            "блекаут штори",
+            "колонка jbl",
+            "пульверизатор",
+            "відпарювач",
+            "гардероб",
+          ].map((good) => (
+            <li key={good} className="list-inside list-[decimal-leading-zero]">
+              {good}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* desktop/right-side mobile/top*/}
+      <div className="w-full lg:w-2/3 lg:pl-4">
+        {/* https://www.npmjs.com/package/react-image-gallery */}
+        <ImageGallery
+          items={galleryImages.map((img) => ({
+            original: img,
+            thumbnail: img,
+          }))}
+          showPlayButton={false}
+          slideDuration={200}
+        />
+      </div>
     </div>
   </>
 );
 
 export default function About() {
+  const [searchParams] = useSearchParams();
+  console.log(searchParams);
+  console.log(searchParams.get(ABOUT_PAGE_PARAM));
   const [currentTab, setCurrentTab] = useState(
-    () => "0" // ls.getItem(lsCurrentTab, "0")
+    () => searchParams.get(ABOUT_PAGE_PARAM) || "0" // ls.getItem(lsCurrentTab, "0")
   );
 
   const setTab = (tab: string) => {
@@ -123,9 +153,8 @@ export default function About() {
         <div className="mx-auto mb-4 flex w-full flex-col sm:w-3/5">
           <h2 className="my-4 text-center font-mono">
             {["контакти", "вартість та реквізит"].map((tabName, tabIndex) => (
-              <>
+              <span key={tabName}>
                 <span
-                  key={tabName}
                   onClick={() => setTab(`${tabIndex}`)}
                   className={`cursor-pointer text-stone-900 hover:text-stone-400 ${
                     currentTab == `${tabIndex}` ? "font-medium" : "underline"
@@ -134,7 +163,7 @@ export default function About() {
                   {tabName}
                 </span>
                 {tabIndex === 0 && " | "}
-              </>
+              </span>
             ))}
           </h2>
           {currentTab === "0" ? renderTab0() : renderTab1()}

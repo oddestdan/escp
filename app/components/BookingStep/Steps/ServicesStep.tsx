@@ -3,23 +3,26 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextInput } from "~/components/TextInput/TextInput";
 import type { StoreBooking } from "~/store/bookingSlice";
+import { saveTotalPrice } from "~/store/bookingSlice";
+import { saveAdditionalServices } from "~/store/bookingSlice";
 import { BookingService } from "~/store/bookingSlice";
 import { bookingServicesList } from "~/store/bookingSlice";
 import { saveServices } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
+import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
+import { ABOUT_PAGE_PARAM } from "~/utils/pageParams";
 import { BookingStepActions } from "../BookingStepActions";
 
 const servicesLabelKeyMapper = {
   [BookingService.assistance]: "допомога асистента (200 грн/год)",
-  [BookingService.additional]:
+  [BookingService.extra]:
     "додаткові побажання (фон / спеціалізована зйомка / велика группа людей тощо)",
 };
 
 export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
-  const { currentStep, services, dateTime } = useSelector(
-    (store: StoreBooking) => store.booking
-  );
+  const { currentStep, services, dateTime, additionalServices, price } =
+    useSelector((store: StoreBooking) => store.booking);
 
   const [checkedServices, setCheckedServices] = useState(
     bookingServicesList.map((service) => {
@@ -28,20 +31,44 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     })
   );
 
-  const [assistanceHours, setAssistanceHours] = useState<number | null>(null);
-  const [additionalService, setAdditionalService] = useState("");
+  const [assistanceHours, setAssistanceHours] = useState<number | undefined>(
+    additionalServices.assistance
+  );
+  const [extraService, setExtraService] = useState(
+    additionalServices.extra || ""
+  );
 
   const stepNext = useCallback(() => {
-    dispatch(saveCurrentStep(currentStep + 1));
     dispatch(
       saveServices([
         ...checkedServices
           .filter(({ checked }) => checked)
           .map(({ service }) => service),
-        ...[additionalService].filter(Boolean),
+        ...[extraService].filter(Boolean),
       ])
     );
-  }, [dispatch, currentStep, additionalService, checkedServices]);
+    dispatch(
+      saveAdditionalServices({
+        assistance: assistanceHours || undefined,
+        extra: extraService.length > 0 ? extraService : undefined,
+      })
+    );
+    assistanceHours &&
+      dispatch(
+        saveTotalPrice({
+          services: assistanceHours * ASSISTANCE_HOURLY_PRICE,
+          booking: price.booking,
+        })
+      );
+    dispatch(saveCurrentStep(currentStep + 1));
+  }, [
+    dispatch,
+    checkedServices,
+    extraService,
+    assistanceHours,
+    price,
+    currentStep,
+  ]);
 
   const stepBack = useCallback(() => {
     dispatch(saveCurrentStep(currentStep - 1));
@@ -60,17 +87,20 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     const assistance = checkedServices.find(
       ({ service }) => service === BookingService.assistance
     );
-    const additional = checkedServices.find(
-      ({ service }) => service === BookingService.additional
+    const extra = checkedServices.find(
+      ({ service }) => service === BookingService.extra
     );
     const services = [
       assistance?.checked &&
-        `${assistance.service} ${assistanceHours || 0} год.`,
-      additional?.checked && `${additional.service}: ${additionalService}`,
+        assistanceHours &&
+        `${assistance.service} ${assistanceHours} год., ${
+          ASSISTANCE_HOURLY_PRICE * assistanceHours
+        } грн`,
+      extra?.checked && `${extra.service}: ${extraService}`,
     ];
 
     return services.filter(Boolean).join(", ");
-  }, [checkedServices, additionalService, assistanceHours]);
+  }, [checkedServices, extraService, assistanceHours]);
 
   return (
     <>
@@ -81,12 +111,11 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
           : ""}
       </h4>
       <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
-        {/* TODO: adapt to new link format after completing working on About page */}
         весь реквізит (описаний{" "}
         <Link
           className="text-stone-900 underline hover:text-stone-400"
           target="_blank"
-          to="/about"
+          to={`/about?${ABOUT_PAGE_PARAM}=1`}
         >
           тут
         </Link>
@@ -94,10 +123,9 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
       </legend>
       <form className="mb-8">
         {checkedServices.map(({ service, checked }, i) => (
-          <>
+          <span key={service}>
             {/* Checkmark + Label */}
             <label
-              key={service}
               htmlFor={service}
               className="my-4 flex cursor-pointer hover:text-stone-500"
               onClick={() => onChangeCheckbox(i)}
@@ -113,16 +141,16 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
             </label>
 
             {/* Additional input */}
-            {service === BookingService.additional && checked && (
+            {service === BookingService.extra && checked && (
               <label htmlFor="custom" className="my-4 block">
                 {/* TODO: save to Redux and set defaultValue from there */}
                 <TextInput
                   name="custom"
                   type="text"
-                  value={additionalService}
+                  value={extraService}
                   placeholder="додаткові побажання"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAdditionalService(e.target.value)
+                    setExtraService(e.target.value)
                   }
                 />
               </label>
@@ -144,7 +172,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                   </div>
                 );
               })}
-          </>
+          </span>
         ))}
       </form>
       <BookingStepActions

@@ -25,7 +25,7 @@ type LoaderData = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log("******** IN ACTION **********");
+  console.log(">> creating appointment");
   const formData = await request.formData();
 
   const date = formData.get("date");
@@ -33,14 +33,27 @@ export const action: ActionFunction = async ({ request }) => {
   const timeTo = formData.get("timeTo");
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
+  const price = formData.get("price");
 
   invariant(typeof date === "string", "date must be a string");
   invariant(typeof timeFrom === "string", "timeFrom must be a string");
   invariant(typeof timeTo === "string", "timeTo must be a string");
   invariant(typeof services === "string", "services must be a string");
   invariant(typeof contactInfo === "string", "contactInfo must be a string");
+  invariant(typeof price === "string", "price must be a string");
 
-  await createAppointment({ date, timeFrom, timeTo, services, contactInfo });
+  const appointmentDTO = {
+    date,
+    timeFrom,
+    timeTo,
+    services,
+    contactInfo,
+    price,
+  };
+
+  console.log(appointmentDTO);
+
+  await createAppointment(appointmentDTO);
 
   return redirect("/booking/confirmation");
 };
@@ -62,10 +75,11 @@ export default function Booking() {
 
   const {
     currentStep,
-    maxStepVisited,
     dateTime: { date: selectedDate, time: selectedTime },
     contact,
     services,
+    additionalServices,
+    price,
   } = useSelector((store: StoreBooking) => store.booking);
 
   const memoedStepsData = useMemo(() => {
@@ -117,12 +131,17 @@ export default function Booking() {
               <input
                 type="hidden"
                 name="services"
-                value={JSON.stringify(services)}
+                value={JSON.stringify({ services, additionalServices })}
               />
               <input
                 type="hidden"
                 name="contactInfo"
                 value={JSON.stringify(contact)}
+              />
+              <input
+                type="hidden"
+                name="price"
+                value={`${price.booking + (price.services || 0)}`}
               />
               <input type="hidden" />
               <ActionButton buttonType="submit" onClick={bookAppointment}>

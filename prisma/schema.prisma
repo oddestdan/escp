@@ -45,6 +45,7 @@ model Appointment {
   timeFrom String
   timeTo   String
   contactInfo String
+  price    String @default("0")
   services String
 
   createdAt DateTime @default(now())

@@ -22,12 +22,17 @@ export enum BookingStep {
 
 export enum BookingService {
   assistance = "допомога асистента",
-  // TODO: create (i) info popup for additional information description
-  additional = "інше",
+  // TODO: create (i) info popup for extra information description
+  extra = "інше",
 }
+export interface AdditionalServices {
+  assistance?: number;
+  extra?: string;
+}
+
 export const bookingServicesList = [
   BookingService.assistance,
-  BookingService.additional,
+  BookingService.extra,
 ];
 
 export interface ContactInfo {
@@ -51,13 +56,20 @@ export interface DateTime {
 }
 
 type CustomizableBookingService = BookingService | string;
+
+export interface TotalPrice {
+  booking: number;
+  services?: number;
+}
+
 export interface BookingState {
   contact: ContactInfo;
   dateTime: DateTime;
-  services: CustomizableBookingService[];
+  services: CustomizableBookingService[]; // static string[] services, currently empty
+  additionalServices: AdditionalServices;
   currentStep: BookingStep;
   maxStepVisited: BookingStep;
-  total: number;
+  price: TotalPrice;
 }
 
 const get3MonthSlots = () => {
@@ -80,9 +92,13 @@ export const initialState: BookingState = {
     time: { start: "", end: "", diff: 0 },
   },
   services: [],
+  additionalServices: {},
   currentStep: BookingStep.DateTime,
   maxStepVisited: BookingStep.DateTime,
-  total: 0,
+  price: {
+    booking: 0,
+    services: 0,
+  },
 };
 
 const bookingSlice = createSlice({
@@ -110,14 +126,20 @@ const bookingSlice = createSlice({
     ) {
       state.dateTime = { ...state.dateTime, time: action.payload };
     },
-    saveTotal(state: BookingState, action: PayloadAction<number>) {
-      state.total = action.payload;
+    saveTotalPrice(state: BookingState, action: PayloadAction<TotalPrice>) {
+      state.price = action.payload;
     },
     saveServices(
       state: BookingState,
       action: PayloadAction<CustomizableBookingService[]>
     ) {
       state.services = action.payload;
+    },
+    saveAdditionalServices(
+      state: BookingState,
+      action: PayloadAction<AdditionalServices>
+    ) {
+      state.additionalServices = action.payload;
     },
     saveContactInfo(state: BookingState, action: PayloadAction<ContactInfo>) {
       state.contact = action.payload;
@@ -130,8 +152,9 @@ export const {
   saveCurrentStep,
   saveDate,
   saveTime,
-  saveTotal,
+  saveTotalPrice,
   saveServices,
+  saveAdditionalServices,
   saveContactInfo,
 } = bookingSlice.actions;
 export default bookingSlice.reducer;

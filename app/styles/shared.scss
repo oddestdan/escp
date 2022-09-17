@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+// IMAGE GALLERY STUFF
+
+@import "../../node_modules/react-image-gallery/styles/scss/image-gallery.scss";
+
+.image-gallery {
+  background-color: rgba(255, 255, 255, 15%);
+  &-thumbnails-wrapper,
+  &-slide {
+    background-color: rgba(255, 255, 255, 15%);
+  }
+
+  &-left-nav &-svg,
+  &-right-nav &-svg {
+    height: 60px;
+  }
+  &-icon {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 20%));
+    transition: all 0.1s ease-out;
+
+    &:hover {
+      color: rgb(28 25 23 / var(--tw-text-opacity));
+    }
+  }
+}
+
+.image-gallery-thumbnail {
+  border: 4px solid transparent;
+  transition: border 0.1s ease-out;
+
+  &.active,
+  &:focus {
+    transition: all 0.1s ease-out;
+    border: 4px solid rgba(0, 0, 0, 40%) !important;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .image-gallery-thumbnail:hover {
+    border: 4px solid rgba(0, 0, 0, 40%) !important;
+  }
+}
+
+// BOOKING RELATED STUFF
+
+.image-gallery-thumbnail.active,
+.image-gallery-thumbnail:focus {
+}
 // stylelint-disable color-no-hex
 $blue: #008fb0;
 $red: #b72222;

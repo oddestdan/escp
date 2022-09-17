@@ -24,36 +24,33 @@ const renderTimeSlotsRange = (
   total: number,
   isMobile = false
 ) => {
+  const duration = `${
+    timeSlots[start >= end ? end : start] &&
+    formatTimeSlot(timeSlots[start >= end ? end : start])
+  }${
+    timeSlots[start] &&
+    timeSlots[end] &&
+    start !== end &&
+    addMinutes(timeSlots[start], TIMESLOT_OFFSET_MINUTES) !== timeSlots[end] &&
+    addMinutes(timeSlots[end], TIMESLOT_OFFSET_MINUTES) !== timeSlots[start]
+      ? " - ... - "
+      : " - "
+  }${
+    timeSlots[start <= end ? end : start] &&
+    formatTimeSlot(
+      addMinutes(timeSlots[start <= end ? end : start], TIMESLOT_OFFSET_MINUTES)
+    )
+  }`;
+
   return (
-    <>
-      <span>
-        {timeSlots[start >= end ? end : start] &&
-          formatTimeSlot(timeSlots[start >= end ? end : start])}
-        {timeSlots[start] &&
-        timeSlots[end] &&
-        start !== end &&
-        addMinutes(timeSlots[start], TIMESLOT_OFFSET_MINUTES) !==
-          timeSlots[end] &&
-        addMinutes(timeSlots[end], TIMESLOT_OFFSET_MINUTES) !== timeSlots[start]
-          ? " - ... - "
-          : " - "}
-        {timeSlots[start <= end ? end : start] &&
-          formatTimeSlot(
-            addMinutes(
-              timeSlots[start <= end ? end : start],
-              TIMESLOT_OFFSET_MINUTES
-            )
-          )}
-      </span>{" "}
-      <span>
-        |{" "}
-        {formatCalculatedTimePeriod(
-          start <= end ? [start, end] : [end, start],
-          isMobile
-        )}
-        , {total} грн
-      </span>
-    </>
+    <span>
+      {duration} |{" "}
+      {formatCalculatedTimePeriod(
+        start <= end ? [start, end] : [end, start],
+        isMobile
+      )}
+      , {total} грн
+    </span>
   );
 };
 
@@ -83,7 +80,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   const mouseDownHandler = (i: number) => {
     // if (isMobile) {
-    console.log(`i-${i}, start-${start}, end-${end}`);
     if (i > end) {
       setEnd(i);
     } else if (i < start) {

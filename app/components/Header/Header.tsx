@@ -1,5 +1,4 @@
 export default function Header({ current }: { current?: string }) {
-  // TODO: Add flex-1 so that all options are aligned better
   return (
     <h1 className="mx-auto flex w-full justify-between font-mono font-light text-stone-900 sm:w-3/5">
       <span

@@ -2,9 +2,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import type { StoreBooking } from "~/store/bookingSlice";
+import { BookingService } from "~/store/bookingSlice";
 
 export const BookingSummary: React.FC = () => {
-  const { dateTime, services, contact } = useSelector(
+  const { dateTime, additionalServices, contact, price } = useSelector(
     (store: StoreBooking) => store.booking
   );
 
@@ -14,8 +15,19 @@ export const BookingSummary: React.FC = () => {
       dateTime.time.end || dateTime.time.start,
     ]
       .map((date) => new Date(date).toLocaleTimeString("uk").slice(0, -3))
-      .join(" - ")}`;
-  }, [dateTime]);
+      .join(" - ")}`.concat(`, ${price.booking} грн`);
+  }, [dateTime, price]);
+
+  const memoedSelectedServicesList = useMemo(() => {
+    const services = [
+      additionalServices.assistance &&
+        `${BookingService.assistance}: ${additionalServices.assistance} год., ${price.services} грн`,
+      additionalServices.extra &&
+        `${BookingService.extra}: ${additionalServices.extra}`,
+    ];
+
+    return services.filter(Boolean).join(", ");
+  }, [additionalServices.assistance, additionalServices.extra, price]);
 
   const memoedContactInfo = useMemo(() => {
     const { firstName, lastName, tel } = contact;
@@ -39,12 +51,14 @@ export const BookingSummary: React.FC = () => {
       )}
 
       {/* Services */}
-      <p className="mb-4">
-        <span className="font-medium">додаткові сервіси: </span>
-        {services.length > 0 ? services.join(", ") : "-"}
-      </p>
+      {memoedSelectedServicesList && (
+        <p className="mb-4">
+          <span className="font-medium">додаткові сервіси: </span>
+          {memoedSelectedServicesList}
+        </p>
+      )}
 
-      {/* Services */}
+      {/* ContactInfo */}
       {memoedContactInfo && (
         <p className="mb-4">
           <span className="font-medium">контактна інформація: </span>
