@@ -112,6 +112,15 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
 
   return (
     <>
+      {/* Standalone Tooltip */}
+      <ReactTooltip
+        backgroundColor="#2b2b2b"
+        textColor="#ffffff"
+        place="top"
+        effect="solid"
+        multiline
+      />
+
       <h4 className={`mb-2 text-center font-mono font-medium`}>
         додаткові сервіси
         {memoedSelectedServicesList.length
@@ -132,41 +141,41 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
       <form className="mb-8">
         {checkedServices.map(({ service, checked }, i) => (
           <span key={service}>
-            {/* Checkmark + Label */}
-            <label
-              htmlFor={service}
-              className="my-4 flex cursor-pointer hover:text-stone-500"
-              onClick={() => onChangeCheckbox(i)}
-            >
-              <input
-                name={service}
-                className="p-1"
-                type="checkbox"
-                checked={checked}
-                readOnly={true}
-              />
-              <span className="ml-2">
-                {servicesLabelKeyMapper[service]}
+            <span className="flex items-center">
+              {/* Checkmark + Label + Tooltip */}
+              <label
+                htmlFor={service}
+                className="my-2 cursor-pointer hover:text-stone-500"
+                onClick={() => onChangeCheckbox(i)}
+              >
+                <input
+                  name={service}
+                  className="p-1"
+                  type="checkbox"
+                  checked={checked}
+                  readOnly={true}
+                />
+              </label>
+              <span className="pl-2">
+                <span
+                  className="cursor-pointer hover:text-stone-500"
+                  onClick={() => onChangeCheckbox(i)}
+                >
+                  {servicesLabelKeyMapper[service]}
+                </span>
+
                 {/* https://www.npmjs.com/package/react-tooltip */}
                 <span
-                  className="radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full bg-stone-300 text-center font-mono text-stone-100"
+                  className="radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full bg-stone-300 text-center font-mono text-stone-100 hover:bg-stone-400"
                   data-tip={servicesDetailsMapper[service]}
                 >
                   i
                 </span>
-                <ReactTooltip
-                  backgroundColor="#2b2b2b"
-                  textColor="#ffffff"
-                  place="top"
-                  effect="solid"
-                  multiline
-                />
               </span>
-            </label>
+            </span>
 
-            {/* Additional input */}
             {service === BookingService.extra && checked && (
-              <label htmlFor="custom" className="my-4 block">
+              <label htmlFor="custom" className="mt-4 mb-12 block">
                 <TextInput
                   name="custom"
                   type="text"
@@ -178,23 +187,27 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 />
               </label>
             )}
-            {service === BookingService.assistance &&
-              checked &&
-              [...Array(Math.ceil(dateTime.time.diff)).keys()].map((hours) => {
-                return (
-                  <div
-                    key={hours}
-                    className={`mb-2 inline-flex cursor-pointer select-none px-2 ${
-                      assistanceHours === hours + 1
-                        ? "bg-stone-800 text-stone-100"
-                        : ""
-                    }`}
-                    onClick={() => setAssistanceHours(hours + 1)}
-                  >
-                    {hours + 1} год.
-                  </div>
-                );
-              })}
+            {service === BookingService.assistance && checked && (
+              <div className="block w-full">
+                {[...Array(Math.ceil(dateTime.time.diff)).keys()].map(
+                  (hours) => {
+                    return (
+                      <div
+                        key={hours}
+                        className={`mb-4 inline-flex cursor-pointer select-none px-2 ${
+                          assistanceHours === hours + 1
+                            ? "bg-stone-800 text-stone-100"
+                            : ""
+                        }`}
+                        onClick={() => setAssistanceHours(hours + 1)}
+                      >
+                        {hours + 1} год.
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            )}
           </span>
         ))}
       </form>
