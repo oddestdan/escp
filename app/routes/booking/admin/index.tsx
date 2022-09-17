@@ -147,6 +147,10 @@ export default function AdminBooking() {
     services: BookingService[];
     additionalServices: AdditionalServices;
   }) => {
+    if (!description.additionalServices) {
+      return "--";
+    }
+
     const {
       // services: _,
       additionalServices: { assistance, extra },
