@@ -9,9 +9,11 @@ import {
   formatTimeSlot,
 } from "~/utils/date";
 
+import type { BookableTimeSlot } from "../BookingStep/Steps/DateTimeStep";
+
 export interface TimePickerProps {
   selectedTime: { start: string; end: string };
-  timeSlots: Array<string>;
+  timeSlots: BookableTimeSlot[];
   total: number;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
@@ -62,24 +64,27 @@ const TimePicker: React.FC<TimePickerProps> = ({
   isMobile = false,
 }) => {
   const [start, setStart] = useState(
-    timeSlots.findIndex((slot) => slot === selectedTime.start) !== -1
-      ? timeSlots.findIndex((slot) => slot === selectedTime.start)
+    timeSlots.findIndex(({ slot }) => slot === selectedTime.start) !== -1
+      ? timeSlots.findIndex(({ slot }) => slot === selectedTime.start)
       : 0
   );
   const [end, setEnd] = useState(
     timeSlots.findIndex(
-      (slot) => slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
+      ({ slot }) =>
+        slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
     ) !== -1
       ? timeSlots.findIndex(
-          (slot) =>
+          ({ slot }) =>
             slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
         )
       : 0
   );
   const [selecting, setSelecting] = useState(false);
+  const bookedIndexes = timeSlots
+    .map(({ isBooked }, i) => (isBooked ? i : 0))
+    .filter(Boolean);
 
   const mouseDownHandler = (i: number) => {
-    // if (isMobile) {
     if (i > end) {
       setEnd(i);
     } else if (i < start) {
@@ -94,10 +99,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
       selecting ? setEnd(i) : setStart(i);
       setSelecting(!selecting);
     }
-    // } else {
-    //   setSelecting(true);
-    //   setStart(i);
-    //   mouseMoveHandler(i);
+
+    // TODO: change handler logic using bookedIndexes
+    // if (bookedIndexes.some((idx) => idx >= start && idx <= end)) {
+    //   console.log(`INVALID | ${i}, ${start}, ${end}`);
     // }
   };
 
@@ -125,9 +130,9 @@ const TimePicker: React.FC<TimePickerProps> = ({
       return;
     }
     onChangeTime(
-      timeSlots[start >= end ? end : start],
+      timeSlots[start >= end ? end : start].slot,
       addMinutes(
-        timeSlots[start <= end ? end : start],
+        timeSlots[start <= end ? end : start].slot,
         TIMESLOT_OFFSET_MINUTES
       ),
       Math.abs(end - start) + 1
@@ -138,7 +143,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
     <div className={`XXX-aoa-date-picker`}>
       <h4 className={`mb-2 text-center font-mono font-medium`}>
         {timeSlots?.length > 0
-          ? renderTimeSlotsRange(timeSlots, start, end, total, isMobile)
+          ? renderTimeSlotsRange(
+              timeSlots.map(({ slot }) => slot),
+              start,
+              end,
+              total,
+              isMobile
+            )
           : "Немає вільних слотів"}
       </h4>
       <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
@@ -161,24 +172,28 @@ const TimePicker: React.FC<TimePickerProps> = ({
           )} */}
         {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
         Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год)
+        {JSON.stringify(bookedIndexes)}
       </legend>
       <ul className={`justify-star flex w-full flex-wrap font-mono`}>
         {timeSlots?.length > 0 &&
-          timeSlots.map((slot, i) => {
+          timeSlots.map(({ slot, isBooked }, i) => {
             const isActive =
               (end <= i && i <= start) || (start <= i && i <= end);
             return (
               <li key={`${i}-${slot}`} className="flex">
                 {/* actual time slot */}
                 <div
-                  className={`my-2 inline-flex cursor-pointer border-b-[1px] border-stone-800 px-1 ${
+                  className={`my-2 inline-flex border-b-[1px] px-1 ${
                     isActive ? "bg-stone-800 text-stone-100" : ""
+                  } ${
+                    isBooked
+                      ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600"
+                      : "cursor-pointer border-stone-800"
                   }`}
-                  onMouseDown={() => mouseDownHandler(i)}
-                  onMouseUp={() => mouseUpHandler(i)}
-                  onMouseMove={() => mouseMoveHandler(i)}
+                  onMouseDown={() => !isBooked && mouseDownHandler(i)}
+                  onMouseUp={() => !isBooked && mouseUpHandler(i)}
+                  onMouseMove={() => !isBooked && mouseMoveHandler(i)}
                 >
-                  {/* actual time slot start */}
                   <div className={`select-none px-1 py-1`}>
                     {formatTimeSlot(slot)}
                     <span className="px-1">-</span>

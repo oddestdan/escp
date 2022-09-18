@@ -28,3 +28,13 @@ export async function updateAppointment(
 export async function deleteAppointment(appointmentId: string) {
   return prisma.appointment.delete({ where: { id: appointmentId } });
 }
+
+export async function confirmAppointment(
+  appointmentId: string,
+  confirmed = true
+) {
+  return prisma.appointment.update({
+    where: { id: appointmentId },
+    data: { confirmed: confirmed },
+  });
+}

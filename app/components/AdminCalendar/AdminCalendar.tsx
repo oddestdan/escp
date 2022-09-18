@@ -24,6 +24,7 @@ export interface AdminCalendarEvent {
   end: string;
   id: string;
   description?: string;
+  confirmed?: boolean;
 }
 
 export interface AdminCalendarProps {
@@ -31,26 +32,29 @@ export interface AdminCalendarProps {
   events: AdminCalendarEvent[];
   createEvent: (event: Omit<AdminCalendarEvent, "id">) => void;
   changeEvent: (event: AdminCalendarEvent) => void;
-  removeEvent: (eventId: string) => void;
+  selectEvent: (event: AdminCalendarEvent) => void;
 }
 
-const prettyFormatDate = (start: Date | null, end: Date | null) => {
+export const prettyFormatDate = (start: Date | null, end: Date | null) => {
   if (!start || !end) {
     return;
   }
-  return `${getDateFormat(start)} -- ${getLocaleTime(start)} - ${getLocaleTime(
+  return `${getDateFormat(start)} | ${getLocaleTime(start)} - ${getLocaleTime(
     end
   )}`;
 };
 
-const formatFullAppointment = ({
+export const formatFullAppointment = ({
   title,
   start,
   end,
   id,
   description,
-}: AdminCalendarEvent) => {
-  return `ІВЕНТ #${id}\nАвтор: ${title}\nСервіси: ${description}\nДата та час: ${prettyFormatDate(
+  confirmed,
+}: AdminCalendarEvent): string => {
+  return `Бронювання: ${id}\nПідтверджено: ${
+    confirmed ? "ТАК" : "НІ"
+  }\nАвтор: ${title}\nСервіси: ${description}\nДата та час: ${prettyFormatDate(
     new Date(start),
     new Date(end)
   )}`;
@@ -59,15 +63,15 @@ const formatFullAppointment = ({
 const AdminCalendar: React.FC<AdminCalendarProps> = ({
   events,
   createEvent,
-  removeEvent,
   changeEvent,
+  selectEvent,
 }) => {
   const calendarRef = useRef<FullCalendar>(null);
 
   const onSelect = (data: DateSelectArg) => {
     const { start, end } = data;
     const result = prompt(
-      `${prettyFormatDate(start, end)} назва івенту:`,
+      `${prettyFormatDate(start, end)} назва бронювання:`,
       defaultEventTitle
     );
 
@@ -85,20 +89,10 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
     createEvent(eventPayload);
   };
 
-  // remove appointment OR view appointment info
+  // select appointment for further actions
   const onEventClick = (data: EventClickArg) => {
-    const { title, id } = data.event;
-    if (confirm(`Удалити івент? "OK" - УДАЛИТИ | "Cancel" - ПЕРЕГЛЯНУТИ `)) {
-      if (!id) {
-        alert(`Не можна вдалити івент ${title}`);
-        return;
-      }
-      removeEvent(id);
-      data.event.remove();
-    } else {
-      const fullAppointment = events.find((event) => event.id === id);
-      fullAppointment && alert(formatFullAppointment(fullAppointment));
-    }
+    const fullAppointment = events.find((event) => event.id === data.event.id);
+    fullAppointment && selectEvent(fullAppointment);
   };
 
   // change appointment date & time
@@ -114,7 +108,7 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
 
   const onEventRemove = (data: EventRemoveArg) => {
     const { title, start, end } = data.event;
-    alert(`Івент видалений: ${title}\n${prettyFormatDate(start, end)}`);
+    alert(`Видалене бронювання: ${title}\n${prettyFormatDate(start, end)}`);
   };
 
   return (
@@ -144,7 +138,7 @@ const AdminCalendar: React.FC<AdminCalendarProps> = ({
       eventClick={onEventClick}
       eventChange={onEventChange}
       eventRemove={onEventRemove}
-      eventsSet={console.log}
+      // eventsSet={console.log}
       // initialEvents={[...events]}
       eventSources={[{ events }]}
     />

@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { redirect } from "@remix-run/server-runtime";
-import { createAppointment } from "~/models/appointment.server";
+import {
+  confirmAppointment,
+  createAppointment,
+} from "~/models/appointment.server";
 import { updateAppointment } from "~/models/appointment.server";
 import { deleteAppointment } from "~/models/appointment.server";
-import AdminCalendar from "~/components/AdminCalendar/AdminCalendar";
+import AdminCalendar, {
+  formatFullAppointment,
+} from "~/components/AdminCalendar/AdminCalendar";
 import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { getAppointments } from "~/models/appointment.server";
@@ -63,6 +68,15 @@ export const action: ActionFunction = async ({ request }) => {
       invariant(typeof id === "string", "appointmentId must be a string");
       return await updateAppointment({ timeFrom, timeTo, date, id });
     }
+    case "PATCH": {
+      // Confirm
+      const id = formData.get("appointmentId");
+      const confirmed = formData.get("confirmed") === "true";
+      invariant(typeof id === "string", "appointmentId must be a string");
+      invariant(typeof confirmed === "boolean", "confirmed must be a boolean");
+
+      return await confirmAppointment(id, confirmed);
+    }
     case "DELETE": {
       // Remove
       const appointmentId = formData.get("appointmentId");
@@ -95,6 +109,9 @@ export default function AdminBooking() {
   const { appointments } = useLoaderData() as LoaderData;
   const submit = useSubmit();
   const formRef = useRef<HTMLFormElement>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<AdminCalendarEvent>();
+
   console.log("appointments loaded:");
   console.log(appointments);
 
@@ -121,14 +138,37 @@ export default function AdminBooking() {
     [submit]
   );
 
-  const onRemoveAppointment = useCallback(
-    (eventId: string) => {
-      const formData = new FormData(formRef.current || undefined);
-      formData.set("appointmentId", eventId);
-      submit(formData, { method: "delete" });
-    },
-    [submit]
-  );
+  const onConfirmAppointment = useCallback(() => {
+    if (!selectedAppointment || !selectedAppointment.id) {
+      alert("Нема що підтвердити, невірна бронь");
+      return;
+    }
+
+    const { id: eventId, confirmed: wasConfirmed } = selectedAppointment;
+
+    const formData = new FormData(formRef.current || undefined);
+    formData.set("appointmentId", eventId);
+    formData.set("confirmed", wasConfirmed ? "false" : "true");
+    submit(formData, { method: "patch" });
+
+    alert(
+      `${wasConfirmed ? "Скасовано" : "Підтверджено"} бронювання ${eventId}`
+    );
+  }, [selectedAppointment, submit]);
+
+  const onRemoveAppointment = useCallback(() => {
+    if (!selectedAppointment) {
+      alert(`Не можна видалити бронювання`);
+      return;
+    }
+
+    const eventId = selectedAppointment?.id;
+    const formData = new FormData(formRef.current || undefined);
+    formData.set("appointmentId", eventId);
+    submit(formData, { method: "delete" });
+
+    alert(`Видалено бронювання ${eventId}`);
+  }, [submit, selectedAppointment]);
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -137,10 +177,14 @@ export default function AdminBooking() {
 
   const getAppointmentTitle = (appointment: Appointment): string => {
     const info: ContactInfo = JSON.parse(appointment.contactInfo);
-    if (info.firstName) {
-      return `${info.firstName} ${info.lastName ? info.lastName[0] + "." : ""}`;
+
+    if (!info.firstName || !info.tel) {
+      return "Incognito";
     }
-    return "Incognito";
+
+    return `${info.firstName} ${info.lastName ? info.lastName[0] + "." : ""}, ${
+      info.tel
+    }`;
   };
 
   const getAppointmentDescription = (description: {
@@ -177,21 +221,57 @@ export default function AdminBooking() {
             <Form ref={formRef} method="post">
               <AdminCalendar
                 isMobile={isMobile}
-                events={appointments.map((app) => ({
-                  id: app.id,
-                  start: app.timeFrom,
-                  end: app.timeTo,
-                  description: getAppointmentDescription(
-                    JSON.parse(app.services)
-                  ),
-                  title: `${getAppointmentTitle(app)}`,
-                  allDay: !app.timeFrom?.length || !app.timeTo?.length,
-                }))}
+                events={appointments.map((app) => {
+                  const isSelected = app.id === selectedAppointment?.id;
+                  return {
+                    id: app.id,
+                    start: app.timeFrom,
+                    end: app.timeTo,
+                    description: getAppointmentDescription(
+                      JSON.parse(app.services)
+                    ),
+                    title: `${getAppointmentTitle(app)}`,
+                    allDay: !app.timeFrom?.length || !app.timeTo?.length,
+                    backgroundColor: app.confirmed
+                      ? isSelected
+                        ? "mediumblue"
+                        : "royalblue"
+                      : isSelected
+                      ? "dimgrey"
+                      : "grey",
+                    confirmed: app.confirmed,
+                    borderColor:
+                      app.id === selectedAppointment?.id
+                        ? "red"
+                        : "transparent",
+                  };
+                })}
                 createEvent={onCreateAppointment}
                 changeEvent={onChangeAppointment}
-                removeEvent={onRemoveAppointment}
+                selectEvent={setSelectedAppointment}
               />
+              <button
+                type="button"
+                className="mt-4 rounded-md bg-blue-500 p-2 text-white"
+                onClick={onConfirmAppointment}
+              >
+                {selectedAppointment?.confirmed ? "Скасувати" : "Підтвердити"}
+              </button>
+              <button
+                type="button"
+                className="mt-4 ml-4 rounded-md bg-red-500 p-2 text-white"
+                onClick={() => onRemoveAppointment()}
+              >
+                Видалити
+              </button>
             </Form>
+
+            <h4 className="mt-4 mb-2 font-medium">Обране бронювання:</h4>
+            <pre>
+              {selectedAppointment
+                ? formatFullAppointment(selectedAppointment)
+                : "--"}
+            </pre>
           </div>
         </div>
       </main>
