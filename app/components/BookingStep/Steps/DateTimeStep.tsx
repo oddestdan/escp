@@ -69,7 +69,7 @@ const formAvailableSlots = (
         bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
       ),
     }))
-    .filter((slot) => !slot.isBooked); // TODO: !slot.isConfirmed
+    .filter((slot) => !slot.isConfirmed);
 };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({

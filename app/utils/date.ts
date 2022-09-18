@@ -49,11 +49,7 @@ export const addMinutes = (time: string, minutes: number) => {
   ).toISOString();
 };
 
-export const formatCalculatedTimePeriod = (
-  [start, end]: [number, number],
-  isMobile = false
-) => {
-  const diff = end - start + 1; // for 30 minute timeslots: (end - start) / 2 + 0.5;
+export const formatCalculatedTimePeriod = (diff: number, isMobile = false) => {
   const hour = Math.floor(diff);
 
   if (isMobile) {

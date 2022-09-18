@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   BOOKING_HOURLY_PRICE,
   TIMESLOT_OFFSET_MINUTES,
@@ -9,6 +10,7 @@ import {
   formatTimeSlot,
 } from "~/utils/date";
 
+import type { StoreBooking } from "~/store/bookingSlice";
 import type { BookableTimeSlot } from "../BookingStep/Steps/DateTimeStep";
 
 export interface TimePickerProps {
@@ -23,6 +25,7 @@ const renderTimeSlotsRange = (
   timeSlots: Array<string>,
   start: number,
   end: number,
+  diff: number,
   total: number,
   isMobile = false
 ) => {
@@ -46,12 +49,7 @@ const renderTimeSlotsRange = (
 
   return (
     <span>
-      {duration} |{" "}
-      {formatCalculatedTimePeriod(
-        start <= end ? [start, end] : [end, start],
-        isMobile
-      )}
-      , {total} грн
+      {duration} | {formatCalculatedTimePeriod(diff, isMobile)}, {total} грн
     </span>
   );
 };
@@ -63,10 +61,18 @@ const TimePicker: React.FC<TimePickerProps> = ({
   onChangeTime,
   isMobile = false,
 }) => {
+  const nonBookedIndexes = timeSlots.reduce<number[]>(
+    (arr, slot, i) => (slot.isBooked ? arr : [...arr, i]),
+    []
+  );
+  const nonBookedIndexesBool = timeSlots.map((slot) => !slot.isBooked);
+  const timeDiff = useSelector((store: StoreBooking) => store.booking).dateTime
+    .time.diff;
+
   const [start, setStart] = useState(
     timeSlots.findIndex(({ slot }) => slot === selectedTime.start) !== -1
       ? timeSlots.findIndex(({ slot }) => slot === selectedTime.start)
-      : 0
+      : nonBookedIndexes[0]
   );
   const [end, setEnd] = useState(
     timeSlots.findIndex(
@@ -77,12 +83,9 @@ const TimePicker: React.FC<TimePickerProps> = ({
           ({ slot }) =>
             slot === addMinutes(selectedTime.end, -TIMESLOT_OFFSET_MINUTES)
         )
-      : 0
+      : nonBookedIndexes[0]
   );
   const [selecting, setSelecting] = useState(false);
-  const bookedIndexes = timeSlots
-    .map(({ isBooked }, i) => (isBooked ? i : 0))
-    .filter(Boolean);
 
   const mouseDownHandler = (i: number) => {
     if (i > end) {
@@ -99,11 +102,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
       selecting ? setEnd(i) : setStart(i);
       setSelecting(!selecting);
     }
-
-    // TODO: change handler logic using bookedIndexes
-    // if (bookedIndexes.some((idx) => idx >= start && idx <= end)) {
-    //   console.log(`INVALID | ${i}, ${start}, ${end}`);
-    // }
   };
 
   const mouseUpHandler = (i = end) => {
@@ -129,14 +127,20 @@ const TimePicker: React.FC<TimePickerProps> = ({
     if (!timeSlots[start] || !timeSlots[end]) {
       return;
     }
+
+    const diff = nonBookedIndexesBool
+      .slice(start, end + 1)
+      .filter(Boolean).length;
+
     onChangeTime(
       timeSlots[start >= end ? end : start].slot,
       addMinutes(
         timeSlots[start <= end ? end : start].slot,
         TIMESLOT_OFFSET_MINUTES
       ),
-      Math.abs(end - start) + 1
+      diff
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, onChangeTime, timeSlots]);
 
   return (
@@ -147,32 +151,14 @@ const TimePicker: React.FC<TimePickerProps> = ({
               timeSlots.map(({ slot }) => slot),
               start,
               end,
+              timeDiff,
               total,
               isMobile
             )
           : "Немає вільних слотів"}
       </h4>
       <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
-        {/* <label
-          htmlFor="mode"
-          className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
-          onClick={() => setIsDragMode(!isDragMode)}
-        > */}
-        {/* Saved Switcher Toggle for possible later usage */}
-        {/* <input
-            name="mode"
-            className="peer sr-only"
-            role="switch"
-            type="checkbox"
-            checked={isDragMode}
-            readOnly={true}
-          />
-          {!isMobile && (
-            <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
-          )} */}
-        {/* {isDragMode ? "Зажміть" : "Клікайте"} та обирайте тайм-слоти */}
         Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год)
-        {JSON.stringify(bookedIndexes)}
       </legend>
       <ul className={`justify-star flex w-full flex-wrap font-mono`}>
         {timeSlots?.length > 0 &&
@@ -193,6 +179,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
                   onMouseDown={() => !isBooked && mouseDownHandler(i)}
                   onMouseUp={() => !isBooked && mouseUpHandler(i)}
                   onMouseMove={() => !isBooked && mouseMoveHandler(i)}
+                  aria-disabled={isBooked}
                 >
                   <div className={`select-none px-1 py-1`}>
                     {formatTimeSlot(slot)}
@@ -218,3 +205,24 @@ const TimePicker: React.FC<TimePickerProps> = ({
 };
 
 export default TimePicker;
+
+// eslint-disable-next-line no-lone-blocks
+{
+  /* <label
+  htmlFor="mode"
+  className="relative inline-flex cursor-pointer items-center hover:text-stone-500"
+  onClick={() => setIsDragMode(!isDragMode)}
+>
+</label>
+<input
+  name="mode"
+  className="peer sr-only"
+  role="switch"
+  type="checkbox"
+  checked={isDragMode}
+  readOnly={true}
+/>
+{!isMobile && (
+  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+)} */
+}

@@ -101,7 +101,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     const services = [
       assistance?.checked &&
         assistanceHours &&
-        `${assistance.service} ${assistanceHours} год., ${
+        `${assistance.service}: ${assistanceHours} год., ${
           ASSISTANCE_HOURLY_PRICE * assistanceHours
         } грн`,
       extra?.checked && `${extra.service}: ${extraService}`,
