@@ -12,6 +12,7 @@ import {
 
 import type { StoreBooking } from "~/store/bookingSlice";
 import type { BookableTimeSlot } from "../BookingStep/Steps/DateTimeStep";
+import ReactTooltip from "react-tooltip";
 
 export interface TimePickerProps {
   selectedTime: { start: string; end: string };
@@ -61,6 +62,9 @@ const TimePicker: React.FC<TimePickerProps> = ({
   onChangeTime,
   isMobile = false,
 }) => {
+  const [hasMounted, setHasMounted] = useState<boolean>(false);
+  useEffect(() => setHasMounted(true), []);
+
   const nonBookedIndexes = timeSlots.reduce<number[]>(
     (arr, slot, i) => (slot.isBooked ? arr : [...arr, i]),
     []
@@ -85,6 +89,22 @@ const TimePicker: React.FC<TimePickerProps> = ({
         )
       : nonBookedIndexes[0]
   );
+
+  useEffect(() => {
+    setStart(
+      timeSlots.findIndex(({ slot }) => slot === selectedTime.start) !== -1
+        ? timeSlots.findIndex(({ slot }) => slot === selectedTime.start)
+        : nonBookedIndexes[0]
+    );
+
+    setEnd(
+      timeSlots.findIndex(({ slot }) => slot === selectedTime.start) !== -1
+        ? timeSlots.findIndex(({ slot }) => slot === selectedTime.start)
+        : nonBookedIndexes[0]
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeSlots]);
+
   const [selecting, setSelecting] = useState(false);
 
   const mouseDownHandler = (i: number) => {
@@ -145,8 +165,19 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   return (
     <div className={`XXX-aoa-date-picker`}>
+      {/* Standalone Tooltip */}
+      {hasMounted && (
+        <ReactTooltip
+          backgroundColor="#2b2b2b"
+          textColor="#ffffff"
+          place="top"
+          effect="solid"
+          multiline
+        />
+      )}
+
       <h4 className={`mb-2 text-center font-mono font-medium`}>
-        {timeSlots?.length > 0
+        {timeSlots?.length > 0 && timeSlots.some((slot) => !slot.isBooked)
           ? renderTimeSlotsRange(
               timeSlots.map(({ slot }) => slot),
               start,
@@ -158,7 +189,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
           : "Немає вільних слотів"}
       </h4>
       <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
-        Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год)
+        Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
+        <span
+          className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
+          data-tip="Білі слоти - доступні до бронювання <br />Сірі слоти - зарезервовані"
+        >
+          i
+        </span>
       </legend>
       <ul className={`justify-star flex w-full flex-wrap font-mono`}>
         {timeSlots?.length > 0 &&
@@ -169,7 +206,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
               <li key={`${i}-${slot}`} className="flex">
                 {/* actual time slot */}
                 <div
-                  className={`my-2 inline-flex border-b-[1px] px-1 ${
+                  className={`my-2 inline-flex border-b-[1px] px-1 hover:bg-stone-100 ${
                     isActive ? "bg-stone-800 text-stone-100" : ""
                   } ${
                     isBooked

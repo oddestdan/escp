@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
 import { InstagramIcon, TelegramIcon } from "~/icons";
+import { TikTokIcon } from "~/icons/TikTokIcon";
 
 export default function Footer() {
   return (
@@ -24,7 +25,7 @@ export default function Footer() {
           className="text-stone-900 underline hover:text-stone-400"
           target="_blank"
           rel="noreferrer"
-          href="https://t.me/escp90"
+          href="https://t.me/escp90/"
         >
           <TelegramIcon height="24px" width="24px" />
         </a>
@@ -37,6 +38,16 @@ export default function Footer() {
           href="https://www.instagram.com/escp.90/"
         >
           <InstagramIcon height="24px" width="24px" />
+        </a>
+      </span>
+      <span className="ml-2 block">
+        <a
+          className="text-stone-900 underline hover:text-stone-400"
+          target="_blank"
+          rel="noreferrer"
+          href="https://www.tiktok.com/@escp90/"
+        >
+          <TikTokIcon height="24px" width="24px" />
         </a>
       </span>
     </div>

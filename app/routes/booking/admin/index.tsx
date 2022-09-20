@@ -42,16 +42,18 @@ export const action: ActionFunction = async ({ request }) => {
       const timeFrom = formData.get("startTime");
       const timeTo = formData.get("endTime");
       const date = formData.get("date");
+      const title = formData.get("title");
 
       invariant(typeof timeFrom === "string", "timeFrom must be a string");
       invariant(typeof timeTo === "string", "timeTo must be a string");
       invariant(typeof date === "string", "date must be a string");
+      invariant(typeof title === "string", "title must be a string");
       return await createAppointment({
         timeFrom,
         timeTo,
         date,
         services: "[]",
-        contactInfo: "{}",
+        contactInfo: JSON.stringify({ firstName: title, tel: "+380000000000" }),
         price: "0",
       });
     }
@@ -121,6 +123,7 @@ export default function AdminBooking() {
       formData.set("startTime", event.start);
       formData.set("endTime", event.end);
       formData.set("date", event.start.split("T")[0]);
+      formData.set("title", event.title);
       submit(formData, { method: "post" });
     },
     [submit]

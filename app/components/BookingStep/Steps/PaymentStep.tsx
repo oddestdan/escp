@@ -73,7 +73,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         </p>
 
         {/* Contact info, links */}
-        <p className="mb-4 flex">
+        <p className="mb-4 flex text-left xl:text-center">
           <span className="flex items-center">
             Телеграм:{" "}
             <a

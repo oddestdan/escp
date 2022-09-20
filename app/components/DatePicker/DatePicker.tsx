@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Slider from "react-slick";
 import type { DateSlot } from "~/store/bookingSlice";
 import { getDateFormat } from "~/utils/date";
@@ -19,6 +19,7 @@ export interface DatePickerProps {
 
 const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
   const { className, selectedDate, dateTimeSlots, onChangeDate } = props;
+  const [today, setToday] = useState<string>("");
 
   const activeSlideIndex = useMemo(() => {
     return getActiveSlideIndex(dateTimeSlots, selectedDate);
@@ -33,7 +34,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
     initialSlide: activeSlideIndex,
   };
 
-  const today = getDateFormat();
+  useEffect(() => setToday(getDateFormat()), []);
 
   const onDateChangeHandler = (date: DateSlot) => {
     if (getIsDateValid(date) && date.date !== selectedDate) {

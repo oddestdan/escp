@@ -23,8 +23,8 @@ const servicesLabelKeyMapper = {
 const servicesDetailsMapper = {
   [BookingService.assistance]:
     "Асистент допоможе вам з реквізитом, світлом та іншими питаннями",
-  [BookingService.extra]:
-    "Додайте важливі побажання або інформацію, <br />деталі або категорію вашої зйомки, <br />хто та у якій кількості має бути присутнім на зйомці і т.д.",
+  [BookingService.extra]: "",
+  // "Додайте важливі побажання або інформацію, <br />деталі або категорію вашої зйомки, <br />хто та у якій кількості має бути присутнім на зйомці і т.д.",
 };
 
 export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
@@ -104,7 +104,9 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
         `${assistance.service}: ${assistanceHours} год., ${
           ASSISTANCE_HOURLY_PRICE * assistanceHours
         } грн`,
-      extra?.checked && `${extra.service}: ${extraService}`,
+      extra?.checked &&
+        extraService.length > 0 &&
+        `${extra.service}: ${extraService}`,
     ];
 
     return services.filter(Boolean).join(", ");
@@ -145,18 +147,18 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
               {/* Checkmark + Label + Tooltip */}
               <label
                 htmlFor={service}
-                className="my-2 cursor-pointer hover:text-stone-500"
+                className="my-2 cursor-pointer pr-2 hover:bg-stone-100 hover:text-stone-500"
                 onClick={() => onChangeCheckbox(i)}
               >
                 <input
                   name={service}
-                  className="p-1"
+                  className="cursor-pointer p-1"
                   type="checkbox"
                   checked={checked}
                   readOnly={true}
                 />
               </label>
-              <span className="pl-2">
+              <span>
                 <span
                   className="cursor-pointer hover:text-stone-500"
                   onClick={() => onChangeCheckbox(i)}
@@ -165,12 +167,14 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 </span>
 
                 {/* https://www.npmjs.com/package/react-tooltip */}
-                <span
-                  className="radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full bg-stone-300 text-center font-mono text-stone-100 hover:bg-stone-400"
-                  data-tip={servicesDetailsMapper[service]}
-                >
-                  i
-                </span>
+                {servicesDetailsMapper[service].length > 0 && (
+                  <span
+                    className="radius ml-2 inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono text-stone-100 hover:bg-stone-400"
+                    data-tip={servicesDetailsMapper[service]}
+                  >
+                    i
+                  </span>
+                )}
               </span>
             </span>
 
@@ -194,7 +198,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                     return (
                       <div
                         key={hours}
-                        className={`mb-4 inline-flex cursor-pointer select-none px-2 ${
+                        className={`mx-1 mb-4 inline-flex cursor-pointer select-none border-b-[1px] border-stone-800 px-1 ${
                           assistanceHours === hours + 1
                             ? "bg-stone-800 text-stone-100"
                             : ""

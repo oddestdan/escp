@@ -5,19 +5,20 @@ import ImageGallery from "react-image-gallery";
 import { useState } from "react";
 import { useSearchParams } from "@remix-run/react";
 import { ABOUT_PAGE_PARAM } from "~/utils/pageParams";
-
-// import { ls } from "~/utils/localStorage.service";
-// const lsCurrentTab = "current_tab";
+import { InstagramIcon, TelegramIcon } from "~/icons";
 
 // const imageSrcRoute = "https://i.imgur.com/kb7520L.png";
 const imageSrcRoute = "https://i.imgur.com/2hX0UrQ.png";
-const galleryImages = [
-  "https://i.imgur.com/KxlfINW.jpg",
-  "https://i.imgur.com/2gUgtbh.jpg",
-  "https://i.imgur.com/XcwX5jr.jpg",
-  "https://i.imgur.com/YYAubFa.jpg",
-  "https://i.imgur.com/29AZC8j.jpg",
-  "https://i.imgur.com/INmYrJG.jpg",
+// pairs of [highQuality, lowQuality]
+const galleryImages: [string, string][] = [
+  ["https://i.imgur.com/Ew6LphX.png", "https://i.imgur.com/ianw6jB.jpg"],
+  ["https://i.imgur.com/boXCkOq.png", "https://i.imgur.com/efUOarL.jpg"],
+  ["https://i.imgur.com/0ch3UKH.png", "https://i.imgur.com/nSuRR73.jpg"],
+  ["https://i.imgur.com/Kt5h5f7.jpg", "https://i.imgur.com/pRnsIFP.jpg"],
+  ["https://i.imgur.com/xt1Vk9V.jpg", "https://i.imgur.com/BIcRzEx.jpg"],
+  ["https://i.imgur.com/c7vgeH5.jpg", "https://i.imgur.com/fgKCST5.jpg"],
+  ["https://i.imgur.com/RAsweOZ.jpg", "https://i.imgur.com/I0M8E06.jpg"],
+  ["https://i.imgur.com/ANcgQzX.jpg", "https://i.imgur.com/vY55BrZ.jpg"],
 ];
 
 const renderTab0 = () => (
@@ -54,27 +55,27 @@ const renderTab0 = () => (
       </p>
     </span>
 
-    <p className="mb-4 mt-8 text-left xl:text-center">
-      <span className="mb-2 block">
+    <p className="mb-4 mt-8 flex text-left xl:text-center">
+      <span className="flex items-center">
         Телеграм:{" "}
         <a
-          className="mb-2 text-stone-900 underline hover:text-stone-400"
+          className="ml-1 text-stone-900 underline hover:text-stone-400"
           target="_blank"
           rel="noreferrer"
           href="https://t.me/escp90"
         >
-          https://t.me/escp90
+          <TelegramIcon height="32px" width="32px" />
         </a>
       </span>
-      <span className="mb-2 block">
+      <span className="ml-4 flex items-center">
         Інстаграм:{" "}
         <a
-          className="mb-2 text-stone-900 underline hover:text-stone-400"
+          className="ml-1 text-stone-900 underline hover:text-stone-400"
           target="_blank"
           rel="noreferrer"
           href="https://www.instagram.com/escp.90/"
         >
-          https://www.instagram.com/escp.90/
+          <InstagramIcon height="32px" width="32px" />
         </a>
       </span>
     </p>
@@ -118,10 +119,11 @@ const renderTab1 = () => (
       <div className="w-full lg:w-2/3 lg:pl-4">
         {/* https://www.npmjs.com/package/react-image-gallery */}
         <ImageGallery
-          items={galleryImages.map((img) => ({
-            original: img,
-            thumbnail: img,
+          items={galleryImages.map(([high, low]) => ({
+            original: high,
+            thumbnail: low,
           }))}
+          lazyLoad={true}
           showPlayButton={false}
           slideDuration={200}
         />
