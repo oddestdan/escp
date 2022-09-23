@@ -10,7 +10,6 @@ import { bookingServicesList } from "~/store/bookingSlice";
 import { saveServices } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
-import { ABOUT_PAGE_PARAM } from "~/utils/pageParams";
 import { BookingStepActions } from "../BookingStepActions";
 import ReactTooltip from "react-tooltip";
 
@@ -134,7 +133,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
         <Link
           className="text-stone-900 underline hover:text-stone-400"
           target="_blank"
-          to={`/about?${ABOUT_PAGE_PARAM}=1`}
+          to={`/about`}
         >
           тут
         </Link>
