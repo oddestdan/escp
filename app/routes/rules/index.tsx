@@ -5,6 +5,7 @@ export default function rules() {
   return (
     <main className="flex min-h-screen w-full flex-col items-center p-4">
       <NavBar active="rules" />
+
       <div className="flex w-full flex-1 flex-col font-light">
         <h1 className="mx-auto mt-16 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
           Правила

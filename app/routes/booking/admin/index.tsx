@@ -173,7 +173,7 @@ export default function AdminBooking() {
     alert(`Видалено бронювання ${eventId}`);
   }, [submit, selectedAppointment]);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   useEffect(() => {
     setIsMobile(getIsMobile());
   }, []);

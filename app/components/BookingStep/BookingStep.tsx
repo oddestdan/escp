@@ -34,7 +34,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
   const dispatch = useDispatch();
   const { currentStep } = useSelector((store: StoreBooking) => store.booking);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   useEffect(() => {
     setIsMobile(getIsMobile());
   }, []);

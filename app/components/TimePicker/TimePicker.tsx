@@ -206,8 +206,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
               <li key={`${i}-${slot}`} className="flex">
                 {/* actual time slot */}
                 <div
-                  className={`my-2 inline-flex border-b-[1px] px-1 hover:bg-stone-100 ${
-                    isActive ? "bg-stone-800 text-stone-100" : ""
+                  className={`my-2 inline-flex border-b-[1px] px-1 ${
+                    isActive
+                      ? "bg-stone-800 text-stone-100 hover:bg-stone-700 active:bg-stone-600 active:text-stone-200"
+                      : "hover:bg-stone-100 active:bg-stone-200 active:text-stone-800"
                   } ${
                     isBooked
                       ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600"
