@@ -31,7 +31,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   return (
     <>
       <h4 className="mb-2 text-center font-mono font-medium">оплата</h4>
-      <h4 className="mb-2 text-center font-mono font-medium underline">
+      <h4 className="mb-2 text-center font-mono text-2xl font-medium underline">
         {price.booking + (price.services || 0)} грн
       </h4>
       <div className="my-4 flex flex-col">

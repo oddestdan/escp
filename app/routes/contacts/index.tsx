@@ -1,8 +1,7 @@
 import NavBar from "~/components/NavBar/NavBar";
 import Footer from "~/components/Footer/Footer";
 
-// const imageSrcRoute = "https://i.imgur.com/kb7520L.png";
-const imageSrcRoute = "https://i.imgur.com/2hX0UrQ.png";
+const imageSrcRoute = "https://i.imgur.com/eGTIOOr.png"; // 900/600 == 3:2
 
 export default function rules() {
   return (
@@ -27,13 +26,12 @@ export default function rules() {
         </p>
         <span className="flex flex-col xl:flex-row-reverse">
           <img
-            // className="mb-4 aspect-[27/12] w-full flex-1 bg-stone-100 xl:w-1/2"
-            className="mb-4 aspect-[3/2] w-full flex-1 bg-stone-100 xl:w-1/2"
+            className="mb-4 aspect-[3/2] w-full flex-1 bg-stone-100 xl:w-3/5"
             src={imageSrcRoute}
             alt="Route"
           />
 
-          <p className="mb-4 xl:pr-16">
+          <p className="mb-4 xl:pr-8">
             бул. Вацлава Гавела 4.
             <br />
             <br />

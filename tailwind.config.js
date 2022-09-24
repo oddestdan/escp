@@ -10,6 +10,7 @@ module.exports = {
       // mono: ['"IBM Plex Mono"'],
       mono: ['"Roboto Mono"'],
       sans: ["Roboto"],
+      head: ["Montserrat", "Roboto"],
     },
   },
   plugins: [],

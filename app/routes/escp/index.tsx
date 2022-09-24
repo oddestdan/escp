@@ -35,7 +35,7 @@ export default function Escp() {
           {!isMobile ? (
             <span>
               <img
-                className="ml-auto inline aspect-[8/3] w-fit bg-stone-100"
+                className="ml-auto mt-4 inline aspect-[8/3] w-fit bg-stone-100"
                 src={imageSrcDesktopCollage}
                 alt="escp.90 instax collage"
               />
@@ -43,16 +43,18 @@ export default function Escp() {
           ) : (
             <span>
               <img
-                className="ml-auto mt-4 inline aspect-[1/1] w-fit bg-stone-100"
+                className="ml-auto inline aspect-[1/1] w-fit bg-stone-100"
                 src={imageSrcMobileMain}
                 alt="escp.90 instax main"
               />
             </span>
           )}
 
-          <p className="font-mono">Kyiv based photo studio / 90 m²</p>
+          <p className="font-head text-xl font-medium">
+            Kyiv based photo studio / 90 m²
+          </p>
 
-          <p className="mt-2 font-mono">
+          <p className="mt-2 font-head">
             вартість оренди: {BOOKING_HOURLY_PRICE} грн/год
           </p>
 
