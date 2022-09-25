@@ -26,6 +26,7 @@ import type {
   BookingService,
   ContactInfo,
 } from "~/store/bookingSlice";
+import { getDateFormat } from "~/utils/date";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -172,6 +173,19 @@ export default function AdminBooking() {
     alert(`Видалено бронювання ${eventId}`);
   }, [submit, selectedAppointment]);
 
+  const onExportAppointmentData = useCallback(() => {
+    console.log("Exporting appointments data:");
+    console.log(appointments);
+
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(appointments, null, 2)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = `escp-appointments_${getDateFormat()}.json`;
+    link.click();
+  }, [appointments]);
+
   const getAppointmentTitle = (appointment: Appointment): string => {
     const info: ContactInfo = JSON.parse(appointment.contactInfo);
 
@@ -246,20 +260,35 @@ export default function AdminBooking() {
                 changeEvent={onChangeAppointment}
                 selectEvent={setSelectedAppointment}
               />
-              <button
-                type="button"
-                className="mt-4 rounded-md bg-blue-500 p-2 text-white"
-                onClick={onConfirmAppointment}
-              >
-                {selectedAppointment?.confirmed ? "Скасувати" : "Підтвердити"}
-              </button>
-              <button
-                type="button"
-                className="mt-4 ml-4 rounded-md bg-red-500 p-2 text-white"
-                onClick={() => onRemoveAppointment()}
-              >
-                Видалити
-              </button>
+
+              <div className="flex w-full flex-wrap justify-between">
+                <span>
+                  <button
+                    type="button"
+                    className="mt-4 rounded-md bg-green-500 p-2 text-white"
+                    onClick={onConfirmAppointment}
+                  >
+                    {selectedAppointment?.confirmed
+                      ? "Скасувати"
+                      : "Підтвердити"}
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-4 ml-4 rounded-md bg-red-500 p-2 text-white"
+                    onClick={() => onRemoveAppointment()}
+                  >
+                    Видалити
+                  </button>
+                </span>
+
+                <button
+                  type="button"
+                  className="mt-4 ml-4 rounded-md bg-blue-500 p-2 text-white"
+                  onClick={() => onExportAppointmentData()}
+                >
+                  Експорт даних
+                </button>
+              </div>
             </Form>
 
             <h4 className="mt-4 mb-2 font-medium">Обране бронювання:</h4>
