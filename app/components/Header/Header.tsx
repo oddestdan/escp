@@ -4,21 +4,21 @@ export default function Header({ current }: { current?: string }) {
       <span
         className={`${
           current === "escp" ? "font-medium" : "invisible"
-        } mx-0.5 flex-1 p-0.5 text-left`}
+        } mx-0.5 p-0.5 md:flex-1 md:text-left`}
       >
         escp.90
       </span>
       <span
         className={`${
           current === "booking" ? "font-medium" : "invisible"
-        } mx-0.5 flex-1 p-0.5 text-center`}
+        } mx-0.5 p-0.5 md:flex-1 md:text-center`}
       >
         бронювання
       </span>
       <span
         className={`${
           current === "about" ? "font-medium" : "invisible"
-        } mx-0.5 flex-1 p-0.5 text-right`}
+        } mx-0.5 p-0.5 md:flex-1 md:text-right`}
       >
         про студію
       </span>
