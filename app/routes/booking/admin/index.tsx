@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { redirect } from "@remix-run/server-runtime";
 import {
   confirmAppointment,
@@ -13,7 +13,6 @@ import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { getAppointments } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
-import { getIsMobile } from "~/utils/breakpoints";
 import { requireUserId } from "~/session.server";
 import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
@@ -173,11 +172,6 @@ export default function AdminBooking() {
     alert(`Видалено бронювання ${eventId}`);
   }, [submit, selectedAppointment]);
 
-  const [isMobile, setIsMobile] = useState(true);
-  useEffect(() => {
-    setIsMobile(getIsMobile());
-  }, []);
-
   const getAppointmentTitle = (appointment: Appointment): string => {
     const info: ContactInfo = JSON.parse(appointment.contactInfo);
 
@@ -223,7 +217,6 @@ export default function AdminBooking() {
           <div className="my-4 sm:w-4/5">
             <Form ref={formRef} method="post">
               <AdminCalendar
-                isMobile={isMobile}
                 events={appointments.map((app) => {
                   const isSelected = app.id === selectedAppointment?.id;
                   return {

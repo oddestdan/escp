@@ -75,8 +75,10 @@ export default function Footer() {
       <a href="https://savelife.in.ua/donate/" target="_blank" rel="noreferrer">
         🇺🇦
       </a>
-      {!isMobile && <Separator />}
-      <span className={`flex justify-center ${isMobile ? "mt-4 w-full" : ""}`}>
+      <span className="hidden md:inline">
+        <Separator />
+      </span>
+      <span className="mt-4 flex w-full justify-center md:mt-0 md:w-auto">
         <SocialIcons isMobile={isMobile} />
       </span>
     </div>

@@ -28,7 +28,6 @@ export interface AdminCalendarEvent {
 }
 
 export interface AdminCalendarProps {
-  isMobile: boolean;
   events: AdminCalendarEvent[];
   createEvent: (event: Omit<AdminCalendarEvent, "id">) => void;
   changeEvent: (event: AdminCalendarEvent) => void;

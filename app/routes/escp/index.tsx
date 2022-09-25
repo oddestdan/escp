@@ -1,10 +1,9 @@
 import { useNavigate } from "@remix-run/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
-import { getIsMobile } from "~/utils/breakpoints";
 import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 // desktop
@@ -19,11 +18,6 @@ export default function Escp() {
     navigate("/booking");
   }, [navigate]);
 
-  const [isMobile, setIsMobile] = useState(true);
-  useEffect(() => {
-    setIsMobile(getIsMobile());
-  }, []);
-
   return (
     <main className="flex min-h-screen w-full flex-col items-center p-4">
       <NavBar active="escp" />
@@ -32,28 +26,25 @@ export default function Escp() {
         <Header current="escp" />
 
         <div className="mx-auto flex flex-col text-center sm:w-3/5">
-          {!isMobile ? (
-            <span>
-              <img
-                className="ml-auto mt-4 inline aspect-[8/3] w-fit bg-stone-100"
-                src={imageSrcDesktopCollage}
-                alt="escp.90 instax collage"
-              />
-            </span>
-          ) : (
-            <span>
-              <img
-                className="ml-auto inline aspect-[1/1] w-fit bg-stone-100"
-                src={imageSrcMobileMain}
-                alt="escp.90 instax main"
-              />
-            </span>
-          )}
+          {/* Images wrappers */}
+          <span>
+            <img
+              className="ml-auto mt-4 hidden aspect-[8/3] w-fit bg-stone-100 md:inline"
+              src={imageSrcDesktopCollage}
+              alt="escp.90 instax collage"
+            />
+          </span>
+          <span>
+            <img
+              className="ml-auto inline aspect-[1/1] w-fit bg-stone-100 md:hidden"
+              src={imageSrcMobileMain}
+              alt="escp.90 instax main"
+            />
+          </span>
 
           <p className="font-head text-xl font-bold">
             Kyiv based photo studio / 90 m²
           </p>
-
           <p className="mt-2 font-head">
             вартість оренди: {BOOKING_HOURLY_PRICE} грн/год
           </p>
