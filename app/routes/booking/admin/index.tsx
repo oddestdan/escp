@@ -32,6 +32,46 @@ type LoaderData = {
   appointments: Appointment[];
 };
 
+// [active, non-active]
+const confirmedColors = ["mediumblue", "royalblue"];
+const defaultColors = ["dimgrey", "grey"];
+const importedColors = ["darkorange", "orange"];
+
+const getAppointmentTitle = (appointment: Appointment): string => {
+  const info: ContactInfo = JSON.parse(appointment.contactInfo);
+
+  if (!info.firstName || !info.tel) {
+    return "Incognito";
+  }
+
+  return `${info.tel}, ${info.firstName}${
+    info.lastName ? ` ${info.lastName[0]}.` : ""
+  }`;
+};
+
+const getAppointmentDescription = (description: {
+  services: BookingService[];
+  additionalServices: AdditionalServices;
+}) => {
+  if (!description.additionalServices) {
+    return "--";
+  }
+
+  const {
+    // services: _,
+    additionalServices: { assistance, extra },
+  } = description;
+
+  return (
+    [
+      `${assistance ? `ассистент: ${assistance} год` : ""}`,
+      `${extra ? `додатково: "${extra}"` : ""}`,
+    ]
+      .filter((x) => x.length)
+      .join(" | ") || "--"
+  );
+};
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const method = request.method;
@@ -48,12 +88,21 @@ export const action: ActionFunction = async ({ request }) => {
       invariant(typeof timeTo === "string", "timeTo must be a string");
       invariant(typeof date === "string", "date must be a string");
       invariant(typeof title === "string", "title must be a string");
+
+      // for imported appointments
+      const contact = title.endsWith("imported")
+        ? {
+            tel: title.split(",")[0],
+            firstName: title.substring(title.indexOf(",") + 1),
+          }
+        : { tel: "+380000000000", firstName: title };
+
       return await createAppointment({
         timeFrom,
         timeTo,
         date,
         services: "[]",
-        contactInfo: JSON.stringify({ firstName: title, tel: "+380000000000" }),
+        contactInfo: JSON.stringify(contact),
         price: "0",
       });
     }
@@ -117,6 +166,37 @@ export default function AdminBooking() {
   console.log("appointments loaded:");
   console.log(appointments);
 
+  const toCalendarAppointment = useCallback(
+    (app: Appointment) => {
+      const title = getAppointmentTitle(app);
+      const isSelected = app.id === selectedAppointment?.id;
+      const isImported = title.endsWith("imported");
+
+      return {
+        id: app.id,
+        start: app.timeFrom,
+        end: app.timeTo,
+        description: getAppointmentDescription(JSON.parse(app.services)),
+        title,
+        allDay: !app.timeFrom?.length || !app.timeTo?.length,
+        backgroundColor: app.confirmed
+          ? isSelected
+            ? confirmedColors[0]
+            : confirmedColors[1]
+          : isImported
+          ? isSelected
+            ? importedColors[0]
+            : importedColors[1]
+          : isSelected
+          ? defaultColors[0]
+          : defaultColors[1],
+        confirmed: app.confirmed,
+        borderColor: isSelected ? "red" : "transparent",
+      };
+    },
+    [selectedAppointment]
+  );
+
   const onCreateAppointment = useCallback(
     (event: Omit<AdminCalendarEvent, "id">) => {
       const formData = new FormData(formRef.current || undefined);
@@ -124,6 +204,7 @@ export default function AdminBooking() {
       formData.set("endTime", event.end);
       formData.set("date", event.start.split("T")[0]);
       formData.set("title", event.title);
+      console.log({ XXX: event.title });
       submit(formData, { method: "post" });
     },
     [submit]
@@ -186,40 +267,44 @@ export default function AdminBooking() {
     link.click();
   }, [appointments]);
 
-  const getAppointmentTitle = (appointment: Appointment): string => {
-    const info: ContactInfo = JSON.parse(appointment.contactInfo);
+  const onImportAppointmentData = useCallback(
+    (e) => {
+      console.log("Importing appointments data:");
 
-    if (!info.firstName || !info.tel) {
-      return "Incognito";
-    }
+      if (!e.target.files || !e.target.files[0]) {
+        return alert("Помилка про імпортуванні файлу!");
+      }
 
-    return `${info.firstName} ${info.lastName ? info.lastName[0] + "." : ""}, ${
-      info.tel
-    }`;
-  };
+      const importedFile = e.target.files[0];
 
-  const getAppointmentDescription = (description: {
-    services: BookingService[];
-    additionalServices: AdditionalServices;
-  }) => {
-    if (!description.additionalServices) {
-      return "--";
-    }
+      if (importedFile.type !== "application/json") {
+        return alert("Невірний формат файлу!");
+      }
 
-    const {
-      // services: _,
-      additionalServices: { assistance, extra },
-    } = description;
+      const fileReader = new FileReader();
+      fileReader.readAsText(importedFile, "UTF-8");
+      fileReader.onload = (e) => {
+        const jsonData = JSON.parse(
+          e.target?.result as string
+        ) as Appointment[];
 
-    return (
-      [
-        `${assistance ? `ассистент: ${assistance} год` : ""}`,
-        `${extra ? `додатково: "${extra}"` : ""}`,
-      ]
-        .filter((x) => x.length)
-        .join(" | ") || "--"
-    );
-  };
+        const mappedData = jsonData.map(toCalendarAppointment).map((app) => ({
+          ...app,
+          title: `${app.title}-imported`,
+        }));
+
+        try {
+          mappedData.forEach((app) => {
+            onCreateAppointment(app);
+          });
+        } catch (error) {
+          console.error("Error importing and adding appointments into db!");
+          console.error(error);
+        }
+      };
+    },
+    [toCalendarAppointment, onCreateAppointment]
+  );
 
   return (
     <div className="flex w-full justify-center">
@@ -231,31 +316,7 @@ export default function AdminBooking() {
           <div className="my-4 sm:w-4/5">
             <Form ref={formRef} method="post">
               <AdminCalendar
-                events={appointments.map((app) => {
-                  const isSelected = app.id === selectedAppointment?.id;
-                  return {
-                    id: app.id,
-                    start: app.timeFrom,
-                    end: app.timeTo,
-                    description: getAppointmentDescription(
-                      JSON.parse(app.services)
-                    ),
-                    title: `${getAppointmentTitle(app)}`,
-                    allDay: !app.timeFrom?.length || !app.timeTo?.length,
-                    backgroundColor: app.confirmed
-                      ? isSelected
-                        ? "mediumblue"
-                        : "royalblue"
-                      : isSelected
-                      ? "dimgrey"
-                      : "grey",
-                    confirmed: app.confirmed,
-                    borderColor:
-                      app.id === selectedAppointment?.id
-                        ? "red"
-                        : "transparent",
-                  };
-                })}
+                events={appointments.map(toCalendarAppointment)}
                 createEvent={onCreateAppointment}
                 changeEvent={onChangeAppointment}
                 selectEvent={setSelectedAppointment}
@@ -275,19 +336,34 @@ export default function AdminBooking() {
                   <button
                     type="button"
                     className="mt-4 ml-4 rounded-md bg-red-500 p-2 text-white"
-                    onClick={() => onRemoveAppointment()}
+                    onClick={onRemoveAppointment}
                   >
                     Видалити
                   </button>
                 </span>
 
-                <button
-                  type="button"
-                  className="mt-4 ml-4 rounded-md bg-blue-500 p-2 text-white"
-                  onClick={() => onExportAppointmentData()}
-                >
-                  Експорт даних
-                </button>
+                <span>
+                  <button
+                    type="button"
+                    className="mt-4 rounded-md bg-blue-500 p-2 text-white"
+                    onClick={onExportAppointmentData}
+                  >
+                    Експорт даних
+                  </button>
+
+                  <input
+                    type="file"
+                    id="input_json"
+                    onChange={onImportAppointmentData}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="input_json"
+                    className="mt-4 ml-4 cursor-pointer rounded-md bg-violet-500 p-2 font-normal text-white"
+                  >
+                    Імпорт даних
+                  </label>
+                </span>
               </div>
             </Form>
 
