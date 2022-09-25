@@ -66,11 +66,18 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "escp.90",
-  viewport: "width=device-width,initial-scale=1",
-});
+export const meta: MetaFunction = () => {
+  return {
+    // Special cases
+    charset: "utf-8", // <meta charset="utf-8">
+    title: "escp.90", // <title>escp.90</title>
+
+    // name => content
+    description:
+      "escp.90 - Kyiv based photo studio / 90 m². Оренда: 600 грн/год", // <meta name="description" content="escp.90 - Kyiv based photo studio / 90 m². Оренда: 600 грн/год">
+    viewport: "width=device-width,initial-scale=1", // <meta name="viewport" content="width=device-width,initial-scale=1">
+  };
+};
 
 type LoaderData = {
   user: Awaited<ReturnType<typeof getUser>>;
