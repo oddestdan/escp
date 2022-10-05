@@ -59,17 +59,16 @@ const formAvailableSlots = (
   const selectedDateSlots =
     slots.find(({ date }) => date === selectedDate)?.availableTimeSlots || [];
 
-  return selectedDateSlots
-    .map((slot) => ({
-      slot,
-      isBooked: Boolean(
-        bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
-      ),
-      isConfirmed: Boolean(
-        bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
-      ),
-    }))
-    .filter((slot) => !slot.isConfirmed);
+  return selectedDateSlots.map((slot) => ({
+    slot,
+    isBooked: Boolean(
+      bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
+    ),
+    isConfirmed: Boolean(
+      bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
+    ),
+  }));
+  // .filter((slot) => !slot.isConfirmed); // used if you don't want to show confirmed slots
 };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
@@ -92,6 +91,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const memoedTimeSlots = useMemo(() => {
     return formAvailableSlots(slots, appointments, selectedDate);
   }, [slots, appointments, selectedDate]);
+  console.log(memoedTimeSlots);
 
   return (
     <>

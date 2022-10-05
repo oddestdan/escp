@@ -109,8 +109,14 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
   const mouseDownHandler = (i: number) => {
     if (i > end) {
+      if (nonBookedIndexesBool.slice(end, i + 1).some((x) => !x)) {
+        setStart(i);
+      }
       setEnd(i);
     } else if (i < start) {
+      if (nonBookedIndexesBool.slice(i, start + 1).some((x) => !x)) {
+        setEnd(i);
+      }
       setStart(i);
     } else if (
       (i === start && i === end - 1) ||
