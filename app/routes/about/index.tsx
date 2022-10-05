@@ -5,9 +5,9 @@ import ImageGallery from "react-image-gallery";
 
 // pairs of [highQuality, lowQuality]
 const galleryImages: [string, string][] = [
-  ["https://i.imgur.com/Ew6LphX.png", "https://i.imgur.com/ianw6jB.jpg"],
-  ["https://i.imgur.com/boXCkOq.png", "https://i.imgur.com/efUOarL.jpg"],
-  ["https://i.imgur.com/0ch3UKH.png", "https://i.imgur.com/nSuRR73.jpg"],
+  ["https://i.imgur.com/2eExb8V.png", "https://i.imgur.com/ianw6jB.jpg"],
+  ["https://i.imgur.com/EZboJOw.png", "https://i.imgur.com/efUOarL.jpg"],
+  ["https://i.imgur.com/1hkc4mA.png", "https://i.imgur.com/nSuRR73.jpg"],
   ["https://i.imgur.com/Kt5h5f7.jpg", "https://i.imgur.com/pRnsIFP.jpg"],
   ["https://i.imgur.com/xt1Vk9V.jpg", "https://i.imgur.com/BIcRzEx.jpg"],
   ["https://i.imgur.com/c7vgeH5.jpg", "https://i.imgur.com/fgKCST5.jpg"],
@@ -32,22 +32,22 @@ export default function About() {
               {/* desktop/left-side mobile/bottom*/}
               <ul className="">
                 {[
+                  "блекаут штори",
+                  "диван на коліщатках",
+                  "колонка jbl",
+                  "стіл на коліщатках",
+                  "стільці",
                   "два світла godox fv150",
                   "чорно-білі прапори",
-                  "диван на коліщатках",
-                  "стільці",
-                  "стіл на коліщатках",
-                  "килим",
-                  "блекаут штори",
-                  "колонка jbl",
                   [
                     "гардероб",
                     "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
                   ],
+                  "килим",
                   "бумажні фони",
-                  "вентилятор",
-                  "крісло",
                   "матрац",
+                  "крісло",
+                  "вентилятор",
                   "дзекрало",
                   "пульверизатор",
                   "відпарювач",
