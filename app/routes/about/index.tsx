@@ -25,14 +25,14 @@ export default function About() {
 
         <div className="mx-auto mb-4 flex w-full flex-col sm:w-3/5">
           {/* About page content */}
-          <p className="my-4">Фотостудія 90 м², бул. Вацлава Гавела 4</p>
+          <p className="my-4">Фотостудія 90 м², бул. Вацлава Гавела, 4</p>
           <div className="mb-4 flex flex-col-reverse justify-between lg:flex-row">
             <div className="mb-4 mt-4 w-full lg:mt-0 lg:w-1/3">
               Що входить у вартість та який є реквізит:
               {/* desktop/left-side mobile/bottom*/}
               <ul className="">
                 {[
-                  "2 світла godox fv150",
+                  "два світла godox fv150",
                   "чорно-білі прапори",
                   "диван на коліщатках",
                   "стільці",
@@ -40,7 +40,10 @@ export default function About() {
                   "килим",
                   "блекаут штори",
                   "колонка jbl",
-                  "гардероб",
+                  [
+                    "гардероб",
+                    "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
+                  ],
                   "бумажні фони",
                   "вентилятор",
                   "крісло",
@@ -48,12 +51,23 @@ export default function About() {
                   "дзекрало",
                   "пульверизатор",
                   "відпарювач",
-                ].map((good) => (
+                ].map((good: string | string[]) => (
                   <li
-                    key={good}
+                    key={typeof good === "string" ? good : good[0]}
                     className="list-inside list-[decimal-leading-zero]"
                   >
-                    {good}
+                    {typeof good === "string" ? (
+                      good
+                    ) : (
+                      <a
+                        className="text-stone-900 underline hover:text-stone-400"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={good[1]}
+                      >
+                        {good[0]}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -1,13 +1,21 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-import type { StoreBooking } from "~/store/bookingSlice";
+import type { BookingState, StoreBooking } from "~/store/bookingSlice";
 import { BookingService } from "~/store/bookingSlice";
 
-export const BookingSummary: React.FC = () => {
-  const { dateTime, additionalServices, contact, price } = useSelector(
-    (store: StoreBooking) => store.booking
-  );
+type SummaryBookingState = Pick<
+  BookingState,
+  "dateTime" | "additionalServices" | "contact" | "price"
+>;
+
+export interface BookingSummaryProps {
+  summary?: SummaryBookingState;
+}
+
+export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
+  const { booking } = useSelector((store: StoreBooking) => store);
+  const { dateTime, additionalServices, contact, price } = summary || booking;
 
   const memoedDateTime = useMemo(() => {
     return `${new Date(dateTime.date).toLocaleDateString("uk")} | ${[

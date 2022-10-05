@@ -25,7 +25,7 @@ export default function rules() {
           </p>
           <p className="mt-4">
             <span className="bg-white">
-              Фактичний час оренди при бронюванні однієї години -- 55 хвилин.
+              Фактичний час оренди при бронюванні однієї години – 55 хвилин.
             </span>
           </p>
           <p className="mt-4">

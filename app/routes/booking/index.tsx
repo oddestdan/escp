@@ -53,9 +53,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   console.log(appointmentDTO);
 
-  await createAppointment(appointmentDTO);
+  const { id } = await createAppointment(appointmentDTO);
 
-  return redirect("/booking/confirmation");
+  return redirect(`/booking/confirmation/${id}`);
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {

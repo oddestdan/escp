@@ -1,27 +1,41 @@
-import { useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
+import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
 import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
 import { Separator } from "~/components/Separator/Separator";
-import type { StoreBooking } from "~/store/bookingSlice";
 import { clearAll } from "~/store/bookingSlice";
+import { getAppointmentById } from "~/models/appointment.server";
+import { json } from "@remix-run/server-runtime";
+import type { Appointment } from "~/models/appointment.server";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import invariant from "tiny-invariant";
 
 const imageSrcHurray = "https://i.imgur.com/iGfxlZi.png";
 
-// TODO: Take data from url or somehow else to display correct data
-// Cleanup when landing on the page instead of before unloading
+type LoaderData = { appointment: Appointment };
+
+export const loader: LoaderFunction = async ({ params }) => {
+  invariant(params.confirmationId, "Expected params.confirmationId");
+
+  const appointment = await getAppointmentById(params.confirmationId);
+  if (!appointment) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return json<LoaderData>({ appointment });
+};
+
 export default function Confirmation() {
+  const { appointment } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log(appointment);
 
   const cleanupCb = useCallback(() => dispatch(clearAll()), [dispatch]);
-  const {
-    dateTime: { time },
-  } = useSelector((store: StoreBooking) => store.booking);
 
   const navigateToBooking = useCallback(() => {
     navigate("/booking");
@@ -29,19 +43,34 @@ export default function Confirmation() {
 
   // redirect if not sufficient information
   useEffect(() => {
-    if (time.start && time.end) {
-      return;
+    if (!appointment.id) {
+      navigateToBooking();
     }
-    navigate("/booking");
-  }, [navigate, time.end, time.start]);
+  }, [navigateToBooking, appointment]);
 
   // cleanup
-  useEffect(
-    () => () => {
-      cleanupCb();
+  useEffect(() => {
+    cleanupCb();
+  }, [dispatch, cleanupCb]);
+
+  const mappedAppointment = {
+    dateTime: {
+      date: appointment.date,
+      time: {
+        start: appointment.timeFrom,
+        end: appointment.timeTo,
+        diff: +appointment.price, // TODO: ???
+      },
+      slots: [],
     },
-    [dispatch, cleanupCb]
-  );
+    additionalServices: JSON.parse(appointment.services).additionalServices,
+    price: {
+      booking: +appointment.price,
+    },
+    contact: JSON.parse(appointment.contactInfo),
+  };
+
+  console.log({ mappedAppointment });
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center p-4">
@@ -62,9 +91,15 @@ export default function Confirmation() {
             замовлення успішно створено
           </h2>
 
-          <BookingSummary />
+          <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
+            {mappedAppointment.price.booking} грн
+          </h4>
+
+          <BookingSummary summary={mappedAppointment} />
 
           <Separator />
+
+          <CopyableCard />
 
           <p className="mb-4">
             Очікуємо від вас підтвердження вашої оплати і все готово.

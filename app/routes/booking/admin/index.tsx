@@ -28,10 +28,6 @@ import type {
 } from "~/store/bookingSlice";
 import { getDateFormat } from "~/utils/date";
 
-type LoaderData = {
-  appointments: Appointment[];
-};
-
 // [active, non-active]
 const confirmedColors = ["mediumblue", "royalblue"];
 const defaultColors = ["dimgrey", "grey"];
@@ -70,6 +66,16 @@ const getAppointmentDescription = (description: {
       .filter((x) => x.length)
       .join(" | ") || "--"
   );
+};
+
+const exportAppointmentData = (data: Appointment[], fileTitle: string) => {
+  const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+    JSON.stringify(data, null, 2)
+  )}`;
+  const link = document.createElement("a");
+  link.href = jsonString;
+  link.download = `${fileTitle}.json`;
+  link.click();
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -143,6 +149,8 @@ export const action: ActionFunction = async ({ request }) => {
       return null;
   }
 };
+
+type LoaderData = { appointments: Appointment[] };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
@@ -241,12 +249,12 @@ export default function AdminBooking() {
   }, [selectedAppointment, submit]);
 
   const onRemoveAppointment = useCallback(() => {
-    if (!selectedAppointment) {
-      alert(`Не можна видалити бронювання`);
+    if (!selectedAppointment || !selectedAppointment.id) {
+      alert(`Нема що видалити`);
       return;
     }
 
-    const eventId = selectedAppointment?.id;
+    const eventId = selectedAppointment.id;
     const formData = new FormData(formRef.current || undefined);
     formData.set("appointmentId", eventId);
     submit(formData, { method: "delete" });
@@ -255,16 +263,33 @@ export default function AdminBooking() {
   }, [submit, selectedAppointment]);
 
   const onExportAppointmentData = useCallback(() => {
+    if (!selectedAppointment || !selectedAppointment.id) {
+      alert(`Нема що експортувати`);
+      return;
+    }
+
+    const appointment = appointments.find(
+      (app) => app.id === selectedAppointment?.id
+    );
+    if (!appointment || !appointment.id) {
+      alert(`Нема що експортувати`);
+      return;
+    }
+
+    console.log("Exporting appointment data:");
+    console.log(appointment);
+
+    exportAppointmentData(
+      [appointment],
+      `escp-appointment-${selectedAppointment.id}_${getDateFormat()}`
+    );
+  }, [selectedAppointment, appointments]);
+
+  const onExportAppointmentsData = useCallback(() => {
     console.log("Exporting appointments data:");
     console.log(appointments);
 
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(appointments, null, 2)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = `escp-appointments_${getDateFormat()}.json`;
-    link.click();
+    exportAppointmentData(appointments, `escp-appointments_${getDateFormat()}`);
   }, [appointments]);
 
   const onImportAppointmentData = useCallback(
@@ -323,32 +348,39 @@ export default function AdminBooking() {
               />
 
               <div className="flex w-full flex-wrap justify-between">
-                <span>
+                <span className="mr-8">
                   <button
                     type="button"
-                    className="mt-4 rounded-md bg-green-500 p-2 text-white"
+                    className="mt-4 mr-4 rounded-md bg-green-500 p-2 text-white"
                     onClick={onConfirmAppointment}
                   >
                     {selectedAppointment?.confirmed
-                      ? "Скасувати"
-                      : "Підтвердити"}
+                      ? "Скасувати 1"
+                      : "Підтвердити 1"}
                   </button>
                   <button
                     type="button"
-                    className="mt-4 ml-4 rounded-md bg-red-500 p-2 text-white"
+                    className="mt-4 mr-4 rounded-md bg-red-500 p-2 text-white"
                     onClick={onRemoveAppointment}
                   >
-                    Видалити
+                    Видалити 1
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-4 rounded-md bg-blue-500 p-2 text-white"
+                    onClick={onExportAppointmentData}
+                  >
+                    Експортувати 1
                   </button>
                 </span>
 
                 <span>
                   <button
                     type="button"
-                    className="mt-4 rounded-md bg-blue-500 p-2 text-white"
-                    onClick={onExportAppointmentData}
+                    className="mt-4 mr-4 rounded-md bg-blue-500 p-2 text-white"
+                    onClick={onExportAppointmentsData}
                   >
-                    Експорт даних
+                    Експортувати всі дані ↓
                   </button>
 
                   <input
@@ -359,9 +391,9 @@ export default function AdminBooking() {
                   />
                   <label
                     htmlFor="input_json"
-                    className="mt-4 ml-4 cursor-pointer rounded-md bg-violet-500 p-2 font-normal text-white"
+                    className="mt-4 inline-block cursor-pointer rounded-md bg-violet-500 p-2 font-normal text-white"
                   >
-                    Імпорт даних
+                    Імпортувати дані ↑
                   </label>
                 </span>
               </div>

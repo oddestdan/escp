@@ -53,7 +53,7 @@ export const formatFullAppointment = ({
 }: AdminCalendarEvent): string => {
   return `Бронювання: ${id}\nПідтверджено: ${
     confirmed ? "ТАК" : "НІ"
-  }\nАвтор: ${title}\nСервіси: ${description}\nДата та час: ${prettyFormatDate(
+  }\nАвтор: ${title}\nСервіси: ${description}\nДата та час:\n${prettyFormatDate(
     new Date(start),
     new Date(end)
   )}`;

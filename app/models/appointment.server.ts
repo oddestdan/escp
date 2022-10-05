@@ -7,6 +7,10 @@ export async function getAppointments() {
   return prisma.appointment.findMany();
 }
 
+export async function getAppointmentById(id: string) {
+  return prisma.appointment.findUnique({ where: { id } });
+}
+
 export async function createAppointment(
   appointment: Pick<
     Appointment,
