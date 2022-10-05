@@ -9,8 +9,8 @@ module.exports = {
     fontFamily: {
       // mono: ['"IBM Plex Mono"'],
       mono: ['"Roboto Mono"'],
-      sans: ["Roboto"],
-      head: ["Montserrat", "Roboto"],
+      sans: ["Commissioner", "Montserrat"],
+      head: ["Commissioner", "Montserrat"],
     },
   },
   plugins: [],

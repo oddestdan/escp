@@ -38,8 +38,12 @@ export const links: LinksFunction = () => {
     // Regular fonts
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap",
-    }, // Roboto Flex
+      href: "https://fonts.googleapis.com/css2?family=Commissioner:wght@100;300;400;500;700&display=swap",
+    }, // Commissioner
+    // {
+    //   rel: "stylesheet",
+    //   href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap",
+    // }, // Roboto Flex
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap",

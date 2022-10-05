@@ -42,7 +42,7 @@ export default function Escp() {
             />
           </span>
 
-          <p className="font-head text-xl font-bold">
+          <p className="font-head text-2xl font-bold">
             Kyiv based photo studio / 90 m²
           </p>
           <p className="mt-2 font-head">
