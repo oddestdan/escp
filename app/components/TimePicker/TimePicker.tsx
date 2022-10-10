@@ -50,7 +50,7 @@ const renderTimeSlotsRange = (
 
   return (
     <span>
-      {duration} | {formatCalculatedTimePeriod(diff, isMobile)}, {total} грн
+      {duration} | {formatCalculatedTimePeriod(diff, isMobile)} ({total} грн)
     </span>
   );
 };

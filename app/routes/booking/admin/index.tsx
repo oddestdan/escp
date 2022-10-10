@@ -6,9 +6,6 @@ import {
 } from "~/models/appointment.server";
 import { updateAppointment } from "~/models/appointment.server";
 import { deleteAppointment } from "~/models/appointment.server";
-import AdminCalendar, {
-  formatFullAppointment,
-} from "~/components/AdminCalendar/AdminCalendar";
 import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { getAppointments } from "~/models/appointment.server";
@@ -18,14 +15,14 @@ import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
 
 import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
+import AdminCalendar, {
+  prettyFormatDate,
+} from "~/components/AdminCalendar/AdminCalendar";
 import type { ActionFunction } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
-import type {
-  AdditionalServices,
-  BookingService,
-  ContactInfo,
-} from "~/store/bookingSlice";
+import type { AdditionalServices, ContactInfo } from "~/store/bookingSlice";
+import { BookingService } from "~/store/bookingSlice";
 import { getDateFormat } from "~/utils/date";
 
 // [active, non-active]
@@ -49,18 +46,24 @@ const getAppointmentDescription = (description: {
   services: BookingService[];
   additionalServices: AdditionalServices;
 }) => {
-  if (!description.additionalServices) {
+  if (!description.additionalServices && !description.services) {
     return "--";
   }
 
   const {
-    // services: _,
+    services,
     additionalServices: { assistance, extra },
   } = description;
+
+  const regular = services.filter(
+    (s) => s !== BookingService.assistance && s !== BookingService.extra
+  );
+  if (extra) regular.pop();
 
   return (
     [
       `${assistance ? `ассистент: ${assistance} год` : ""}`,
+      ...regular,
       `${extra ? `додатково: "${extra}"` : ""}`,
     ]
       .filter((x) => x.length)
@@ -76,6 +79,23 @@ const exportAppointmentData = (data: Appointment[], fileTitle: string) => {
   link.href = jsonString;
   link.download = `${fileTitle}.json`;
   link.click();
+};
+
+const formatFullAppointment = ({
+  title,
+  start,
+  end,
+  id,
+  description,
+  confirmed,
+}: AdminCalendarEvent): string[] => {
+  return [
+    `Бронювання: ${id}`,
+    `Підтверджено: ${confirmed ? "ТАК" : "НІ"}`,
+    `Автор: ${title}`,
+    `Сервіси: ${description}`,
+    `Дата та час: ${prettyFormatDate(new Date(start), new Date(end))}`,
+  ].filter(Boolean);
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -212,7 +232,6 @@ export default function AdminBooking() {
       formData.set("endTime", event.end);
       formData.set("date", event.start.split("T")[0]);
       formData.set("title", event.title);
-      console.log({ XXX: event.title });
       submit(formData, { method: "post" });
     },
     [submit]
@@ -400,11 +419,13 @@ export default function AdminBooking() {
             </Form>
 
             <h4 className="mt-4 mb-2 font-medium">Обране бронювання:</h4>
-            <pre>
+            <section>
               {selectedAppointment
-                ? formatFullAppointment(selectedAppointment)
+                ? formatFullAppointment(selectedAppointment).map((line) => (
+                    <p key={line}>{line}</p>
+                  ))
                 : "--"}
-            </pre>
+            </section>
           </div>
         </div>
       </main>

@@ -4,6 +4,8 @@ export const defaultEventTitle = "Зайнято";
 
 export const BOOKING_HOURLY_PRICE = 600;
 export const ASSISTANCE_HOURLY_PRICE = 200;
+export const INSTAX_PRICE = 300;
+export const INSTAX_CARTRIDGED_PRICE = 800;
 
 export const TIMESLOT_OFFSET_MINUTES = 60; // allows to offset time slot for 60 minutes (1 hour timeslot minimum)
 

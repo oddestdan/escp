@@ -52,6 +52,7 @@ export default function Confirmation() {
     cleanupCb();
   }, [dispatch, cleanupCb]);
 
+  const allServices = JSON.parse(appointment.services);
   const mappedAppointment = {
     dateTime: {
       date: appointment.date,
@@ -62,7 +63,8 @@ export default function Confirmation() {
       },
       slots: [],
     },
-    additionalServices: JSON.parse(appointment.services).additionalServices,
+    services: allServices.services,
+    additionalServices: allServices.additionalServices,
     price: {
       booking: +appointment.price,
     },

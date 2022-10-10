@@ -43,22 +43,6 @@ export const prettyFormatDate = (start: Date | null, end: Date | null) => {
   )}`;
 };
 
-export const formatFullAppointment = ({
-  title,
-  start,
-  end,
-  id,
-  description,
-  confirmed,
-}: AdminCalendarEvent): string => {
-  return `Бронювання: ${id}\nПідтверджено: ${
-    confirmed ? "ТАК" : "НІ"
-  }\nАвтор: ${title}\nСервіси: ${description}\nДата та час:\n${prettyFormatDate(
-    new Date(start),
-    new Date(end)
-  )}`;
-};
-
 const AdminCalendar: React.FC<AdminCalendarProps> = ({
   events,
   createEvent,

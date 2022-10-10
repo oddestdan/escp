@@ -9,12 +9,20 @@ import { BookingService } from "~/store/bookingSlice";
 import { bookingServicesList } from "~/store/bookingSlice";
 import { saveServices } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
-import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
+import {
+  ASSISTANCE_HOURLY_PRICE,
+  INSTAX_CARTRIDGED_PRICE,
+  INSTAX_PRICE,
+} from "~/utils/constants";
 import { BookingStepActions } from "../BookingStepActions";
 import ReactTooltip from "react-tooltip";
 
 const servicesLabelKeyMapper = {
   [BookingService.assistance]: "допомога асистента (200 грн/год)",
+  [BookingService.instax]: "аренда інстакс (300 грн)",
+  [BookingService.instaxCartridged]: "аренда інстакс з картриджами (800 грн)",
+  [BookingService.parking]: "мені потрібне паркомісце",
+  [BookingService.elevator]: "мені потрібен вантажний ліфт",
   [BookingService.extra]:
     "додаткові побажання (фон / спеціалізована зйомка / велика группа людей тощо)",
 };
@@ -22,6 +30,10 @@ const servicesLabelKeyMapper = {
 const servicesDetailsMapper = {
   [BookingService.assistance]:
     "Асистент допомагатиме вам з установкою світла, реквізитом та іншими питаннями",
+  [BookingService.instax]: "",
+  [BookingService.instaxCartridged]: "",
+  [BookingService.parking]: "",
+  [BookingService.elevator]: "",
   [BookingService.extra]: "",
   // "Додайте важливі побажання або інформацію, <br />деталі або категорію вашої зйомки, <br />хто та у якій кількості має бути присутнім на зйомці і т.д.",
 };
@@ -60,13 +72,22 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
         extra: extraService.length > 0 ? extraService : undefined,
       })
     );
-    assistanceHours &&
-      dispatch(
-        saveTotalPrice({
-          services: assistanceHours * ASSISTANCE_HOURLY_PRICE,
-          booking: price.booking,
-        })
-      );
+
+    // NOTE: 1 or 2 is instax-related stuff
+    const instaxPrice = checkedServices[1].checked
+      ? INSTAX_PRICE
+      : checkedServices[2].checked
+      ? INSTAX_CARTRIDGED_PRICE
+      : 0;
+    const assistancePrice = assistanceHours
+      ? assistanceHours * ASSISTANCE_HOURLY_PRICE
+      : 0;
+    dispatch(
+      saveTotalPrice({
+        services: instaxPrice + assistancePrice,
+        booking: price.booking,
+      })
+    );
     dispatch(saveCurrentStep(currentStep + 1));
   }, [
     dispatch,
@@ -84,6 +105,18 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   const onChangeCheckbox = useCallback(
     (i: number) => {
       const updatedServices = [...checkedServices];
+
+      // NOTE: 0 is assistance
+      if (i !== 0) {
+        setAssistanceHours(undefined);
+      }
+
+      // NOTE: 1 or 2 is instax-related stuff
+      [
+        [1, 2],
+        [2, 1],
+      ].forEach(([x, y]) => i === x && (updatedServices[y].checked = false));
+
       updatedServices[i].checked = !updatedServices[i].checked;
       setCheckedServices(updatedServices);
     },
@@ -97,18 +130,27 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     const extra = checkedServices.find(
       ({ service }) => service === BookingService.extra
     );
-    const services = [
-      assistance?.checked &&
-        assistanceHours &&
-        `${assistance.service}: ${assistanceHours} год., ${
-          ASSISTANCE_HOURLY_PRICE * assistanceHours
-        } грн`,
-      extra?.checked &&
-        extraService.length > 0 &&
-        `${extra.service}: ${extraService}`,
-    ];
 
-    return services.filter(Boolean).join(", ");
+    const assistanceString =
+      assistance?.checked &&
+      assistanceHours &&
+      `${assistance.service}: ${assistanceHours} год. (${
+        ASSISTANCE_HOURLY_PRICE * assistanceHours
+      } грн)`;
+    const extraString =
+      extra?.checked &&
+      extraService.length > 0 &&
+      `${extra.service}: ${extraService}`;
+
+    return [
+      assistanceString,
+      ...checkedServices
+        .filter(({ checked }) => checked)
+        .map(({ service }) => service),
+      extraString,
+    ]
+      .filter(Boolean)
+      .join(", ");
   }, [checkedServices, extraService, assistanceHours]);
 
   return (
@@ -146,7 +188,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
               {/* Checkmark + Label + Tooltip */}
               <label
                 htmlFor={service}
-                className="my-2 cursor-pointer pr-2 hover:bg-stone-100 hover:text-stone-500"
+                className="my-2 cursor-pointer px-2 hover:bg-stone-100 hover:text-stone-500"
                 onClick={() => onChangeCheckbox(i)}
               >
                 <input

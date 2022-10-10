@@ -22,15 +22,27 @@ export enum BookingStep {
 
 export enum BookingService {
   assistance = "допомога асистента",
+  instax = `аренда інстакс (300 грн)`,
+  instaxCartridged = "аренда інстакс з картриджами (800 грн)",
+  parking = "паркомісце",
+  elevator = "вантажний ліфт",
   extra = "інше",
 }
 export interface AdditionalServices {
   assistance?: number;
+  instax?: string;
+  instaxCartridged?: string;
+  parking?: string;
+  elevator?: string;
   extra?: string;
 }
 
 export const bookingServicesList = [
   BookingService.assistance,
+  BookingService.instax,
+  BookingService.instaxCartridged,
+  BookingService.parking,
+  BookingService.elevator,
   BookingService.extra,
 ];
 

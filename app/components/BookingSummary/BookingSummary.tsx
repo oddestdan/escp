@@ -3,10 +3,11 @@ import { useSelector } from "react-redux";
 
 import type { BookingState, StoreBooking } from "~/store/bookingSlice";
 import { BookingService } from "~/store/bookingSlice";
+import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
 
 type SummaryBookingState = Pick<
   BookingState,
-  "dateTime" | "additionalServices" | "contact" | "price"
+  "dateTime" | "services" | "additionalServices" | "contact" | "price"
 >;
 
 export interface BookingSummaryProps {
@@ -15,7 +16,8 @@ export interface BookingSummaryProps {
 
 export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
   const { booking } = useSelector((store: StoreBooking) => store);
-  const { dateTime, additionalServices, contact, price } = summary || booking;
+  const { dateTime, services, additionalServices, contact, price } =
+    summary || booking;
 
   const memoedDateTime = useMemo(() => {
     return `${new Date(dateTime.date).toLocaleDateString("uk")} | ${[
@@ -23,19 +25,30 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
       dateTime.time.end || dateTime.time.start,
     ]
       .map((date) => new Date(date).toLocaleTimeString("uk").slice(0, -3))
-      .join(" - ")}`.concat(`, ${price.booking} грн`);
+      .join(" - ")}`.concat(` (${price.booking} грн)`);
   }, [dateTime, price]);
 
   const memoedSelectedServicesList = useMemo(() => {
-    const services = [
+    const add =
       additionalServices.assistance &&
-        `${BookingService.assistance}: ${additionalServices.assistance} год., ${price.services} грн`,
-      additionalServices.extra &&
-        `${BookingService.extra}: ${additionalServices.extra}`,
-    ];
+      services.find((s) => s === BookingService.assistance) &&
+      `${BookingService.assistance}: ${additionalServices.assistance} год. (${
+        additionalServices.assistance * ASSISTANCE_HOURLY_PRICE
+      } грн)`;
 
-    return services.filter(Boolean).join(", ");
-  }, [additionalServices.assistance, additionalServices.extra, price]);
+    const regular = services.filter(
+      (s) => s !== BookingService.assistance && s !== BookingService.extra
+    );
+
+    const ext =
+      additionalServices.extra &&
+      services.find((s) => s === BookingService.extra) &&
+      `${BookingService.extra}: ${additionalServices.extra}`;
+
+    if (additionalServices.extra) regular.pop();
+
+    return [add, ...regular, ext].filter(Boolean).join(", ");
+  }, [services, additionalServices.assistance, additionalServices.extra]);
 
   const memoedContactInfo = useMemo(() => {
     const { firstName, lastName, tel } = contact;
