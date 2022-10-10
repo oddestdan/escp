@@ -69,6 +69,7 @@ export interface BookingState {
   currentStep: BookingStep;
   maxStepVisited: BookingStep;
   price: TotalPrice;
+  errorMessage: string;
 }
 
 const get3MonthSlots = () => {
@@ -98,6 +99,8 @@ export const initialState: BookingState = {
     booking: 0,
     services: 0,
   },
+
+  errorMessage: "",
 };
 
 const bookingSlice = createSlice({
@@ -143,6 +146,10 @@ const bookingSlice = createSlice({
     saveContactInfo(state: BookingState, action: PayloadAction<ContactInfo>) {
       state.contact = action.payload;
     },
+
+    setErrorMessage(state: BookingState, action: PayloadAction<string>) {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
@@ -155,5 +162,6 @@ export const {
   saveServices,
   saveAdditionalServices,
   saveContactInfo,
+  setErrorMessage,
 } = bookingSlice.actions;
 export default bookingSlice.reducer;

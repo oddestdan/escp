@@ -1,8 +1,13 @@
-import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useSearchParams,
+  useSubmit,
+} from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
@@ -13,12 +18,21 @@ import {
   createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
-import { saveCurrentStep, BookingStep } from "~/store/bookingSlice";
+import {
+  saveCurrentStep,
+  BookingStep,
+  setErrorMessage,
+} from "~/store/bookingSlice";
 import type { StoreBooking } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import NavBar from "~/components/NavBar/NavBar";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import Footer from "~/components/Footer/Footer";
+import {
+  BOOKING_TIME_TAKEN_MSG,
+  BOOKING_TIME_TAKEN_QS,
+} from "~/utils/constants";
+import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotification";
 
 type LoaderData = {
   appointments: Appointment[];
@@ -51,11 +65,14 @@ export const action: ActionFunction = async ({ request }) => {
     price,
   };
 
-  console.log(appointmentDTO);
+  const createdAppointment = await createAppointment(appointmentDTO);
+  console.log(createAppointment);
 
-  const { id } = await createAppointment(appointmentDTO);
+  if (!createdAppointment) {
+    return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
+  }
 
-  return redirect(`/booking/confirmation/${id}`);
+  return redirect(`/booking/confirmation/${createdAppointment.id}`);
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -63,13 +80,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!appointments) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ appointments });
+  return json<LoaderData>({
+    appointments,
+  });
 };
 
 export default function Booking() {
   const { appointments } = useLoaderData() as LoaderData;
   const dispatch = useDispatch();
   const submit = useSubmit();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -80,16 +100,18 @@ export default function Booking() {
     services,
     additionalServices,
     price,
+    errorMessage,
   } = useSelector((store: StoreBooking) => store.booking);
 
-  const memoedStepsData = useMemo(() => {
-    return [
+  const memoedStepsData = useMemo(
+    () => [
       { title: "час", icon: "ч" },
       { title: "сервіси", icon: "с" },
       { title: "інфо", icon: "і" },
       { title: "оплата", icon: "o" },
-    ];
-  }, []);
+    ],
+    []
+  );
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
@@ -110,49 +132,69 @@ export default function Booking() {
     [submit]
   );
 
+  useEffect(() => {
+    if (searchParams.get(BOOKING_TIME_TAKEN_QS)) {
+      dispatch(saveCurrentStep(BookingStep.DateTime));
+      searchParams.delete(BOOKING_TIME_TAKEN_QS);
+      setSearchParams(searchParams);
+
+      dispatch(setErrorMessage(BOOKING_TIME_TAKEN_MSG));
+      setTimeout(() => dispatch(setErrorMessage("")), 7000);
+    }
+  }, [dispatch, searchParams, setSearchParams]);
+
   return (
-    <main className="flex min-h-screen w-full flex-col p-4">
-      <NavBar active="booking" />
+    <>
+      {/* Fixed ErrorNotification */}
+      {errorMessage && <ErrorNotification message={errorMessage} />}
 
-      <div className="flex w-full flex-1 flex-col items-center font-light ">
-        <Header current="booking" />
-        <div className="my-4 w-full sm:w-3/5">
-          <ProgressBar
-            onStepClick={onStepClick}
-            activeIndex={currentStep}
-            stepData={memoedStepsData}
-          />
-          <ActiveBookingStep appointments={appointments} />
-          {currentStep === BookingStep.Payment && (
-            <Form method="post" className="my-4" ref={formRef}>
-              <input type="hidden" name="date" value={selectedDate} />
-              <input type="hidden" name="timeFrom" value={selectedTime.start} />
-              <input type="hidden" name="timeTo" value={selectedTime.end} />
-              <input
-                type="hidden"
-                name="services"
-                value={JSON.stringify({ services, additionalServices })}
-              />
-              <input
-                type="hidden"
-                name="contactInfo"
-                value={JSON.stringify(contact)}
-              />
-              <input
-                type="hidden"
-                name="price"
-                value={`${price.booking + (price.services || 0)}`}
-              />
-              <input type="hidden" />
-              <ActionButton buttonType="submit" onClick={bookAppointment}>
-                забронювати
-              </ActionButton>
-            </Form>
-          )}
+      <main className="flex min-h-screen w-full flex-col p-4">
+        <NavBar active="booking" />
+
+        <div className="flex w-full flex-1 flex-col items-center font-light ">
+          <Header current="booking" />
+          <div className="my-4 w-full sm:w-3/5">
+            <ProgressBar
+              onStepClick={onStepClick}
+              activeIndex={currentStep}
+              stepData={memoedStepsData}
+            />
+            <ActiveBookingStep appointments={appointments} />
+            {currentStep === BookingStep.Payment && (
+              <Form method="post" className="my-4" ref={formRef}>
+                <input type="hidden" name="date" value={selectedDate} />
+                <input
+                  type="hidden"
+                  name="timeFrom"
+                  value={selectedTime.start}
+                />
+                <input type="hidden" name="timeTo" value={selectedTime.end} />
+                <input
+                  type="hidden"
+                  name="services"
+                  value={JSON.stringify({ services, additionalServices })}
+                />
+                <input
+                  type="hidden"
+                  name="contactInfo"
+                  value={JSON.stringify(contact)}
+                />
+                <input
+                  type="hidden"
+                  name="price"
+                  value={`${price.booking + (price.services || 0)}`}
+                />
+                <input type="hidden" />
+                <ActionButton buttonType="submit" onClick={bookAppointment}>
+                  забронювати
+                </ActionButton>
+              </Form>
+            )}
+          </div>
         </div>
-      </div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </>
   );
 }

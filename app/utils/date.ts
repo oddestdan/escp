@@ -65,3 +65,11 @@ export const formatCalculatedTimePeriod = (diff: number, isMobile = false) => {
 
   return wordingHour + wordingMinute;
 };
+
+export const generateDateTimeSlotsISO = (date: string) => {
+  return new Array(24).fill(1).map((_, i) => {
+    return new Date(date)
+      .toISOString()
+      .replace(/T\d*/, "T" + `${i}`.padStart(2, "0"));
+  });
+};

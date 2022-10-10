@@ -17,6 +17,24 @@ export async function createAppointment(
     "date" | "timeFrom" | "timeTo" | "services" | "contactInfo" | "price"
   >
 ) {
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      date: appointment.date,
+    },
+  });
+  const isAppointmentTaken = appointments
+    .map(({ timeFrom, timeTo }) => [timeFrom, timeTo])
+    .some(
+      ([from, to]) =>
+        (appointment.timeFrom >= from && appointment.timeFrom < to) ||
+        (appointment.timeTo > from && appointment.timeTo <= to)
+    );
+
+  if (isAppointmentTaken) {
+    console.log("Appointment already taken");
+    return null;
+  }
+
   return prisma.appointment.create({ data: appointment });
 }
 

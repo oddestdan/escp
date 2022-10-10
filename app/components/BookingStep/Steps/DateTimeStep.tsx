@@ -91,7 +91,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const memoedTimeSlots = useMemo(() => {
     return formAvailableSlots(slots, appointments, selectedDate);
   }, [slots, appointments, selectedDate]);
-  console.log(memoedTimeSlots);
 
   return (
     <>

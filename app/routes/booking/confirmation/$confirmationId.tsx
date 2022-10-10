@@ -33,7 +33,6 @@ export default function Confirmation() {
   const { appointment } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(appointment);
 
   const cleanupCb = useCallback(() => dispatch(clearAll()), [dispatch]);
 
@@ -69,8 +68,6 @@ export default function Confirmation() {
     },
     contact: JSON.parse(appointment.contactInfo),
   };
-
-  console.log({ mappedAppointment });
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center p-4">
