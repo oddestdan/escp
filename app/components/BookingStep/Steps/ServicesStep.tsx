@@ -107,7 +107,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
       const updatedServices = [...checkedServices];
 
       // NOTE: 0 is assistance
-      if (i !== 0) {
+      if (i === 0 && checkedServices[i].checked) {
         setAssistanceHours(undefined);
       }
 
@@ -208,14 +208,18 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 </span>
 
                 {/* https://www.npmjs.com/package/react-tooltip */}
-                {servicesDetailsMapper[service].length > 0 && (
-                  <span
-                    className="radius ml-2 inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono text-stone-100 hover:bg-stone-400"
-                    data-tip={servicesDetailsMapper[service]}
-                  >
-                    i
-                  </span>
-                )}
+                {/* {servicesDetailsMapper[service].length > 0 && ( */}
+                <span
+                  className={`radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full text-center font-mono ${
+                    servicesDetailsMapper[service].length > 0
+                      ? "inline-block cursor-pointer bg-stone-300 text-stone-100 hover:bg-stone-400"
+                      : "invisible text-white"
+                  }`}
+                  data-tip={servicesDetailsMapper[service]}
+                >
+                  i
+                </span>
+                {/* )} */}
               </span>
             </span>
 
