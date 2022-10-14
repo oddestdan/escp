@@ -21,9 +21,9 @@ export enum BookingStep {
 }
 
 export enum BookingService {
-  assistance = "допомога асистента",
-  instax = `аренда інстакс (300 грн)`,
-  instaxCartridged = "аренда інстакс з картриджами (800 грн)",
+  assistance = "асистент",
+  instax = `інстакс (300 грн)`,
+  instaxCartridged = "інстакс з картриджами (800 грн)",
   parking = "паркомісце",
   elevator = "вантажний ліфт",
   extra = "інше",

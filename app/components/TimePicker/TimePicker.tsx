@@ -34,13 +34,14 @@ const renderTimeSlotsRange = (
     timeSlots[start >= end ? end : start] &&
     formatTimeSlot(timeSlots[start >= end ? end : start])
   }${
-    timeSlots[start] &&
-    timeSlots[end] &&
-    start !== end &&
-    addMinutes(timeSlots[start], TIMESLOT_OFFSET_MINUTES) !== timeSlots[end] &&
-    addMinutes(timeSlots[end], TIMESLOT_OFFSET_MINUTES) !== timeSlots[start]
-      ? " - ... - "
-      : " - "
+    // timeSlots[start] &&
+    // timeSlots[end] &&
+    // start !== end &&
+    // addMinutes(timeSlots[start], TIMESLOT_OFFSET_MINUTES) !== timeSlots[end] &&
+    // addMinutes(timeSlots[end], TIMESLOT_OFFSET_MINUTES) !== timeSlots[start]
+    //   ? " - ... - "
+    // :
+    " - "
   }${
     timeSlots[start <= end ? end : start] &&
     formatTimeSlot(

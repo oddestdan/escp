@@ -145,7 +145,12 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     return [
       assistanceString,
       ...checkedServices
-        .filter(({ checked }) => checked)
+        .filter(
+          ({ service, checked }) =>
+            checked &&
+            service !== BookingService.extra &&
+            service !== BookingService.assistance
+        )
         .map(({ service }) => service),
       extraString,
     ]
