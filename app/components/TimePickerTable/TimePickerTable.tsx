@@ -114,7 +114,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
   return (
     <div className={`XXX-aoa-date-picker`}>
       <ul
-        className={`mb-8 flex w-full flex-row justify-between font-mono text-xs sm:text-sm`}
+        className={`mb-8 mt-2 flex w-full flex-row justify-around font-mono text-xs sm:text-sm`}
       >
         {timeSlotsMatrix.map(
           (timeSlots, dayOfWeekIndex) =>
@@ -146,11 +146,9 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
                         }
                         aria-disabled={invalid}
                       >
-                        <div className="select-none px-[2px] py-[2px] sm:px-1 sm:py-1">
+                        <div className="select-none px-[1px] py-[2px] sm:px-1 sm:py-1">
                           {formatShortTimeSlot(slot)}
-                          <span className=" inline-block px-0 py-[3px] sm:px-1">
-                            -
-                          </span>
+                          <span className=" inline-block py-[3px]">-</span>
                           {formatShortTimeSlot(
                             addMinutes(slot, TIMESLOT_OFFSET_MINUTES)
                           )}

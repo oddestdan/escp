@@ -253,7 +253,7 @@ $aoa-date-time-container-desktop-width: 530px;
   }
 
   .XXX-aoa-time-picker {
-    border-bottom: $aoa-time-picker-border;
+    // border-bottom: $aoa-time-picker-border;
     margin-bottom: $aoa-time-picker-margin-mobile;
   }
 
@@ -296,7 +296,7 @@ $date-carousel-mobile-breakpoint: 335px;
 .XXX-date-carousel {
   position: relative;
   padding: $date-carousel-small-padding;
-  border-bottom: $date-carousel-border-bottom;
+  // border-bottom: $date-carousel-border-bottom;
   font-weight: 300;
 
   .XXX-date__box {
@@ -354,8 +354,7 @@ $date-carousel-mobile-breakpoint: 335px;
 .XXX-carousel.XXX-date-carousel {
   .slick {
     &-list {
-      transform: translateX(-8px);
-      width: calc(100% + 12px);
+      width: 100%;
       margin: auto;
     }
     &-prev {

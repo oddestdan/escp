@@ -453,7 +453,6 @@
   margin-bottom: 1.5rem;
 }
 .date-time-picker-container .XXX-aoa-time-picker {
-  border-bottom: 2px solid rgb(28, 25, 23);
   margin-bottom: 1.5rem;
 }
 .date-time-picker-container .XXX-aoa-wait-option h4.XXX-aoa-date-time__heading {
@@ -469,7 +468,6 @@
 .XXX-date-carousel {
   position: relative;
   padding: 0 0.2rem 1rem;
-  border-bottom: 2px solid rgb(28, 25, 23);
   font-weight: 300;
 }
 .XXX-date-carousel .XXX-date__box {
@@ -510,8 +508,7 @@
 }
 
 .XXX-carousel.XXX-date-carousel .slick-list {
-  transform: translateX(-8px);
-  width: calc(100% + 12px);
+  width: 100%;
   margin: auto;
 }
 .XXX-carousel.XXX-date-carousel .slick-prev {

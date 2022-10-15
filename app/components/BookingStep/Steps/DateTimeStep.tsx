@@ -176,7 +176,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
 
   return (
-    <div className="w-full px-0 sm:w-[calc(100vw-2rem)] sm:-translate-x-[calc(20%+0.3rem)] sm:px-4 md:w-full md:translate-x-0 md:px-0">
+    <div className="w-full w-screen -translate-x-4 sm:w-[calc(100vw-10%)] sm:-translate-x-[calc(20%-2px)] md:w-[calc(100vw-30%)] md:-translate-x-[calc(15%-2px)] lg:w-full lg:translate-x-0 lg:px-4">
       {/* Standalone Tooltip */}
       {hasMounted && (
         <ReactTooltip
@@ -191,7 +191,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       <h4 className={`mb-2 text-center font-mono font-medium`}>
         {memoedDateSummary}, {memoedTimeSlotSummary}
       </h4>
-      <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
+      <legend className="mx-auto mb-4 block text-center font-mono text-sm italic sm:mb-8">
         Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
         <span
           className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
@@ -201,20 +201,26 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         </span>
       </legend>
 
-      <DatePicker
-        selectedDate={selectedDate}
-        dateTimeSlots={slots}
-        onChangeDate={onChangeDateWeekday}
-      />
-      <TimePickerTable
-        hasWeekChanged={hasWeekChanged}
-        dayOfWeek={dayOfWeek}
-        selectedDate={selectedDate}
-        timeSlotsMatrix={memoedTimeSlots}
-        onChangeDayOfWeek={onChangeDayOfWeek}
-        onChangeTime={onChangeTime}
-      />
-      <BookingStepActions hasPrimary={true} onPrimaryClick={stepNext} />
+      <div className="w-full px-4 md:px-0">
+        <DatePicker
+          selectedDate={selectedDate}
+          dateTimeSlots={slots}
+          onChangeDate={onChangeDateWeekday}
+        />
+      </div>
+      <div className="w-full border-t-[2px] border-stone-800 px-0 sm:px-4 md:px-0">
+        <TimePickerTable
+          hasWeekChanged={hasWeekChanged}
+          dayOfWeek={dayOfWeek}
+          selectedDate={selectedDate}
+          timeSlotsMatrix={memoedTimeSlots}
+          onChangeDayOfWeek={onChangeDayOfWeek}
+          onChangeTime={onChangeTime}
+        />
+        <div className="w-full px-4">
+          <BookingStepActions hasPrimary={true} onPrimaryClick={stepNext} />
+        </div>
+      </div>
     </div>
   );
 };
