@@ -29,14 +29,22 @@ export const getPrevMonday = (date = new Date()) => {
   return prevMonday;
 };
 
-export const getTomorrow = (date = new Date()) => {
-  const tomorrow = date;
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  return tomorrow;
+export const getCleanDate = (date = new Date()) => {
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
-export const addDays = (date = new Date(), numOfDays: number) => {
+export const getTomorrow = (tomorrow = new Date()) => {
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return getCleanDate(tomorrow);
+};
+
+export const getYesterday = (yesterday = new Date()) => {
+  yesterday.setDate(yesterday.getDate() - 1);
+  return getCleanDate(yesterday);
+};
+
+export const addDays = (date = new Date(), numOfDays: number): Date => {
   const dateCopy = new Date(date.getTime());
   dateCopy.setDate(dateCopy.getDate() + numOfDays);
   return dateCopy;
@@ -56,12 +64,20 @@ export const getDayOfWeekNumbered = (date: Date = new Date()) => {
   return (date.getDay() - 1 + 7) % 7;
 };
 
-export const getWeekDates = (dateString: string): Date[] =>
-  Array.from(Array(7).keys()).map((idx) => {
+export const getWeekDates = (dateString: string): Date[] => {
+  return Array.from(Array(7).keys()).map((idx) => {
     const d = new Date(dateString);
     d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + idx);
     return d;
   });
+};
+
+export const getNextWeekFromToday = (): Date[] => {
+  const dateString = getDateFormat(new Date());
+  return Array.from(Array(7).keys()).map((idx) => {
+    return addDays(new Date(dateString), idx);
+  });
+};
 
 export const getLocaleTime = (date: Date = new Date()) => {
   return date.toLocaleTimeString("uk", {

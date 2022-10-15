@@ -10,21 +10,15 @@ import type { DateSlot, StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { Appointment } from "~/models/appointment.server";
 import TimePickerTable from "~/components/TimePickerTable/TimePickerTable";
 import type { DayOfWeek } from "~/utils/date";
+import { getNextWeekFromToday } from "~/utils/date";
 import { formatLocaleDate } from "~/utils/date";
-import {
-  addMinutes,
-  formatCalculatedTimePeriod,
-  formatTimeSlot,
-} from "~/utils/date";
+import { formatCalculatedTimePeriod, formatTimeSlot } from "~/utils/date";
 import {
   getDateFormat,
   getDayOfWeekNumbered,
   getWeekDates,
 } from "~/utils/date";
-import {
-  BOOKING_HOURLY_PRICE,
-  TIMESLOT_OFFSET_MINUTES,
-} from "~/utils/constants";
+import { BOOKING_HOURLY_PRICE, START_FROM_MONDAY } from "~/utils/constants";
 
 export interface DateTimeStepProps {
   appointments: Appointment[];
@@ -47,7 +41,7 @@ const renderTimeSlotsRange = (
 ) => {
   const { start, end, diff } = selectedTime;
   const duration = `${start && formatTimeSlot(start)} - ${
-    end && formatTimeSlot(addMinutes(end, TIMESLOT_OFFSET_MINUTES))
+    end && formatTimeSlot(end)
   }`;
 
   return (
@@ -83,7 +77,10 @@ const formAvailableWeeklySlots = (
   appointments: Appointment[],
   selectedDate: string
 ): BookableTimeSlot[][] => {
-  return getWeekDates(selectedDate).map((weekDate) => {
+  const weeks = START_FROM_MONDAY
+    ? getWeekDates(selectedDate)
+    : getNextWeekFromToday();
+  return weeks.map((weekDate) => {
     // all slots for a day
     const selectedDateSlots = slots.find(
       ({ date }) => date === getDateFormat(weekDate)

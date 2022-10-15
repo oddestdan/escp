@@ -1,7 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import { START_FROM_MONDAY } from "~/utils/constants";
 import {
   addMonths,
+  getCleanDate,
   getDateFormat,
   getPrevMonday,
   getTomorrow,
@@ -92,7 +94,7 @@ export interface BookingState {
 }
 
 const get3MonthSlots = () => {
-  const fromDate = getPrevMonday();
+  const fromDate = START_FROM_MONDAY ? getPrevMonday() : getCleanDate();
   const toDate = addMonths(fromDate, 3);
 
   return generateDateTimeSlots(getDateFormat(fromDate), getDateFormat(toDate));
