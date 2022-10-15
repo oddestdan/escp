@@ -13,4 +13,4 @@ export const BOOKING_TIME_TAKEN_QS = "booked";
 export const BOOKING_TIME_TAKEN_MSG =
   "Не вийшло забронювати на цей час. \nБудь-ласка, спробуйте ще раз";
 
-export const START_FROM_MONDAY = true;
+export const START_FROM_MONDAY = false;
