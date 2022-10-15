@@ -192,7 +192,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         {memoedDateSummary}, {memoedTimeSlotSummary}
       </h4>
       <legend className="mx-auto mb-4 block text-center font-mono text-sm italic sm:mb-8">
-        Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
+        Свайпайте тижні, обирайте слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
         <span
           className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
           data-tip="Білі слоти - доступні до бронювання <br />Сірі слоти - зарезервовані"
