@@ -10,15 +10,20 @@ import type { DateSlot, StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { Appointment } from "~/models/appointment.server";
 import TimePickerTable from "~/components/TimePickerTable/TimePickerTable";
 import type { DayOfWeek } from "~/utils/date";
-import { getNextWeekFromToday } from "~/utils/date";
-import { formatLocaleDate } from "~/utils/date";
-import { formatCalculatedTimePeriod, formatTimeSlot } from "~/utils/date";
+import {
+  getNextWeekFromToday,
+  formatLocaleDate,
+  formatCalculatedTimePeriod,
+  formatTimeSlot,
+} from "~/utils/date";
 import {
   getDateFormat,
   getDayOfWeekNumbered,
   getWeekDates,
 } from "~/utils/date";
 import { BOOKING_HOURLY_PRICE, START_FROM_MONDAY } from "~/utils/constants";
+
+const NO_SLOTS_MSG = "Немає вільних слотів";
 
 export interface DateTimeStepProps {
   appointments: Appointment[];
@@ -79,7 +84,12 @@ const formAvailableWeeklySlots = (
 ): BookableTimeSlot[][] => {
   const weeks = START_FROM_MONDAY
     ? getWeekDates(selectedDate)
-    : getNextWeekFromToday();
+    : getNextWeekFromToday(selectedDate);
+  // console.log({
+  //   a: getWeekDates(selectedDate),
+  //   b: getNextWeekFromToday(selectedDate),
+  //   selectedDate,
+  // });
   return weeks.map((weekDate) => {
     // all slots for a day
     const selectedDateSlots = slots.find(
@@ -148,7 +158,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const memoedTimeSlotSummary = useMemo(() => {
     return timeSlots?.length > 0 && timeSlots.some((slot) => !slot.isBooked)
       ? renderTimeSlotsRange(selectedTime, price.booking, isMobile)
-      : "Немає вільних слотів";
+      : NO_SLOTS_MSG;
   }, [isMobile, price.booking, selectedTime, timeSlots]);
 
   // Callbacks passed inside components
@@ -157,6 +167,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [dispatch, currentStep]);
   const onChangeDayOfWeek = useCallback(
     (newDayOfWeek: DayOfWeek) => {
+      // console.log({ newDayOfWeek, memoedTimeSlots });
       setDayOfWeek(newDayOfWeek);
       dispatch(
         saveDate(getDateFormat(new Date(memoedTimeSlots[newDayOfWeek][0].slot)))
@@ -166,6 +177,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
+      // console.log({
+      //   dayOfWeekNunmberd: getDayOfWeekNumbered(new Date(dateString)),
+      //   dateString,
+      // });
       setDayOfWeek(getDayOfWeekNumbered(new Date(dateString)));
       onChangeDate(dateString);
     },
@@ -215,7 +230,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           onChangeTime={onChangeTime}
         />
         <div className="w-full px-4">
-          <BookingStepActions hasPrimary={true} onPrimaryClick={stepNext} />
+          <BookingStepActions
+            hasPrimary={true}
+            onPrimaryClick={stepNext}
+            disabled={memoedTimeSlotSummary === NO_SLOTS_MSG}
+          />
         </div>
       </div>
     </div>

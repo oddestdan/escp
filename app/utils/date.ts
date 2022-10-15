@@ -1,3 +1,5 @@
+import { START_FROM_MONDAY } from "./constants";
+
 export enum DayOfWeek {
   Monday,
   Tuesday,
@@ -61,21 +63,23 @@ export const getDayOfWeek = (date: Date = new Date()) => {
 };
 
 export const getDayOfWeekNumbered = (date: Date = new Date()) => {
-  return (date.getDay() - 1 + 7) % 7;
+  return ((START_FROM_MONDAY ? date.getDay() : date.getDate()) - 1 + 7) % 7;
 };
 
 export const getWeekDates = (dateString: string): Date[] => {
   return Array.from(Array(7).keys()).map((idx) => {
     const d = new Date(dateString);
-    d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + idx);
+    d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7) + idx);
     return d;
   });
 };
 
-export const getNextWeekFromToday = (): Date[] => {
-  const dateString = getDateFormat(new Date());
+export const getNextWeekFromToday = (dateString: string): Date[] => {
+  const todayDay = (new Date().getDay() - 1 + 7) % 7;
   return Array.from(Array(7).keys()).map((idx) => {
-    return addDays(new Date(dateString), idx);
+    const d = new Date(dateString);
+    d.setDate(d.getDate() - ((d.getDay() - 1 + 14 - todayDay) % 7) + idx);
+    return d;
   });
 };
 

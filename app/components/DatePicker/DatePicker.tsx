@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import Slider from "react-slick";
 import type { DateSlot } from "~/store/bookingSlice";
 import { setHasWeekChanged } from "~/store/bookingSlice";
+import { START_FROM_MONDAY } from "~/utils/constants";
 import {
   addDays,
   defaultTime,
@@ -79,13 +80,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const onWeekChange = useCallback(
     (newIndex: number) => {
-      const nextMonday = getPrevMonday(addDays(new Date(today), newIndex));
+      const nextWeekDay = addDays(new Date(today), newIndex);
+      const nextStartingDay = START_FROM_MONDAY
+        ? getPrevMonday(nextWeekDay)
+        : nextWeekDay;
       const tomorrow = getTomorrow();
 
-      onChangeDate(
-        getDateFormat(nextMonday < tomorrow ? tomorrow : nextMonday)
-      );
       dispatch(setHasWeekChanged(true));
+      onChangeDate(
+        getDateFormat(nextStartingDay < tomorrow ? tomorrow : nextStartingDay)
+      );
     },
     [onChangeDate, today, dispatch]
   );

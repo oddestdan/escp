@@ -9,15 +9,20 @@ const invertedClass =
 export const ActionButton: React.FC<
   {
     inverted?: boolean;
+    disabled?: boolean;
     buttonType?: "button" | "submit" | "reset" | undefined;
   } & React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>
-> = ({ inverted = false, buttonType, ...props }) => (
+> = ({ inverted = false, disabled = false, buttonType, ...props }) => (
   <button
     {...props}
+    disabled={disabled}
     type={buttonType}
     className={
-      `${baseClass} ${inverted ? invertedClass : filledClass} ` +
-        props.className || ""
+      `${baseClass} ${inverted ? invertedClass : filledClass} ${
+        disabled
+          ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600 hover:bg-stone-200 hover:text-stone-600"
+          : "cursor-pointer border-stone-800"
+      }` + props.className || ""
     }
   >
     {props.children}

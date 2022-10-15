@@ -5,6 +5,7 @@ export interface BookingStepActionsProps {
   hasPrimary?: boolean;
   onSecondaryClick?: () => void;
   hasSecondary?: boolean;
+  disabled?: boolean;
 }
 
 export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
@@ -12,6 +13,7 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
   hasPrimary,
   onSecondaryClick,
   hasSecondary,
+  disabled = false,
 }) => {
   return (
     <div className="my-4 flex flex-col justify-center">
@@ -24,7 +26,11 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
           назад
         </ActionButton>
       )}
-      {hasPrimary && <ActionButton onClick={onPrimaryClick}>далі</ActionButton>}
+      {hasPrimary && (
+        <ActionButton onClick={onPrimaryClick} disabled={disabled}>
+          далі
+        </ActionButton>
+      )}
     </div>
   );
 };
