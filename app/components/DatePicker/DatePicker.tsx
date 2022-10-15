@@ -95,7 +95,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   );
 
   return (
-    <>
+    <div className="cursor-grabbing">
       <Slider
         className={`date-carousel XXX-carousel XXX-date-carousel`}
         {...sliderSettings}
@@ -112,14 +112,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               readOnly={true}
             />
             <button
-              className={`XXX-date__box ${className ? className : ""}`}
+              className={`XXX-date__box cursor-grabbing ${
+                className ? className : ""
+              }`}
               // onClick={() => onDateChangeHandler(date)}
             >
-              <div className={`XXX-week-date`}>
+              <div className={`XXX-week-date cursor-grabbing`}>
                 {getWeekDayFormat(date.date)}
               </div>
               <div
-                className={`XXX-numeral-date ${
+                className={`XXX-numeral-date cursor-grabbing ${
                   date.date === today ? "underline underline-offset-4" : ""
                 }`}
               >
@@ -129,7 +131,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           </label>
         ))}
       </Slider>
-    </>
+    </div>
   );
 };
 

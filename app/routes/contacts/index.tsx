@@ -9,7 +9,7 @@ export default function rules() {
       <NavBar active="contacts" />
 
       <div className="flex w-full flex-1 flex-col font-light sm:w-3/5">
-        <h1 className="mx-auto mt-16 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
+        <h1 className="mx-auto mt-16 flex w-full justify-between font-medium text-stone-900">
           Контакти
         </h1>
         <p className="mb-4 mt-8">

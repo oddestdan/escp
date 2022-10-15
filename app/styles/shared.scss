@@ -331,13 +331,13 @@ $date-carousel-mobile-breakpoint: 335px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: initial;
     border: none;
     background-color: transparent;
   }
 
   .XXX-week-date {
     font-weight: 300;
+    padding-bottom: $date-carousel-date-margin-top;
   }
 
   .XXX-numeral-date {
@@ -347,7 +347,6 @@ $date-carousel-mobile-breakpoint: 335px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: $date-carousel-date-margin-top;
   }
 }
 

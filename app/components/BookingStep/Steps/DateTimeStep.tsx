@@ -200,10 +200,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         />
       )}
 
-      <h4 className={`mb-2 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
         {memoedDateSummary}, {memoedTimeSlotSummary}
       </h4>
-      <legend className="mx-auto mb-4 block text-center font-mono text-sm italic sm:mb-8">
+      <legend className="mx-auto mb-4 block px-4 text-center font-mono text-sm italic sm:mb-8">
         Свайпайте тижні, обирайте слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
         <span
           className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
