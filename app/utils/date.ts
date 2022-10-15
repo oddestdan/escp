@@ -1,13 +1,45 @@
-export const getPrevMonday = () => {
-  const prevMonday = new Date();
+export enum DayOfWeek {
+  Monday,
+  Tuesday,
+  Wednesday,
+  Thursday,
+  Friday,
+  Saturday,
+  Sunday,
+}
+
+export const defaultTime = "T00:00:00";
+
+// Formats the date to number between 1-31
+export const getDateNumber = (date: string): number => {
+  const dateFormat = new Date(`${date}${defaultTime}`);
+  return dateFormat.getDate();
+};
+
+export const getWeekDayFormat = (date: string): string => {
+  return new Date(`${date}${defaultTime}`)
+    .toLocaleString("uk", { weekday: "short" })
+    .toLocaleLowerCase()
+    .slice(0, 3);
+};
+
+export const getPrevMonday = (date = new Date()) => {
+  const prevMonday = date;
   prevMonday.setDate(prevMonday.getDate() - ((prevMonday.getDay() + 6) % 7));
   return prevMonday;
 };
 
-export const getTomorrow = () => {
-  const tomorrow = new Date();
+export const getTomorrow = (date = new Date()) => {
+  const tomorrow = date;
   tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
   return tomorrow;
+};
+
+export const addDays = (date = new Date(), numOfDays: number) => {
+  const dateCopy = new Date(date.getTime());
+  dateCopy.setDate(dateCopy.getDate() + numOfDays);
+  return dateCopy;
 };
 
 export const addMonths = (date = new Date(), numOfMonths: number) => {
@@ -20,6 +52,17 @@ export const getDayOfWeek = (date: Date = new Date()) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
+export const getDayOfWeekNumbered = (date: Date = new Date()) => {
+  return (date.getDay() - 1 + 7) % 7;
+};
+
+export const getWeekDates = (dateString: string): Date[] =>
+  Array.from(Array(7).keys()).map((idx) => {
+    const d = new Date(dateString);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + idx);
+    return d;
+  });
+
 export const getLocaleTime = (date: Date = new Date()) => {
   return date.toLocaleTimeString("uk", {
     hour: "numeric",
@@ -28,7 +71,9 @@ export const getLocaleTime = (date: Date = new Date()) => {
 };
 
 export const getDateFormat = (date: Date = new Date()) => {
-  return date.toISOString().split("T")[0];
+  // Today is +3 hrs from 0
+  const dateISO = addMinutes(date.toISOString(), 3 * 60);
+  return dateISO.split("T")[0];
 };
 
 const getUnpaddedTimeFormat = (time: string): string => {
@@ -37,6 +82,20 @@ const getUnpaddedTimeFormat = (time: string): string => {
 
 export const formatTimeSlot = (time: string) => {
   return getUnpaddedTimeFormat(getLocaleTime(new Date(time)));
+};
+
+export const formatShortTimeSlot = (time: string) => {
+  return getLocaleTime(new Date(time)).split(":")[0];
+};
+
+export const formatLocaleDate = (locale: string, dateString: string) => {
+  return new Date(dateString)
+    .toLocaleDateString(locale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    .slice(0, -3);
 };
 
 // const tzOffset = new Date().getTimezoneOffset() * 60000;

@@ -62,6 +62,7 @@ export default function Confirmation() {
         diff: +appointment.price, // TODO: ???
       },
       slots: [],
+      hasWeekChanged: false,
     },
     services: allServices.services,
     additionalServices: allServices.additionalServices,

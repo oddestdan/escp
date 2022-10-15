@@ -484,7 +484,6 @@
 }
 .XXX-date-carousel input[type=radio]:disabled + .XXX-date__box {
   color: #d5d5d5;
-  cursor: initial;
 }
 .XXX-date-carousel .XXX-week-day span:not(:first-child) {
   display: none;
@@ -493,7 +492,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+  cursor: initial;
   border: none;
   background-color: transparent;
 }
@@ -511,14 +510,17 @@
 }
 
 .XXX-carousel.XXX-date-carousel .slick-list {
-  width: calc(100% - 1rem);
+  transform: translateX(-8px);
+  width: calc(100% + 12px);
   margin: auto;
 }
 .XXX-carousel.XXX-date-carousel .slick-prev {
-  left: 0;
+  left: -0.75rem;
+  z-index: 100;
 }
 .XXX-carousel.XXX-date-carousel .slick-next {
-  right: 0;
+  right: -0.75rem;
+  z-index: 100;
 }
 .XXX-carousel.XXX-date-carousel .slick-slide {
   display: flex;
@@ -551,7 +553,7 @@
 
 @media (min-width: 335px) {
   .XXX-date-carousel {
-    padding: 0 1rem 1.5rem;
+    padding: 0 0 0.5rem;
   }
   .XXX-date-carousel .XXX-numeral-date {
     width: 30px;

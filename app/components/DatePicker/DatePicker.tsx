@@ -1,14 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import Slider from "react-slick";
 import type { DateSlot } from "~/store/bookingSlice";
-import { getDateFormat } from "~/utils/date";
-
+import { setHasWeekChanged } from "~/store/bookingSlice";
 import {
-  getActiveSlideIndex,
-  getDate,
-  getFormattedMonthAndYear,
+  addDays,
+  defaultTime,
+  getDateFormat,
+  getDateNumber,
+  getPrevMonday,
+  getTomorrow,
   getWeekDayFormat,
-} from "./DatePicker.helper";
+} from "~/utils/date";
 
 export interface DatePickerProps {
   className?: string;
@@ -17,43 +20,83 @@ export interface DatePickerProps {
   onChangeDate: (date: string) => void;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
-  const { className, selectedDate, dateTimeSlots, onChangeDate } = props;
+// Gets the difference between two dates
+export const dateDiffInDays = (date1: Date, date2: Date): number => {
+  const PER_DAY = 1000 * 60 * 60 * 24;
+  const requiredDateDifference = Math.ceil(
+    Math.abs(Number(date2) - Number(date1)) / PER_DAY
+  );
+  return requiredDateDifference - (requiredDateDifference % 7);
+};
+
+// Calculates the index of active slide in date picker slider
+export const getActiveSlideIndex = (
+  dateTimeSlots: Array<DateSlot>,
+  selectedDate: string
+): number => {
+  if (dateTimeSlots?.length && selectedDate?.length) {
+    return dateDiffInDays(
+      new Date(`${dateTimeSlots[0].date}${defaultTime}`),
+      new Date(`${selectedDate}${defaultTime}`)
+    );
+  }
+  return 0;
+};
+
+const sliderSettings = {
+  dots: false,
+  arrows: true,
+  infinite: false,
+  slidesToShow: 7,
+  slidesToScroll: 7,
+};
+
+export const DatePicker: React.FC<DatePickerProps> = ({
+  className,
+  selectedDate,
+  dateTimeSlots,
+  onChangeDate,
+}) => {
+  const dispatch = useDispatch();
   const [today, setToday] = useState<string>("");
 
   const activeSlideIndex = useMemo(() => {
     return getActiveSlideIndex(dateTimeSlots, selectedDate);
   }, [dateTimeSlots, selectedDate]);
 
-  const settings = {
-    dots: false,
-    arrows: true,
-    infinite: false,
-    slidesToShow: 7,
-    slidesToScroll: 7,
-    initialSlide: activeSlideIndex,
-  };
-
   useEffect(() => setToday(getDateFormat()), []);
 
-  const onDateChangeHandler = (date: DateSlot) => {
-    if (getIsDateValid(date) && date.date !== selectedDate) {
-      onChangeDate(date.date);
-    }
-  };
+  // const onDateChangeHandler = (date: DateSlot) => {
+  //   if (getIsDateValid(date) && date.date !== selectedDate) {
+  //     onChangeDate(date.date);
+  //   }
+  // };
 
   const getIsDateValid = (date: DateSlot) =>
     date.isValid &&
     date.availableTimeSlots &&
     date.availableTimeSlots?.length > 0;
 
-  // console.log(`today: ${today}`);
+  const onWeekChange = useCallback(
+    (newIndex: number) => {
+      const nextMonday = getPrevMonday(addDays(new Date(today), newIndex));
+      const tomorrow = getTomorrow();
+
+      onChangeDate(
+        getDateFormat(nextMonday < tomorrow ? tomorrow : nextMonday)
+      );
+      dispatch(setHasWeekChanged(true));
+    },
+    [onChangeDate, today, dispatch]
+  );
 
   return (
     <>
       <Slider
         className={`date-carousel XXX-carousel XXX-date-carousel`}
-        {...settings}
+        {...sliderSettings}
+        initialSlide={activeSlideIndex}
+        afterChange={onWeekChange} // TODO: maybe beforeChange is better
       >
         {dateTimeSlots.map((date, i) => (
           <label aria-label={`${date.dayOfWeek} ${date.date}`} key={i}>
@@ -66,7 +109,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
             />
             <button
               className={`XXX-date__box ${className ? className : ""}`}
-              onClick={() => onDateChangeHandler(date)}
+              // onClick={() => onDateChangeHandler(date)}
             >
               <div className={`XXX-week-date`}>
                 {getWeekDayFormat(date.date)}
@@ -76,7 +119,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
                   date.date === today ? "underline underline-offset-4" : ""
                 }`}
               >
-                <span>{getDate(date.date)}</span>
+                <span>{getDateNumber(date.date)}</span>
               </div>
             </button>
           </label>
@@ -86,34 +129,4 @@ const DatePicker: React.FC<DatePickerProps> = ({ ...props }) => {
   );
 };
 
-export interface AOADatePickerProps {
-  selectedDate: string;
-  dateTimeSlots: Array<DateSlot>;
-  onChangeDate: (date: string) => void;
-}
-
-const TitledDatePicker: React.FC<AOADatePickerProps> = ({ ...props }) => {
-  const { selectedDate, dateTimeSlots, onChangeDate } = props;
-
-  const [selectedMonth, selectedYear] = useMemo(() => {
-    return getFormattedMonthAndYear(
-      (selectedDate || dateTimeSlots[0]?.date) ??
-        new Date().toLocaleDateString("uk")
-    );
-  }, [selectedDate, dateTimeSlots]);
-
-  return (
-    <div className={`XXX-aoa-date-picker mb-8 font-mono`}>
-      <h4
-        className={`mb-4 text-center font-mono font-medium`}
-      >{`${selectedMonth} ${selectedYear}`}</h4>
-      <DatePicker
-        selectedDate={selectedDate}
-        dateTimeSlots={dateTimeSlots}
-        onChangeDate={onChangeDate}
-      />
-    </div>
-  );
-};
-
-export default TitledDatePicker;
+export default DatePicker;

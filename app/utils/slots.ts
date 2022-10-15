@@ -1,5 +1,5 @@
 import { businessHoursStart, businessHoursEnd } from "./constants";
-import { getDateFormat, getDayOfWeek } from "./date";
+import { getDateFormat, getDayOfWeek, getTomorrow } from "./date";
 
 const timeStart = Number(businessHoursStart.split(":")[0]) - 3; // 7
 const timeEnd = Number(businessHoursEnd.split(":")[0]) - 3; // 21
@@ -44,9 +44,10 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
   };
 
   return getDaysArray(fromDate, toDate).map((day) => {
+    const date = getDateFormat(day);
     return {
-      date: day.toISOString().split("T")[0],
-      isValid: day.getTime() > new Date().getTime(),
+      date,
+      isValid: date > getTomorrow().toISOString(),
       dayOfWeek: getDayOfWeek(day),
       availableTimeSlots: generateTimeSlots(day),
     };

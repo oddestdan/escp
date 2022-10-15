@@ -60,10 +60,17 @@ export interface DateSlot {
   availableTimeSlots?: string[];
 }
 
+export interface TimeState {
+  start: string;
+  end: string;
+  diff: number;
+}
+
 export interface DateTime {
   date: string;
-  time: { start: string; end: string; diff: number };
+  time: TimeState;
   slots: DateSlot[];
+  hasWeekChanged: boolean;
 }
 
 type CustomizableBookingService = BookingService | string;
@@ -102,6 +109,7 @@ export const initialState: BookingState = {
     slots: get3MonthSlots(),
     date: getDateFormat(getTomorrow()),
     time: { start: "", end: "", diff: 0 },
+    hasWeekChanged: false,
   },
   services: [],
   additionalServices: {},
@@ -140,6 +148,9 @@ const bookingSlice = createSlice({
     ) {
       state.dateTime = { ...state.dateTime, time: action.payload };
     },
+    setHasWeekChanged(state: BookingState, action: PayloadAction<boolean>) {
+      state.dateTime = { ...state.dateTime, hasWeekChanged: action.payload };
+    },
     saveTotalPrice(state: BookingState, action: PayloadAction<TotalPrice>) {
       state.price = action.payload;
     },
@@ -170,6 +181,7 @@ export const {
   saveCurrentStep,
   saveDate,
   saveTime,
+  setHasWeekChanged,
   saveTotalPrice,
   saveServices,
   saveAdditionalServices,
