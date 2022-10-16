@@ -47,10 +47,10 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
 
   return getDaysArray(fromDate, toDate).map((day) => {
     const date = getDateFormat(day);
-    if (date === tomorrow) {
-      console.log("> check tomorrow...");
-      console.log(date, tomorrow, date >= tomorrow);
-    }
+    // if (date === tomorrow) {
+    //   console.log("> check tomorrow...");
+    //   console.log(date, tomorrow, date >= tomorrow);
+    // }
     return {
       date,
       isValid: date >= tomorrow,
