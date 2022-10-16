@@ -6,5 +6,5 @@
 #!/bin/sh
 
 set -ex
-npm run setup
+npx prisma migrate deploy
 npm run start
