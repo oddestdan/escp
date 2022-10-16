@@ -6,5 +6,5 @@
 #!/bin/sh
 
 set -ex
-npx run setup
+npm run setup
 npm run start
