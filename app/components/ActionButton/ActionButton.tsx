@@ -1,6 +1,6 @@
 const baseClass = "w-full py-3 px-4 font-mono";
 const filledClass =
-  "bg-stone-800 text-stone-100 hover:bg-stone-700 focus:bg-stone-500";
+  "bg-stone-800 border-2 border-stone-800 text-stone-100 hover:bg-stone-700 hover:border-stone-700 focus:bg-stone-500 focus:border-stone-500";
 // const invertedClass =
 // "border-2 border-stone-800 text-stone-800 hover:text-stone-200 hover:bg-stone-800 focus:bg-stone-500 focus:border-stone-500";
 const invertedClass =
@@ -17,13 +17,15 @@ export const ActionButton: React.FC<
     {...props}
     disabled={disabled}
     type={buttonType}
-    className={
-      `${baseClass} ${inverted ? invertedClass : filledClass} ${
-        disabled
-          ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600 hover:bg-stone-200 hover:text-stone-600"
-          : "cursor-pointer border-stone-800"
-      }` + props.className || ""
-    }
+    className={`${baseClass} ${inverted ? invertedClass : filledClass} ${
+      disabled
+        ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600 hover:bg-stone-200 hover:text-stone-600"
+        : "cursor-pointer border-stone-800"
+    } ${
+      props && props.className && props.className.length > 0
+        ? props?.className
+        : ""
+    }`}
   >
     {props.children}
   </button>

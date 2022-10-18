@@ -161,7 +161,7 @@ export default function Booking() {
             />
             <ActiveBookingStep appointments={appointments} />
             {currentStep === BookingStep.Payment && (
-              <Form method="post" className="my-4" ref={formRef}>
+              <Form method="post" className="inline-block w-1/2" ref={formRef}>
                 <input type="hidden" name="date" value={selectedDate} />
                 <input
                   type="hidden"

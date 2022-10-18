@@ -1,3 +1,6 @@
+import { useSelector } from "react-redux";
+import type { StoreBooking } from "~/store/bookingSlice";
+import { BookingStep } from "~/store/bookingSlice";
 import { ActionButton } from "../ActionButton/ActionButton";
 
 export interface BookingStepActionsProps {
@@ -15,11 +18,21 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
   hasSecondary,
   disabled = false,
 }) => {
+  const { currentStep } = useSelector((store: StoreBooking) => store.booking);
+
+  const isLastStep = currentStep === BookingStep.Payment;
+
   return (
-    <div className="my-4 flex flex-col justify-center">
+    <span
+      className={`${
+        isLastStep
+          ? "m-0 inline-block w-1/2"
+          : "my-4 flex flex-row justify-center"
+      }`}
+    >
       {hasSecondary && (
         <ActionButton
-          className={hasPrimary ? "mb-4" : ""}
+          // className={hasPrimary ? "mb-4" : ""}
           inverted={true}
           onClick={onSecondaryClick}
         >
@@ -31,6 +44,6 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
           далі
         </ActionButton>
       )}
-    </div>
+    </span>
   );
 };
