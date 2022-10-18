@@ -111,6 +111,16 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, onChangeTime, timeSlots]);
 
+  // console.log({
+  //   start,
+  //   end,
+  //   timeSlots,
+  //   firstValidIndex,
+  //   hasWeekChanged,
+  //   dayOfWeek,
+  //   selectedDate,
+  // });
+
   return (
     <div className={`XXX-aoa-date-picker`}>
       <ul

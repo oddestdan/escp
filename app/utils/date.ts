@@ -63,7 +63,9 @@ export const getDayOfWeek = (date: Date = new Date()) => {
 };
 
 export const getDayOfWeekNumbered = (date: Date = new Date()) => {
-  return ((START_FROM_MONDAY ? date.getDay() : date.getDate()) - 1 + 7) % 7;
+  return START_FROM_MONDAY
+    ? (date.getDay() - 1 + 7) % 7
+    : (date.getDate() - new Date().getDate() + 35) % 7;
 };
 
 export const getWeekDates = (dateString: string): Date[] => {

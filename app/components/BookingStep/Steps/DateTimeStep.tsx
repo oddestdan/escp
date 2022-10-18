@@ -178,7 +178,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
       // console.log({
-      //   dayOfWeekNunmberd: getDayOfWeekNumbered(new Date(dateString)),
+      //   dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
       //   dateString,
       // });
       setDayOfWeek(getDayOfWeekNumbered(new Date(dateString)));
