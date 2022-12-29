@@ -19,7 +19,7 @@ export const ActionButton: React.FC<
     type={buttonType}
     className={`${baseClass} ${inverted ? invertedClass : filledClass} ${
       disabled
-        ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600 hover:bg-stone-200 hover:text-stone-600"
+        ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-200 hover:text-stone-600"
         : "cursor-pointer border-stone-800"
     } ${
       props && props.className && props.className.length > 0

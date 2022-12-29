@@ -18,6 +18,7 @@ import sharedStylesheetUrl from "./styles/shared.css";
 import { getUser } from "./session.server";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { BOOKING_HOURLY_PRICE } from "./utils/constants";
 
 export const links: LinksFunction = () => {
   return [
@@ -77,8 +78,7 @@ export const meta: MetaFunction = () => {
     title: "escp.90", // <title>escp.90</title>
 
     // name => content
-    description:
-      "escp.90 - Kyiv based photo studio / 90 m². Оренда: 600 грн/год", // <meta name="description" content="escp.90 - Kyiv based photo studio / 90 m². Оренда: 600 грн/год">
+    description: `escp.90 - Kyiv based photo studio / 90 m². Оренда: ${BOOKING_HOURLY_PRICE} грн/год`, // <meta name="description" content="escp.90 - Kyiv based photo studio / 90 m². Оренда: {BOOKING_HOURLY_PRICE} грн/год">
     viewport: "width=device-width,initial-scale=1", // <meta name="viewport" content="width=device-width,initial-scale=1">
   };
 };
