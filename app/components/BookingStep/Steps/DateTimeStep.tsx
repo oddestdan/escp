@@ -5,11 +5,7 @@ import DatePicker from "~/components/DatePicker/DatePicker";
 import { saveCurrentStep, saveDate } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 import { generateTimeSlots } from "~/utils/slots";
-
-import type { DateSlot, StoreBooking, TimeState } from "~/store/bookingSlice";
-import type { Appointment } from "~/models/appointment.server";
 import TimePickerTable from "~/components/TimePickerTable/TimePickerTable";
-import type { DayOfWeek } from "~/utils/date";
 import {
   getNextWeekFromToday,
   formatLocaleDate,
@@ -23,10 +19,14 @@ import {
 } from "~/utils/date";
 import { BOOKING_HOURLY_PRICE, START_FROM_MONDAY } from "~/utils/constants";
 
+import type { DayOfWeek } from "~/utils/date";
+import type { DateSlot, StoreBooking, TimeState } from "~/store/bookingSlice";
+import type { GoogleAppointment } from "~/models/googleApi.lib";
+
 const NO_SLOTS_MSG = "Немає вільних слотів";
 
 export interface DateTimeStepProps {
-  appointments: Appointment[];
+  appointments: GoogleAppointment[];
   onChangeDate: (date: string) => void;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
@@ -57,13 +57,14 @@ const renderTimeSlotsRange = (
 };
 
 const mapAppointmentsToSlots = (
-  appointments: Appointment[],
+  appointments: GoogleAppointment[],
   date: Date,
   isValid = false
 ): BookableTimeSlot[][] => {
   return appointments.map((app) => {
     const timeFromArr = app.timeFrom.split("T")[1].split(":");
     const timeToArr = app.timeTo.split("T")[1].split(":");
+
     return generateTimeSlots(
       date,
       Number(timeFromArr[0]) + (timeFromArr[1] == "30" ? 0.5 : 0),
@@ -71,7 +72,7 @@ const mapAppointmentsToSlots = (
     ).map((slot) => ({
       slot,
       isConfirmed: app.confirmed,
-      isBooked: true,
+      isBooked: true, // unused prop with new Table booking view
       isValid,
     }));
   });
@@ -79,17 +80,12 @@ const mapAppointmentsToSlots = (
 
 const formAvailableWeeklySlots = (
   slots: DateSlot[],
-  appointments: Appointment[],
+  appointments: GoogleAppointment[],
   selectedDate: string
 ): BookableTimeSlot[][] => {
   const weeks = START_FROM_MONDAY
     ? getWeekDates(selectedDate)
     : getNextWeekFromToday(selectedDate);
-  // console.log({
-  //   a: getWeekDates(selectedDate),
-  //   b: getNextWeekFromToday(selectedDate),
-  //   selectedDate,
-  // });
   return weeks.map((weekDate) => {
     // all slots for a day
     const selectedDateSlots = slots.find(

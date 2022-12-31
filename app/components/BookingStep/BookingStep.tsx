@@ -5,15 +5,16 @@ import {
   saveTime,
   saveTotalPrice,
 } from "~/store/bookingSlice";
-import type { StoreBooking } from "~/store/bookingSlice";
 import { DateTimeStep } from "./Steps/DateTimeStep";
-import type { Appointment } from "~/models/appointment.server";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ServicesStep } from "./Steps/ServicesStep";
 import { ContactInfoStep } from "./Steps/ContactInfoStep";
 import { getIsMobile } from "~/utils/breakpoints";
 import { PaymentStep } from "./Steps/PaymentStep";
 import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
+
+import type { StoreBooking } from "~/store/bookingSlice";
+import type { GoogleAppointment } from "~/models/googleApi.lib";
 
 export function WithActiveStepHOC<T>(
   Component: React.ComponentType<T>,
@@ -25,7 +26,7 @@ export function WithActiveStepHOC<T>(
 }
 
 export interface ActiveBookingStepProps {
-  appointments: Appointment[];
+  appointments: GoogleAppointment[];
 }
 
 const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({

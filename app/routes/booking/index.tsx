@@ -4,7 +4,6 @@ import {
   useSearchParams,
   useSubmit,
 } from "@remix-run/react";
-import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useEffect, useRef } from "react";
@@ -13,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
-import type { Appointment } from "~/models/appointment.server";
 import {
   createAppointment,
   getAppointments,
@@ -23,7 +21,6 @@ import {
   BookingStep,
   setErrorMessage,
 } from "~/store/bookingSlice";
-import type { StoreBooking } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import NavBar from "~/components/NavBar/NavBar";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
@@ -34,8 +31,12 @@ import {
 } from "~/utils/constants";
 import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotification";
 
+import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import type { StoreBooking } from "~/store/bookingSlice";
+import type { GoogleAppointment } from "~/models/googleApi.lib";
+
 type LoaderData = {
-  appointments: Appointment[];
+  appointments: GoogleAppointment[];
 };
 
 export const action: ActionFunction = async ({ request }) => {

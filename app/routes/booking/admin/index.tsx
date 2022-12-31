@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from "react";
 import { redirect } from "@remix-run/server-runtime";
 import {
@@ -13,39 +14,46 @@ import invariant from "tiny-invariant";
 import { requireUserId } from "~/session.server";
 import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
-
-import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
+import { BookingService } from "~/store/bookingSlice";
+import { getDateFormat } from "~/utils/date";
 import AdminCalendar, {
   prettyFormatDate,
 } from "~/components/AdminCalendar/AdminCalendar";
+
+import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
 import type { ActionFunction } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import type { AdditionalServices, ContactInfo } from "~/store/bookingSlice";
-import { BookingService } from "~/store/bookingSlice";
-import { getDateFormat } from "~/utils/date";
 
 // [active, non-active]
 const confirmedColors = ["mediumblue", "royalblue"];
 const defaultColors = ["dimgrey", "grey"];
 const importedColors = ["darkorange", "orange"];
 
-const getAppointmentTitle = (appointment: Appointment): string => {
-  const info: ContactInfo = JSON.parse(appointment.contactInfo);
-
+export const getAppointmentTitle = (
+  info: ContactInfo,
+  startDate: Date,
+  endDate: Date
+): string => {
   if (!info.firstName || !info.tel) {
     return "Incognito";
   }
 
-  return `${info.tel}, ${info.firstName}${
+  const duration = Math.abs(endDate.getTime() - startDate.getTime()) / 3.6e6; // 60 * 60 * 1000
+
+  return `${duration} год, ${info.firstName}${
     info.lastName ? ` ${info.lastName[0]}.` : ""
   }`;
 };
 
-const getAppointmentDescription = (description: {
-  services: BookingService[];
-  additionalServices: AdditionalServices;
-}) => {
+export const getAppointmentDescription = (
+  description: {
+    services: BookingService[];
+    additionalServices: AdditionalServices;
+  },
+  info: ContactInfo
+) => {
   if (!description.additionalServices && !description.services) {
     return "--";
   }
@@ -62,12 +70,15 @@ const getAppointmentDescription = (description: {
 
   return (
     [
+      `${info.firstName}${info.lastName ? ` ${info.lastName}` : ""}`,
+      info.tel,
+      info.socialMedia || "",
       `${assistance ? `ассистент: ${assistance} год` : ""}`,
       ...regular,
       `${extra ? `додатково: "${extra}"` : ""}`,
     ]
       .filter((x) => x.length)
-      .join(" | ") || "--"
+      .join("\n") || "-немає додаткової інформації-"
   );
 };
 
@@ -81,7 +92,7 @@ const exportAppointmentData = (data: Appointment[], fileTitle: string) => {
   link.click();
 };
 
-const formatFullAppointment = ({
+export const formatFullAppointment = ({
   title,
   start,
   end,
@@ -174,7 +185,7 @@ type LoaderData = { appointments: Appointment[] };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
-  const appointments = await getAppointments();
+  const appointments = (await getAppointments()) as Appointment[];
   if (!userId) {
     return redirect("/login");
   }
@@ -194,9 +205,23 @@ export default function AdminBooking() {
   console.log("appointments loaded:");
   console.log(appointments);
 
+  if (Boolean("admin not needed anymore") === true) {
+    return (
+      <div className="w-100 my-auto flex h-[100vh] flex-col justify-center text-center text-2xl">
+        😉
+        <br />
+        Nothing to see here
+      </div>
+    );
+  }
+
   const toCalendarAppointment = useCallback(
     (app: Appointment) => {
-      const title = getAppointmentTitle(app);
+      const title = getAppointmentTitle(
+        JSON.parse(app.contactInfo),
+        new Date(app.timeFrom),
+        new Date(app.timeTo)
+      );
       const isSelected = app.id === selectedAppointment?.id;
       const isImported = title.endsWith("imported");
 
@@ -204,7 +229,10 @@ export default function AdminBooking() {
         id: app.id,
         start: app.timeFrom,
         end: app.timeTo,
-        description: getAppointmentDescription(JSON.parse(app.services)),
+        description: getAppointmentDescription(
+          JSON.parse(app.services),
+          JSON.parse(app.contactInfo)
+        ),
         title,
         allDay: !app.timeFrom?.length || !app.timeTo?.length,
         backgroundColor: app.confirmed

@@ -1,15 +1,14 @@
 import { businessHoursStart, businessHoursEnd } from "./constants";
-import { getDateFormat, getDayOfWeek, getTomorrow } from "./date";
+import {
+  getDateFormat,
+  getDayOfWeek,
+  getMyTZOffset,
+  getTomorrow,
+} from "./date";
 
-const timeStart = Number(businessHoursStart.split(":")[0]) - 3; // 7
-const timeEnd = Number(businessHoursEnd.split(":")[0]) - 3; // 21
-
-export const generateArrayRangeWithStep = (
-  from = timeStart,
-  to = timeEnd,
-  step = 1 // can also be half-hourly by using step === 0.5
-) => {
+export const generateArrayRangeWithStep = (from: number, to: number) => {
   const arr = [];
+  const step = 1; // can also be half-hourly by using step === 0.5
   let start = from;
   for (; start < to; start += step) {
     arr.push(start);
@@ -19,8 +18,8 @@ export const generateArrayRangeWithStep = (
 
 export const generateTimeSlots = (
   day = new Date(),
-  from = timeStart,
-  to = timeEnd
+  from = Number(businessHoursStart.split(":")[0]) - getMyTZOffset(day), // 7,
+  to = Number(businessHoursEnd.split(":")[0]) - getMyTZOffset(day) // 21,
 ) => {
   return generateArrayRangeWithStep(from, to).map(
     (k) =>
@@ -47,10 +46,10 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
 
   return getDaysArray(fromDate, toDate).map((day) => {
     const date = getDateFormat(day);
-    if (date === tomorrow) {
-      console.log("> check tomorrow...");
-      console.log(date, tomorrow, date >= tomorrow);
-    }
+    // if (date === tomorrow) {
+    //   console.log("> check tomorrow...");
+    //   console.log(date, tomorrow, date >= tomorrow);
+    // }
     return {
       date,
       isValid: date >= tomorrow,

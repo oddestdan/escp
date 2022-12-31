@@ -38,12 +38,14 @@ export const getCleanDate = (date = new Date()) => {
 
 export const getTomorrow = (tomorrow = new Date()) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return getCleanDate(tomorrow);
+  // return getCleanDate(tomorrow); // buggy due to time zones
+  return tomorrow;
 };
 
 export const getYesterday = (yesterday = new Date()) => {
   yesterday.setDate(yesterday.getDate() - 1);
-  return getCleanDate(yesterday);
+  // return getCleanDate(yesterday);
+  return yesterday;
 };
 
 export const addDays = (date = new Date(), numOfDays: number): Date => {
@@ -94,7 +96,8 @@ export const getLocaleTime = (date: Date = new Date()) => {
 
 export const getDateFormat = (date: Date = new Date()) => {
   // Today is +3 hrs from 0
-  const dateISO = addMinutes(date.toISOString(), 3 * 60);
+  // const dateISO = addMinutes(date.toISOString(), 3 * 60);
+  const dateISO = date.toISOString();
   return dateISO.split("T")[0];
 };
 
@@ -119,6 +122,8 @@ export const formatLocaleDate = (locale: string, dateString: string) => {
     })
     .slice(0, -3);
 };
+
+export const getMyTZOffset = (date: Date) => date.getTimezoneOffset() / -60;
 
 // const tzOffset = new Date().getTimezoneOffset() * 60000;
 export const addMinutes = (time: string, minutes: number) => {
@@ -154,3 +159,12 @@ export const generateDateTimeSlotsISO = (date: string) => {
       .replace(/T\d*/, "T" + `${i}`.padStart(2, "0"));
   });
 };
+
+export const fromRFC3339ToISO = (rfcDate: string) =>
+  new Date(Date.parse(rfcDate)).toISOString();
+
+export const fromISOToRFC3339 = (isoDate: string) =>
+  isoDate.slice(0, -5) + "+00:00";
+// "+" +
+// `${getMyTZOffset(new Date(isoDate))}`.padStart(2, "0") +
+// ":00";
