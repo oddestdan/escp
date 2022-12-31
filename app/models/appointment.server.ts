@@ -16,6 +16,30 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
 
+  if (Boolean("log-env") === true) {
+    const {
+      DATABASE_URL,
+      SESSION_SECRET,
+      ADMIN_EMAIL,
+      ADMIN_PASSWORD,
+      GOOGLE_API_KEY,
+      GOOGLE_SERVICE_EMAIL,
+      GOOGLE_CALENDAR_ID,
+      GOOGLE_SERVICE_PRIVATE_KEY,
+    } = process.env;
+
+    console.log({
+      DATABASE_URL,
+      SESSION_SECRET,
+      ADMIN_EMAIL,
+      ADMIN_PASSWORD,
+      GOOGLE_API_KEY,
+      GOOGLE_SERVICE_EMAIL,
+      GOOGLE_CALENDAR_ID,
+      GOOGLE_SERVICE_PRIVATE_KEY,
+    });
+  }
+
   const authClient = await googleAuth.getClient();
   google.options({ auth: authClient });
 
@@ -31,12 +55,13 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
         date: gApp.start?.date || gApp.start?.dateTime?.split("T")[0] || "",
         timeFrom: gApp.start ? fromRFC3339ToISO(gApp.start.dateTime || "") : "",
         timeTo: gApp.end ? fromRFC3339ToISO(gApp.end.dateTime || "") : "",
-        confirmed: true, // TODO: discuss confirmation with Leo and Ser
+        confirmed: true,
       };
     })
     .filter((gApp) => gApp.date >= new Date().toISOString().split("T")[0]);
 
-  return [...mappedGoogleAppointments];
+  console.log({ mappedGoogleAppointments });
+  return mappedGoogleAppointments;
 }
 
 export async function getAppointmentById(
@@ -129,7 +154,6 @@ export async function deleteAppointment(appointmentId: string) {
   return prisma.appointment.delete({ where: { id: appointmentId } });
 }
 
-// TODO: decide if confirmation is necessary
 export async function confirmAppointment(
   appointmentId: string,
   confirmed = true
