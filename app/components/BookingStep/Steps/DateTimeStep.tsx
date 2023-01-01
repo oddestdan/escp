@@ -81,11 +81,8 @@ const mapAppointmentsToSlots = (
 const formAvailableWeeklySlots = (
   slots: DateSlot[],
   appointments: GoogleAppointment[],
-  selectedDate: string
+  weeks: Date[]
 ): BookableTimeSlot[][] => {
-  const weeks = START_FROM_MONDAY
-    ? getWeekDates(selectedDate)
-    : getNextWeekFromToday(selectedDate);
   return weeks.map((weekDate) => {
     // all slots for a day
     const selectedDateSlots = slots.find(
@@ -146,10 +143,20 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
 
   console.log({ appointments });
 
+  const weeks = useMemo(
+    () =>
+      START_FROM_MONDAY
+        ? getWeekDates(selectedDate)
+        : getNextWeekFromToday(selectedDate),
+    [selectedDate]
+  );
+
   // Memoed values for rendering
-  const memoedTimeSlots = useMemo(() => {
-    return formAvailableWeeklySlots(slots, appointments, selectedDate);
-  }, [slots, appointments, selectedDate]);
+  // const memoedTimeSlots = formAvailableWeeklySlots(slots, appointments, selectedDate);
+  const memoedTimeSlots: BookableTimeSlot[][] = useMemo(() => {
+    return formAvailableWeeklySlots(slots, appointments, weeks);
+  }, [slots, weeks, hasMounted]);
+  // }, [slots, appointments, selectedDate]);
   const timeSlots = memoedTimeSlots[dayOfWeek];
 
   const memoedDateSummary = useMemo(() => {
@@ -167,7 +174,14 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [dispatch, currentStep]);
   const onChangeDayOfWeek = useCallback(
     (newDayOfWeek: DayOfWeek) => {
-      // console.log({ newDayOfWeek, memoedTimeSlots });
+      console.log("> onChangeDayOfWeek");
+      console.log({
+        newDayOfWeek,
+        memoedTimeSlots,
+        savedDate: getDateFormat(
+          new Date(memoedTimeSlots[newDayOfWeek][0].slot)
+        ),
+      });
       setDayOfWeek(newDayOfWeek);
       dispatch(
         saveDate(getDateFormat(new Date(memoedTimeSlots[newDayOfWeek][0].slot)))
@@ -177,10 +191,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
-      // console.log({
-      //   dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
-      //   dateString,
-      // });
+      console.log("> onChangeDateWeekday");
+      console.log({
+        dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
+        dateString,
+      });
       setDayOfWeek(getDayOfWeekNumbered(new Date(dateString)));
       onChangeDate(dateString);
     },
