@@ -239,7 +239,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     [onChangeDate]
   );
 
-  return (
+  // make it a client-only component by only rendering if mounted
+  // https://github.com/remix-run/remix/discussions/1023
+  // https://github.com/ashikmeerankutty/client-test/pull/1/files
+  return hasMounted ? (
     <div className="w-full w-screen -translate-x-4 sm:w-[calc(100vw-10%)] sm:-translate-x-[calc(20%-2px)] md:w-[calc(100vw-30%)] md:-translate-x-[calc(15%-2px)] lg:w-full lg:translate-x-0 lg:px-4">
       {/* Standalone Tooltip */}
       {hasMounted && (
@@ -290,5 +293,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         </div>
       </div>
     </div>
+  ) : (
+    <span></span>
   );
 };
