@@ -16,6 +16,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
 
+  // TODO: remove this logging in production
   if (Boolean("log-env") === true) {
     const {
       DATABASE_URL,
