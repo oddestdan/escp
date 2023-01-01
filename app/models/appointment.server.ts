@@ -9,6 +9,7 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
+import { KYIV_TIME_ZONE } from "~/utils/constants";
 
 export type { Appointment } from "@prisma/client";
 
@@ -17,7 +18,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   console.log("> Getting appointments from Google Calendar API...");
 
   // TODO: remove this logging in production
-  if (Boolean("log-env") === true) {
+  if (Boolean("log-env") === false) {
     const {
       DATABASE_URL,
       SESSION_SECRET,
@@ -47,6 +48,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   const events = await calendar.events.list({
     calendarId: CAL_ID,
     timeMin: new Date().toISOString(),
+    timeZone: KYIV_TIME_ZONE,
   });
   const googleAppointments = events.data.items || [];
 
@@ -62,7 +64,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
     .filter((gApp) => gApp.date >= new Date().toISOString().split("T")[0]);
 
   console.log({
-    mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 5),
+    mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 10),
   });
   return mappedGoogleAppointments;
 }
@@ -98,11 +100,11 @@ export async function createAppointment(
       ),
       start: {
         dateTime: fromISOToRFC3339(appointment.timeFrom),
-        timeZone: "Europe/Kyiv",
+        timeZone: KYIV_TIME_ZONE,
       },
       end: {
         dateTime: fromISOToRFC3339(appointment.timeTo),
-        timeZone: "Europe/Kyiv",
+        timeZone: KYIV_TIME_ZONE,
       },
     },
   };

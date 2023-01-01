@@ -14,3 +14,5 @@ export const BOOKING_TIME_TAKEN_MSG =
   "Не вийшло забронювати на цей час. \nБудь-ласка, спробуйте ще раз";
 
 export const START_FROM_MONDAY = false;
+
+export const KYIV_TIME_ZONE = "Europe/Kyiv";
