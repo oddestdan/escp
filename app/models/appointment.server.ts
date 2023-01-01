@@ -61,7 +61,9 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
     })
     .filter((gApp) => gApp.date >= new Date().toISOString().split("T")[0]);
 
-  console.log({ mappedGoogleAppointments });
+  console.log({
+    mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 5),
+  });
   return mappedGoogleAppointments;
 }
 

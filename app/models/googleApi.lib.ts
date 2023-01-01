@@ -12,7 +12,7 @@ const beginString = "-----BEGIN PRIVATE KEY-----";
 const endString = "-----END PRIVATE KEY-----";
 const resultKey = [
   beginString,
-  process.env.GOOGLE_SERVICE_PRIVATE_KEY,
+  decodeURI(process.env.GOOGLE_SERVICE_PRIVATE_KEY as string),
   endString,
   "",
 ].join("\n");
