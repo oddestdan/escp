@@ -20,7 +20,7 @@ import {
 import { BOOKING_HOURLY_PRICE, START_FROM_MONDAY } from "~/utils/constants";
 
 import type { DayOfWeek } from "~/utils/date";
-import type { DateSlot, StoreBooking, TimeState } from "~/store/bookingSlice";
+import type { StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
 
 const NO_SLOTS_MSG = "Немає вільних слотів";
@@ -78,46 +78,47 @@ const mapAppointmentsToSlots = (
   });
 };
 
-const formAvailableWeeklySlots = (
-  slots: DateSlot[],
-  appointments: GoogleAppointment[],
-  weeks: Date[]
-): BookableTimeSlot[][] => {
-  return weeks.map((weekDate) => {
-    // all slots for a day
-    const selectedDateSlots = slots.find(
-      ({ date }) => date === getDateFormat(weekDate)
-    );
-    const isValid = Boolean(
-      slots.find(({ date }) => date === getDateFormat(weekDate))?.isValid
-    );
+// sum wrong wit dis hoe
+// const formAvailableWeeklySlots = (
+//   slots: DateSlot[],
+//   appointments: GoogleAppointment[],
+//   weeks: Date[]
+// ): BookableTimeSlot[][] => {
+//   return weeks.map((weekDate) => {
+//     // all slots for a day
+//     const selectedDateSlots = slots.find(
+//       ({ date }) => date === getDateFormat(weekDate)
+//     );
+//     const isValid = Boolean(
+//       slots.find(({ date }) => date === getDateFormat(weekDate))?.isValid
+//     );
 
-    const todaysAppointments =
-      appointments.filter(
-        ({ date, timeFrom, timeTo }) =>
-          timeFrom && timeTo && date === getDateFormat(weekDate)
-      ) || [];
+//     const todaysAppointments =
+//       appointments.filter(
+//         ({ date, timeFrom, timeTo }) =>
+//           timeFrom && timeTo && date === getDateFormat(weekDate)
+//       ) || [];
 
-    // all appointments' time slots for a day
-    const bookedSlots = mapAppointmentsToSlots(
-      todaysAppointments,
-      weekDate
-    ).flat();
+//     // all appointments' time slots for a day
+//     const bookedSlots = mapAppointmentsToSlots(
+//       todaysAppointments,
+//       weekDate
+//     ).flat();
 
-    console.log({ selectedDateSlots, todaysAppointments, weekDate });
+//     console.log({ selectedDateSlots, todaysAppointments, weekDate });
 
-    return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
-      slot,
-      isBooked: Boolean(
-        bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
-      ),
-      isConfirmed: Boolean(
-        bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
-      ),
-      isValid,
-    }));
-  });
-};
+//     return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
+//       slot,
+//       isBooked: Boolean(
+//         bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
+//       ),
+//       isConfirmed: Boolean(
+//         bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
+//       ),
+//       isValid,
+//     }));
+//   });
+// };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   appointments,
@@ -143,7 +144,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
 
   console.log({ appointments });
 
-  const weeks = useMemo(
+  const weeks: Date[] = useMemo(
     () =>
       START_FROM_MONDAY
         ? getWeekDates(selectedDate)
@@ -152,11 +153,47 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
 
   // Memoed values for rendering
-  // const memoedTimeSlots = formAvailableWeeklySlots(slots, appointments, selectedDate);
   const memoedTimeSlots: BookableTimeSlot[][] = useMemo(() => {
-    return formAvailableWeeklySlots(slots, appointments, weeks);
-  }, [slots, weeks, hasMounted]);
-  // }, [slots, appointments, selectedDate]);
+    const bookableSlots: BookableTimeSlot[][] = weeks.map(
+      (weekDate): BookableTimeSlot[] => {
+        // all slots for a day
+        const selectedDateSlots = slots.find(
+          ({ date }) => date === getDateFormat(weekDate)
+        );
+        const isValid = Boolean(
+          slots.find(({ date }) => date === getDateFormat(weekDate))?.isValid
+        );
+
+        const todaysAppointments =
+          appointments.filter(
+            ({ date, timeFrom, timeTo }) =>
+              timeFrom && timeTo && date === getDateFormat(weekDate)
+          ) || [];
+
+        // all appointments' time slots for a day
+        const bookedSlots = mapAppointmentsToSlots(
+          todaysAppointments,
+          weekDate
+        ).flat();
+
+        console.log({ selectedDateSlots, todaysAppointments, weekDate });
+
+        return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
+          slot,
+          isBooked: Boolean(
+            bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
+          ),
+          isConfirmed: Boolean(
+            bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)
+              ?.isConfirmed
+          ),
+          isValid,
+        }));
+      }
+    );
+    return bookableSlots;
+  }, [slots, weeks, appointments]);
+
   const timeSlots = memoedTimeSlots[dayOfWeek];
 
   const memoedDateSummary = useMemo(() => {
