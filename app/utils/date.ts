@@ -160,8 +160,14 @@ export const generateDateTimeSlotsISO = (date: string) => {
   });
 };
 
-export const fromRFC3339ToISO = (rfcDate: string) =>
-  new Date(Date.parse(rfcDate)).toISOString();
+export const fromRFC3339ToISO = (rfcDate: string) => {
+  return new Date(Date.parse(rfcDate)).toISOString();
+
+  // const someDateNumber = Date.parse(rfcDate);
+  // const offsetTZ = new Date(someDateNumber).getTimezoneOffset() * 60000; // offset in milliseconds
+  // const localISOTime = new Date(someDateNumber - offsetTZ).toISOString();
+  // return localISOTime;
+};
 
 export const fromISOToRFC3339 = (isoDate: string) =>
   isoDate.slice(0, -5) + "+00:00";

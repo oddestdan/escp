@@ -107,6 +107,8 @@ const formAvailableWeeklySlots = (
       weekDate
     ).flat();
 
+    console.log({ selectedDateSlots, todaysAppointments, weekDate });
+
     return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
       slot,
       isBooked: Boolean(
@@ -141,6 +143,8 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>(
     getDayOfWeekNumbered(new Date(selectedDate))
   );
+
+  console.log({ appointments });
 
   // Memoed values for rendering
   const memoedTimeSlots = useMemo(() => {
