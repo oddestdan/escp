@@ -60,14 +60,14 @@ export default function Footer() {
     <div className="mt-4 flex w-full flex-wrap justify-center text-center font-light">
       <Link
         to="/contacts"
-        className={`font-mono text-stone-900 underline hover:text-stone-400`}
+        className={`text-stone-900 underline hover:text-stone-400`}
       >
         контакти
       </Link>
       <Separator />
       <Link
         to="/rules"
-        className={`font-mono text-stone-900 underline hover:text-stone-400`}
+        className={`text-stone-900 underline hover:text-stone-400`}
       >
         правила
       </Link>

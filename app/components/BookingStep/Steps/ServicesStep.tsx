@@ -19,9 +19,9 @@ import ReactTooltip from "react-tooltip";
 
 const servicesLabelKeyMapper = {
   [BookingService.assistance]: "допомога асистента (200 грн/год)",
-  [BookingService.instax]: "оренда instax mini (300 грн)",
+  [BookingService.instax]: "оренда instax square (300 грн)",
   [BookingService.instaxCartridged]:
-    "оренда instax mini з картриджем на 10 фото (800 грн)",
+    "оренда instax square з картриджем на 10 фото (800 грн)",
   [BookingService.parking]: "мені потрібне паркомісце",
   [BookingService.elevator]: "мені потрібен вантажний ліфт",
   [BookingService.extra]:

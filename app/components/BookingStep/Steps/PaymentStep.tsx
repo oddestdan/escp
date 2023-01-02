@@ -34,7 +34,8 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         {/* Necessary information about payment */}
         <p className="mb-4">
           <span className="mb-2 block">
-            Бронювання є дійсним лише після оплати та її підтвердження.
+            Бронювання є дійсним лише після оплати та її підтвердження. Оплатити
+            бронювання необхідно протягом 12 годин.
           </span>
           <span className="block">
             Будь-ласка, надайте скрін оплати або певним іншим чином повідомте

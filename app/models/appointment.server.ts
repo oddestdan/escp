@@ -111,6 +111,7 @@ export async function createAppointment(
         dateTime: fromISOToRFC3339(appointment.timeTo),
         timeZone: KYIV_TIME_ZONE,
       },
+      colorId: "4", // #ff887c at index 4
     },
   };
   const createdEvent = await calendarAPI.events.insert(createEventDTO);
@@ -119,7 +120,13 @@ export async function createAppointment(
   // send new appointment notification email to admin
   console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
   sendMail({
-    text: `${createEventDTO.requestBody.summary}\n\n${createEventDTO.requestBody.description}`,
+    text: `${createEventDTO.requestBody.summary}\n\n${new Date(
+      appointment.timeFrom
+    ).toLocaleDateString("uk")}: ${new Date(
+      appointment.timeFrom
+    ).toLocaleTimeString("uk")} -- ${new Date(
+      appointment.timeTo
+    ).toLocaleTimeString("uk")}\n\n${createEventDTO.requestBody.description}`,
   });
 
   // PRISMA
