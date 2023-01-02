@@ -124,9 +124,13 @@ export async function createAppointment(
       appointment.timeFrom
     ).toLocaleDateString("uk")}: ${new Date(
       appointment.timeFrom
-    ).toLocaleTimeString("uk")} -- ${new Date(
-      appointment.timeTo
-    ).toLocaleTimeString("uk")}\n\n${createEventDTO.requestBody.description}`,
+    ).toLocaleTimeString("uk", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}–${new Date(appointment.timeTo).toLocaleTimeString("uk", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}\n\n${createEventDTO.requestBody.description}`,
   });
 
   // PRISMA
