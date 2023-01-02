@@ -23,12 +23,6 @@ const calendarScopes = [
   "https://www.googleapis.com/auth/calendar.events.readonly",
   "https://www.googleapis.com/auth/calendar.readonly",
 ];
-const gmailScopes = [
-  "https://mail.google.com/",
-  "https://www.googleapis.com/auth/gmail.metadata",
-  "https://www.googleapis.com/auth/gmail.modify",
-  "https://www.googleapis.com/auth/gmail.readonly",
-];
 
 // API key credentials
 // export const calendar = google.calendar({
@@ -44,7 +38,5 @@ export const googleAuth = new google.auth.GoogleAuth({
     client_email: process.env.GOOGLE_SERVICE_EMAIL,
     private_key: resultKey, // process.env.GOOGLE_SERVICE_PRIVATE_KEY,
   },
-  scopes: [...calendarScopes, ...gmailScopes],
+  scopes: [...calendarScopes],
 });
-
-export const gmailAPI = google.gmail("v1");

@@ -211,14 +211,14 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [dispatch, currentStep]);
   const onChangeDayOfWeek = useCallback(
     (newDayOfWeek: DayOfWeek) => {
-      console.log("> onChangeDayOfWeek");
-      console.log({
-        newDayOfWeek,
-        memoedTimeSlots,
-        savedDate: getDateFormat(
-          new Date(memoedTimeSlots[newDayOfWeek][0].slot)
-        ),
-      });
+      // console.log("> onChangeDayOfWeek");
+      // console.log({
+      //   newDayOfWeek,
+      //   memoedTimeSlots,
+      //   savedDate: getDateFormat(
+      //     new Date(memoedTimeSlots[newDayOfWeek][0].slot)
+      //   ),
+      // });
       setDayOfWeek(newDayOfWeek);
       dispatch(
         saveDate(getDateFormat(new Date(memoedTimeSlots[newDayOfWeek][0].slot)))
@@ -228,11 +228,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
-      console.log("> onChangeDateWeekday");
-      console.log({
-        dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
-        dateString,
-      });
+      // console.log("> onChangeDateWeekday");
+      // console.log({
+      //   dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
+      //   dateString,
+      // });
       setDayOfWeek(getDayOfWeekNumbered(new Date(dateString)));
       onChangeDate(dateString);
     },
