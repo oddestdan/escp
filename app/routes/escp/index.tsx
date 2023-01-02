@@ -7,10 +7,10 @@ import NavBar from "~/components/NavBar/NavBar";
 import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 // desktop
-const imageSrcDesktopCollage = "https://i.imgur.com/MKN99RK.png";
+import imageSrcDesktopCollage from "../../../public/images/escp-desktop.jpg";
 
 // mobile
-const imageSrcMobileMain = "https://i.imgur.com/KGpjCmh.png";
+import imageSrcMobileMain from "../../../public/images/escp-mobile-1.jpg";
 
 export default function Escp() {
   const navigate = useNavigate();

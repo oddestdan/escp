@@ -1,7 +1,7 @@
 import NavBar from "~/components/NavBar/NavBar";
 import Footer from "~/components/Footer/Footer";
 
-const imageSrcRoute = "https://i.imgur.com/eGTIOOr.png"; // 900/600 == 3:2
+import imageSrcRoute from "../../../public/images/route.jpg";
 
 export default function rules() {
   return (

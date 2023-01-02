@@ -3,16 +3,34 @@ import Header from "~/components/Header/Header";
 import Footer from "~/components/Footer/Footer";
 import ImageGallery from "react-image-gallery";
 
+import highq1 from "../../../public/images/highq/1.jpg";
+import highq2 from "../../../public/images/highq/2.jpg";
+import highq3 from "../../../public/images/highq/3.jpg";
+import highq4 from "../../../public/images/highq/4.jpg";
+import highq5 from "../../../public/images/highq/5.jpg";
+import highq6 from "../../../public/images/highq/6.jpg";
+import highq7 from "../../../public/images/highq/7.jpg";
+import highq8 from "../../../public/images/highq/8.jpg";
+
+import lowq1 from "../../../public/images/lowq/1.jpg";
+import lowq2 from "../../../public/images/lowq/2.jpg";
+import lowq3 from "../../../public/images/lowq/3.jpg";
+import lowq4 from "../../../public/images/lowq/4.jpg";
+import lowq5 from "../../../public/images/lowq/5.jpg";
+import lowq6 from "../../../public/images/lowq/6.jpg";
+import lowq7 from "../../../public/images/lowq/7.jpg";
+import lowq8 from "../../../public/images/lowq/8.jpg";
+
 // pairs of [highQuality, lowQuality]
 const galleryImages: [string, string][] = [
-  ["https://i.imgur.com/2eExb8V.png", "https://i.imgur.com/ianw6jB.jpg"],
-  ["https://i.imgur.com/EZboJOw.png", "https://i.imgur.com/efUOarL.jpg"],
-  ["https://i.imgur.com/1hkc4mA.png", "https://i.imgur.com/nSuRR73.jpg"],
-  ["https://i.imgur.com/Kt5h5f7.jpg", "https://i.imgur.com/pRnsIFP.jpg"],
-  ["https://i.imgur.com/xt1Vk9V.jpg", "https://i.imgur.com/BIcRzEx.jpg"],
-  ["https://i.imgur.com/c7vgeH5.jpg", "https://i.imgur.com/fgKCST5.jpg"],
-  ["https://i.imgur.com/RAsweOZ.jpg", "https://i.imgur.com/I0M8E06.jpg"],
-  ["https://i.imgur.com/ANcgQzX.jpg", "https://i.imgur.com/vY55BrZ.jpg"],
+  [highq1, lowq1],
+  [highq2, lowq2],
+  [highq3, lowq3],
+  [highq4, lowq4],
+  [highq5, lowq5],
+  [highq6, lowq6],
+  [highq7, lowq7],
+  [highq8, lowq8],
 ];
 
 export default function About() {
