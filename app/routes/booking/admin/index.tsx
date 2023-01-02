@@ -15,7 +15,7 @@ import { requireUserId } from "~/session.server";
 import NavBar from "~/components/NavBar/NavBar";
 import Header from "~/components/Header/Header";
 import { BookingService } from "~/store/bookingSlice";
-import { getDateFormat } from "~/utils/date";
+import { getDateFormat, getHoursDiffBetweenDates } from "~/utils/date";
 import AdminCalendar, {
   prettyFormatDate,
 } from "~/components/AdminCalendar/AdminCalendar";
@@ -34,17 +34,18 @@ const importedColors = ["darkorange", "orange"];
 export const getAppointmentTitle = (
   info: ContactInfo,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  price: string
 ): string => {
   if (!info.firstName || !info.tel) {
     return "Incognito";
   }
 
-  const duration = Math.abs(endDate.getTime() - startDate.getTime()) / 3.6e6; // 60 * 60 * 1000
+  const duration = getHoursDiffBetweenDates(endDate, startDate);
 
   return `${duration} год, ${info.firstName}${
     info.lastName ? ` ${info.lastName[0]}.` : ""
-  }`;
+  }, ${price}грн`;
 };
 
 export const getAppointmentDescription = (
@@ -220,7 +221,8 @@ export default function AdminBooking() {
       const title = getAppointmentTitle(
         JSON.parse(app.contactInfo),
         new Date(app.timeFrom),
-        new Date(app.timeTo)
+        new Date(app.timeTo),
+        app.price
       );
       const isSelected = app.id === selectedAppointment?.id;
       const isImported = title.endsWith("imported");

@@ -14,6 +14,8 @@ import { json } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
+import { getHoursDiffBetweenDates } from "~/utils/date";
+import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 const imageSrcHurray = "https://i.imgur.com/iGfxlZi.png";
 
@@ -53,13 +55,19 @@ export default function Confirmation() {
   }, [dispatch, cleanupCb]);
 
   const allServices = JSON.parse(appointment.services);
+  const bookingPrice =
+    getHoursDiffBetweenDates(
+      new Date(appointment.timeTo),
+      new Date(appointment.timeFrom)
+    ) * BOOKING_HOURLY_PRICE;
+
   const mappedAppointment = {
     dateTime: {
       date: appointment.date,
       time: {
         start: appointment.timeFrom,
         end: appointment.timeTo,
-        diff: +appointment.price, // TODO: ???
+        diff: bookingPrice / BOOKING_HOURLY_PRICE,
       },
       slots: [],
       hasWeekChanged: false,
@@ -67,7 +75,8 @@ export default function Confirmation() {
     services: allServices.services,
     additionalServices: allServices.additionalServices,
     price: {
-      booking: +appointment.price,
+      booking: bookingPrice,
+      services: +appointment.price - bookingPrice,
     },
     contact: JSON.parse(appointment.contactInfo),
   };
@@ -92,7 +101,9 @@ export default function Confirmation() {
           </h2>
 
           <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
-            {mappedAppointment.price.booking} грн
+            {mappedAppointment.price.booking +
+              (mappedAppointment.price.services || 0)}{" "}
+            грн
           </h4>
 
           <BookingSummary summary={mappedAppointment} />

@@ -96,7 +96,8 @@ export async function createAppointment(
       summary: getAppointmentTitle(
         JSON.parse(appointment.contactInfo),
         new Date(appointment.timeFrom),
-        new Date(appointment.timeTo)
+        new Date(appointment.timeTo),
+        appointment.price
       ),
       description: getAppointmentDescription(
         JSON.parse(appointment.services),
