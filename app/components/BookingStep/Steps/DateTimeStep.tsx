@@ -142,7 +142,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     getDayOfWeekNumbered(new Date(selectedDate))
   );
 
-  console.log({ appointments });
+  // console.log({ appointments });
 
   const weeks: Date[] = useMemo(
     () =>
@@ -176,7 +176,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           weekDate
         ).flat();
 
-        console.log({ selectedDateSlots, todaysAppointments, weekDate });
+        // console.log({ selectedDateSlots, todaysAppointments, weekDate });
 
         return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
           slot,

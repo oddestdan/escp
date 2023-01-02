@@ -16,3 +16,6 @@ export const BOOKING_TIME_TAKEN_MSG =
 export const START_FROM_MONDAY = false;
 
 export const KYIV_TIME_ZONE = "Europe/Kyiv";
+
+// Local Storage keys
+export const LS_HAS_SEEN_TERMS = "escp90-has-seen-terms";

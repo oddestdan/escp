@@ -25,10 +25,15 @@ export default function About() {
 
         <div className="mx-auto mb-4 flex w-full flex-col sm:w-3/5">
           {/* About page content */}
-          <p className="my-4">Фотостудія 90 м², бул. Вацлава Гавела, 4</p>
+          {/* <p className="my-4">Фотостудія 90 м², бул. Вацлава Гавела, 4</p> */}
+          <p className="my-4">
+            <span className="font-medium">90 м².</span>
+            <br />
+            Що входить у вартість та який є реквізит:
+          </p>
           <div className="mb-4 flex flex-col-reverse justify-between lg:flex-row">
             <div className="mb-4 mt-4 w-full lg:mt-0 lg:w-1/3">
-              Що входить у вартість та який є реквізит:
+              {/* Що входить у вартість та який є реквізит: */}
               {/* desktop/left-side mobile/bottom*/}
               <ul className="">
                 {[
@@ -51,6 +56,7 @@ export default function About() {
                   "дзекрало",
                   "пульверизатор",
                   "відпарювач",
+                  "фрост рама",
                 ].map((good: string | string[]) => (
                   <li
                     key={typeof good === "string" ? good : good[0]}

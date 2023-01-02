@@ -5,6 +5,8 @@ import { TextInput } from "~/components/TextInput/TextInput";
 import type { ContactInfo, StoreBooking } from "~/store/bookingSlice";
 import { saveContactInfo } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
+import { LS_HAS_SEEN_TERMS } from "~/utils/constants";
+import { ls } from "~/utils/localStorage.service";
 import { BookingStepActions } from "../BookingStepActions";
 
 type RequiredContactInfo = Omit<ContactInfo, "lastName" | "socialMedia">;
@@ -39,7 +41,9 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     (store: StoreBooking) => store.booking
   );
   const [localContactForm, setLocalContactForm] = useState({ ...contact });
-  const [hasSeenTerms, setHasSeenTerms] = useState(false);
+  const [hasSeenTerms, setHasSeenTerms] = useState(
+    Boolean(ls.getItem(LS_HAS_SEEN_TERMS)) || false
+  );
   const [touched, setTouched] = useState<
     Partial<RequiredContactInfo & { terms: string }>
   >({
@@ -67,7 +71,9 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
   const onCheckTerms = useCallback(
     (onlyTrue = false) => {
       touched.terms = hasSeenTerms ? "" : undefined;
-      setHasSeenTerms(onlyTrue || !hasSeenTerms);
+      const hasSeen = onlyTrue || !hasSeenTerms;
+      setHasSeenTerms(hasSeen);
+      ls.setItem(LS_HAS_SEEN_TERMS, "true");
     },
     [hasSeenTerms, touched]
   );

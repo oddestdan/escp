@@ -17,6 +17,19 @@ const resultKey = [
   "",
 ].join("\n");
 
+const calendarScopes = [
+  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/calendar.events",
+  "https://www.googleapis.com/auth/calendar.events.readonly",
+  "https://www.googleapis.com/auth/calendar.readonly",
+];
+const gmailScopes = [
+  "https://mail.google.com/",
+  "https://www.googleapis.com/auth/gmail.metadata",
+  "https://www.googleapis.com/auth/gmail.modify",
+  "https://www.googleapis.com/auth/gmail.readonly",
+];
+
 // API key credentials
 // export const calendar = google.calendar({
 //   version: "v3",
@@ -24,17 +37,14 @@ const resultKey = [
 // });
 
 // Service account credentials
-export const calendar = google.calendar("v3");
+export const calendarAPI = google.calendar("v3");
 export const googleAuth = new google.auth.GoogleAuth({
   // keyFile: "./escp90-service-e59744a14000.json",
   credentials: {
     client_email: process.env.GOOGLE_SERVICE_EMAIL,
     private_key: resultKey, // process.env.GOOGLE_SERVICE_PRIVATE_KEY,
   },
-  scopes: [
-    "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/calendar.events",
-    "https://www.googleapis.com/auth/calendar.events.readonly",
-    "https://www.googleapis.com/auth/calendar.readonly",
-  ],
+  scopes: [...calendarScopes, ...gmailScopes],
 });
+
+export const gmailAPI = google.gmail("v1");

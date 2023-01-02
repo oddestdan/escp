@@ -4,7 +4,7 @@ import {
   getAppointmentDescription,
   getAppointmentTitle,
 } from "~/routes/booking/admin";
-import { calendar, CAL_ID, googleAuth } from "./googleApi.lib";
+import { calendarAPI, CAL_ID, gmailAPI, googleAuth } from "./googleApi.lib";
 import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
@@ -42,10 +42,22 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
     });
   }
 
+  // try getting email messages
+  // try {
+  //   // TODO: not meant to be used from a service account, need another way
+  //   const response = await gmailAPI.users.messages.list({
+  //     userId: "me",
+  //   });
+  //   console.log(response);
+  // } catch (error) {
+  //   console.error(`Gmail API Error: ${(error as any).message}`);
+  //   console.error(error);
+  // }
+
   const authClient = await googleAuth.getClient();
   google.options({ auth: authClient });
 
-  const events = await calendar.events.list({
+  const events = await calendarAPI.events.list({
     calendarId: CAL_ID,
     timeMin: new Date().toISOString(),
     timeZone: KYIV_TIME_ZONE,
@@ -63,12 +75,12 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
     })
     .filter((gApp) => gApp.date >= new Date().toISOString().split("T")[0]);
 
-  console.log({
-    googleAppointments: googleAppointments
-      .slice(0, 5)
-      .map((x) => ({ ...x, ...x.start })),
-    mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 5),
-  });
+  // console.log({
+  //   googleAppointments: googleAppointments
+  //     .slice(0, 5)
+  //     .map((x) => ({ ...x, ...x.start })),
+  //   mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 5),
+  // });
 
   return mappedGoogleAppointments;
 }
@@ -113,7 +125,7 @@ export async function createAppointment(
     },
   };
   // console.log({ createEventDTO, start: createEventDTO.requestBody.start });
-  const createdEvent = await calendar.events.insert(createEventDTO);
+  const createdEvent = await calendarAPI.events.insert(createEventDTO);
   console.log({ createdEvent: createdEvent.data });
 
   // PRISMA
@@ -136,6 +148,9 @@ export async function createAppointment(
   //   console.log("Appointment already taken");
   //   return null;
   // }
+
+  // TODO: send email through Google Gmail API asynchronously
+  // gmailAPI.users.messages.insert({})
 
   return prisma.appointment.create({ data: appointment });
 }

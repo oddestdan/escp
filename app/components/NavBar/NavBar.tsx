@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 export default function NavBar({ active }: { active?: string }) {
   return (
-    <nav className="mx-auto mt-4 flex w-full flex-row justify-between font-mono font-light sm:w-3/5">
+    <nav className="mx-auto mt-4 flex w-full flex-row justify-between font-light sm:w-3/5">
       <Link
         to="/escp"
         className={`mx-0.5 p-0.5 p-0.5 text-stone-900 hover:text-stone-400 md:flex-1 md:text-left ${
