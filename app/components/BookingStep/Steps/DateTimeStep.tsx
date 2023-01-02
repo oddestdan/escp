@@ -205,6 +205,21 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       : NO_SLOTS_MSG;
   }, [isMobile, price.booking, selectedTime, timeSlots]);
 
+  const memoedAppointmentMonth = useMemo(() => {
+    if (!weeks.length) {
+      return "--";
+    }
+
+    const startMonth = new Date(weeks[0]).toLocaleString("uk", {
+      month: "long",
+    });
+    const endMonth = new Date(weeks[weeks.length - 1]).toLocaleString("uk", {
+      month: "long",
+    });
+
+    return startMonth === endMonth ? startMonth : `${startMonth} / ${endMonth}`;
+  }, [weeks]);
+
   // Callbacks passed inside components
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));
@@ -267,6 +282,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           i
         </span>
       </legend>
+
+      <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
+        {memoedAppointmentMonth}
+      </h4>
 
       <div className="w-full px-4 md:px-0">
         <DatePicker
