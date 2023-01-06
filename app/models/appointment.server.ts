@@ -14,6 +14,19 @@ import { sendMail } from "./nodemailer.lib";
 
 export type { Appointment } from "@prisma/client";
 
+const createAllDayEvent = (dateString: string) => {
+  const xTime = fromRFC3339ToISO(dateString);
+  const xDate = xTime.split("T")[0];
+  const yTime = xDate.concat("T00:00:00.000Z");
+  const zTime = xDate.concat("T24:00:00.000Z");
+  return {
+    date: xDate,
+    timeFrom: yTime,
+    timeTo: zTime,
+    confirmed: true,
+  };
+};
+
 export async function getAppointments(): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
@@ -54,11 +67,16 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   const googleAppointments = events.data.items || [];
 
   const mappedGoogleAppointments: GoogleAppointment[] = googleAppointments
-    .map((gApp) => {
+    .map(({ start, end }) => {
+      // all-day event
+      if (start?.date) {
+        return createAllDayEvent(start.date);
+      }
+
       return {
-        date: gApp.start?.date || gApp.start?.dateTime?.split("T")[0] || "",
-        timeFrom: gApp.start ? fromRFC3339ToISO(gApp.start.dateTime || "") : "", // TODO: handle absent dateTime properly (+ full day events)
-        timeTo: gApp.end ? fromRFC3339ToISO(gApp.end.dateTime || "") : "", // TODO: handle absent dateTime properly (+ full day events)
+        date: start?.date || start?.dateTime?.split("T")[0] || "",
+        timeFrom: start ? fromRFC3339ToISO(start.dateTime || "") : "",
+        timeTo: end ? fromRFC3339ToISO(end.dateTime || "") : "",
         confirmed: true,
       };
     })
