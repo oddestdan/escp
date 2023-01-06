@@ -16,13 +16,14 @@ export const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
-const defaultMailOptions: MailOptions = {
-  from: `"escp.90-site" <${process.env.SMTP_EMAIL}>`,
-  to: process.env.ADMIN_EMAIL,
-  subject: `Новий запис | ${new Date().toLocaleString("uk")}`,
-};
 
 export const sendMail = (overrideMailOptions: MailOptions) => {
+  const defaultMailOptions: MailOptions = {
+    from: `"escp.90-site" <${process.env.SMTP_EMAIL}>`,
+    to: process.env.ADMIN_EMAIL,
+    subject: `Новий запис | ${new Date().toLocaleString("uk")}`,
+  };
+
   transporter.sendMail(
     { ...defaultMailOptions, ...overrideMailOptions },
     (error, info) => {

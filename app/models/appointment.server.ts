@@ -57,8 +57,8 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
     .map((gApp) => {
       return {
         date: gApp.start?.date || gApp.start?.dateTime?.split("T")[0] || "",
-        timeFrom: gApp.start ? fromRFC3339ToISO(gApp.start.dateTime || "") : "",
-        timeTo: gApp.end ? fromRFC3339ToISO(gApp.end.dateTime || "") : "",
+        timeFrom: gApp.start ? fromRFC3339ToISO(gApp.start.dateTime || "") : "", // TODO: handle absent dateTime properly (+ full day events)
+        timeTo: gApp.end ? fromRFC3339ToISO(gApp.end.dateTime || "") : "", // TODO: handle absent dateTime properly (+ full day events)
         confirmed: true,
       };
     })
