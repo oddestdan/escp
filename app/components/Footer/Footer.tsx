@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { InstagramIcon, TelegramIcon } from "~/icons";
 import { TikTokIcon } from "~/icons/TikTokIcon";
 import { getIsMobile } from "~/utils/breakpoints";
+import { CONTACTS_CURRENT_TAB_PARAM } from "~/utils/constants";
 
 const Separator = () => <span className="px-2">|</span>;
 
@@ -59,7 +60,7 @@ export default function Footer() {
   return (
     <div className="mt-4 flex w-full flex-wrap justify-center text-center font-light">
       <Link
-        to="/contacts"
+        to={`/contacts?${CONTACTS_CURRENT_TAB_PARAM}=0`}
         className={`text-stone-900 underline hover:text-stone-400`}
       >
         контакти

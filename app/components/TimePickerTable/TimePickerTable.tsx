@@ -138,32 +138,44 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
                   const isActive =
                     (end <= i && i <= start) || (start <= i && i <= end);
                   const invalid = isBooked || !isValid;
+                  const timeSlotStart = formatShortTimeSlot(slot);
+                  const timeSlotEnd = formatShortTimeSlot(
+                    addMinutes(slot, TIMESLOT_OFFSET_MINUTES)
+                  );
+
                   return (
                     <li key={`${i}-${slot}`} className="flex flex-col">
                       {/* actual time slot */}
-                      <div
-                        className={`inline-flex border-b-[1px] px-1 ${
-                          isActive && isCurrentDay
-                            ? "bg-stone-800 text-stone-100 hover:bg-stone-700 active:bg-stone-600 active:text-stone-200"
-                            : "hover:bg-stone-100 active:bg-stone-200 active:text-stone-800"
-                        } ${
-                          invalid
-                            ? "cursor-not-allowed border-transparent bg-stone-200 text-stone-600"
-                            : "cursor-pointer border-stone-800"
-                        }`}
-                        onMouseDown={() =>
-                          !invalid && mouseDownHandler(dayOfWeekIndex, i)
-                        }
-                        aria-disabled={invalid}
-                      >
-                        <div className="select-none px-[1px] py-[2px] sm:px-1 sm:py-1">
-                          {formatShortTimeSlot(slot)}
-                          <span className=" inline-block py-[3px]">-</span>
-                          {formatShortTimeSlot(
-                            addMinutes(slot, TIMESLOT_OFFSET_MINUTES)
-                          )}
+                      {invalid ? (
+                        <div
+                          className={`inline-flex cursor-not-allowed border-b-[1px] border-transparent bg-stone-300 px-1 text-stone-700`}
+                          aria-disabled={invalid}
+                          data-tip={`Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}
+                        >
+                          <div className="select-none px-[1px] py-[2px] sm:px-1 sm:py-1">
+                            {timeSlotStart}
+                            <span className=" inline-block py-[3px]">-</span>
+                            {timeSlotEnd}
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div
+                          className={`inline-flex cursor-pointer border-b-[1px] border-stone-800 px-1 ${
+                            isActive && isCurrentDay
+                              ? "bg-stone-800 text-stone-100 hover:bg-stone-600 active:bg-stone-500 active:text-stone-200"
+                              : "hover:bg-stone-200 active:bg-stone-300 active:text-stone-800"
+                          }`}
+                          onMouseDown={() =>
+                            mouseDownHandler(dayOfWeekIndex, i)
+                          }
+                        >
+                          <div className="select-none px-[1px] py-[2px] sm:px-1 sm:py-1">
+                            {timeSlotStart}
+                            <span className=" inline-block py-[3px]">-</span>
+                            {timeSlotEnd}
+                          </div>
+                        </div>
+                      )}
 
                       {/* connector placeholder */}
                       <div

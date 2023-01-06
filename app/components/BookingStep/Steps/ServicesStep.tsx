@@ -176,7 +176,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
           ? " | " + memoedSelectedServicesList
           : ""}
       </h4>
-      <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
+      <legend className="mx-auto mb-8 block text-center text-sm italic">
         весь реквізит (описаний{" "}
         <Link
           className="text-stone-900 underline hover:text-stone-400"

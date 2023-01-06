@@ -19,3 +19,7 @@ export const KYIV_TIME_ZONE = "Europe/Kyiv";
 
 // Local Storage keys
 export const LS_HAS_SEEN_TERMS = "escp90-has-seen-terms";
+export const LS_FOOT_OR_CAR = "escp90-foot-or-car";
+
+// Query Params keys
+export const CONTACTS_CURRENT_TAB_PARAM = "tab";
