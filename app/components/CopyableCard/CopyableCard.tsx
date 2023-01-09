@@ -1,23 +1,15 @@
-import { useCallback, useState } from "react";
-
-const paymentInfo = "4149 6090 1440 7540";
+import { ADMIN_PAYMENT_CARD, NUMBER_COPIED_MSG } from "~/utils/constants";
+import useCopyClipboard from "~/utils/hooks/useCopyClipboard.hook";
 
 export const CopyableCard: React.FC<any> = () => {
-  const [hasCopied, setHasCopied] = useState(false);
-
-  const copyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(paymentInfo.replace(/\s/g, ""));
-    setHasCopied(true);
-
-    setTimeout(() => setHasCopied(false), 3000);
-  }, []);
+  const [hasCopied, copyToClipboard] = useCopyClipboard(ADMIN_PAYMENT_CARD);
 
   return (
     <>
       <p className="flex justify-center">
         <input
           className={`inline w-pcard cursor-text border-2 border-stone-900 bg-stone-100 py-2 px-2 text-center text-stone-900`}
-          defaultValue={paymentInfo}
+          defaultValue={ADMIN_PAYMENT_CARD}
           readOnly={true}
         />
         <button
@@ -32,7 +24,7 @@ export const CopyableCard: React.FC<any> = () => {
           hasCopied ? "" : "invisible"
         }`}
       >
-        номер скопійовано!
+        {NUMBER_COPIED_MSG}
       </p>
     </>
   );

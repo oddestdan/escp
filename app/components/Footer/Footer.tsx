@@ -3,8 +3,18 @@ import { useEffect, useState } from "react";
 import { InstagramIcon, TelegramIcon } from "~/icons";
 import { TikTokIcon } from "~/icons/TikTokIcon";
 import { getIsMobile } from "~/utils/breakpoints";
-import { CONTACTS_CURRENT_TAB_PARAM } from "~/utils/constants";
+import {
+  ADMIN_FORMATTED_PHONE_NO,
+  ADMIN_PLAIN_PHONE_NO,
+  CONTACTS_CURRENT_TAB_PARAM,
+  NUMBER_COPIED_MSG,
+} from "~/utils/constants";
+import useCopyClipboard from "~/utils/hooks/useCopyClipboard.hook";
 
+const phoneNo = {
+  plain: ADMIN_PLAIN_PHONE_NO,
+  formatted: ADMIN_FORMATTED_PHONE_NO,
+};
 const Separator = () => <span className="px-2">|</span>;
 
 const SocialIcons = ({ isMobile }: { isMobile: boolean }) => (
@@ -57,6 +67,10 @@ export default function Footer() {
     setIsMobile(getIsMobile());
   }, []);
 
+  const [hasCopiedPhoneNo, copyPhoneNoToClipboard] = useCopyClipboard(
+    phoneNo.plain
+  );
+
   return (
     <div className="mt-4 flex w-full flex-wrap justify-center text-center font-light">
       <Link
@@ -81,6 +95,29 @@ export default function Footer() {
       </span>
       <span className="mt-4 flex w-full justify-center md:mt-0 md:w-auto">
         <SocialIcons isMobile={isMobile} />
+      </span>
+      <span className="hidden md:inline">
+        <Separator />
+      </span>
+      {/* Clickable phone number to call immediately */}
+      {/* <span className="mt-4 flex w-full justify-center md:mt-0 md:w-auto">
+        <a href="tel:+380636857636">+38 (063) 685 76 36</a>
+      </span> */}
+      {/* Clickable copy-paste phone number */}
+      <span className="relative mt-4 inline-block flex w-full justify-center md:mt-0 md:w-auto">
+        <span
+          className={`radius absolute -top-8 bg-stone-100 px-2 py-1 text-center text-sm text-stone-900 ${
+            hasCopiedPhoneNo ? "" : "invisible"
+          }`}
+        >
+          {NUMBER_COPIED_MSG}
+        </span>
+        <span
+          className="cursor-pointer hover:text-stone-400 active:text-stone-300"
+          onClick={copyPhoneNoToClipboard}
+        >
+          {phoneNo.formatted}
+        </span>
       </span>
     </div>
   );
