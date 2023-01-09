@@ -7,7 +7,7 @@ export default function rules() {
       <NavBar active="rules" />
 
       <div className="flex w-full flex-1 flex-col font-light">
-        <h1 className="mx-auto mt-16 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
+        <h1 className="mx-auto mt-8 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
           Правила
         </h1>
         <div className="my-4 mx-auto flex flex-col sm:w-3/5">
