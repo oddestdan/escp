@@ -30,11 +30,17 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.confirmationId, "Expected params.confirmationId");
 
-  const appointmentResponse = await getAppointmentById(params.confirmationId);
-  if (!appointmentResponse) {
+  try {
+    const appointmentResponse = await getAppointmentById(params.confirmationId);
+
+    if (!appointmentResponse) {
+      throw json({ message: "Not Found", id: params.confirmationId }, 404);
+    }
+
+    return json<LoaderData>({ appointmentResponse });
+  } catch (error) {
     throw json({ message: "Not Found", id: params.confirmationId }, 404);
   }
-  return json<LoaderData>({ appointmentResponse });
 };
 
 const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (

@@ -30,7 +30,7 @@ export const BOOKING_TIME_TAKEN_MSG =
   "Не вийшло забронювати на цей час. \nБудь-ласка, спробуйте ще раз";
 
 // Error Messages
-export const ERROR_SOMETHING_BAD_HAPPENED = "Щось неприємне сталося";
+export const ERROR_SOMETHING_BAD_HAPPENED = "Щось пішло не так";
 export const ERROR_404_APPOINTMENTS_MSG =
   "Не вдалося підвантажити замовлення з календаря";
 export const ERROR_404_APPOINTMENT_BY_ID_MSG =

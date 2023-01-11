@@ -80,13 +80,19 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const appointments = await getAppointments();
-  if (!appointments) {
-    throw new Response("Not Found", { status: 404 });
+  try {
+    const appointments = await getAppointments();
+
+    if (!appointments) {
+      throw new Response("Not Found", { status: 404 });
+    }
+
+    return json<LoaderData>({
+      appointments,
+    });
+  } catch (error: any) {
+    throw new Response(`Error: ${error.message}`, { status: 500 });
   }
-  return json<LoaderData>({
-    appointments,
-  });
 };
 
 const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
