@@ -92,12 +92,25 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   return mappedGoogleAppointments;
 }
 
-export async function getAppointmentById(
-  id: string
-): Promise<Appointment | null> {
-  // TODO: replace with calendar.events.get({}) call
-  // ??? Or not ???
-  return prisma.appointment.findUnique({ where: { id } });
+export async function getAppointmentById(eventId: string) {
+  console.log(
+    `> Getting an appointment id=${eventId} from Google Calendar API...`
+  );
+
+  const authClient = await googleAuth.getClient();
+  google.options({ auth: authClient });
+
+  const calendarAppointment = await calendarAPI.events.get({
+    calendarId: CAL_ID,
+    eventId,
+  });
+
+  console.log({ calendarAppointment });
+  return calendarAppointment;
+
+  // PRISMA
+
+  // return prisma.appointment.findUnique({ where: { id } });
 }
 
 export async function createAppointment(
@@ -107,7 +120,8 @@ export async function createAppointment(
   >
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
-  // console.log({ appointment });
+  console.log({ appointment });
+
   const createEventDTO = {
     calendarId: CAL_ID,
     requestBody: {
@@ -130,6 +144,14 @@ export async function createAppointment(
         timeZone: KYIV_TIME_ZONE,
       },
       colorId: "4", // #ff887c at index 4
+      // for later parsing on confirmation screen
+      extendedProperties: {
+        private: {
+          contactInfo: appointment.contactInfo,
+          services: appointment.services,
+          price: appointment.price,
+        },
+      },
     },
   };
   const createdEvent = await calendarAPI.events.insert(createEventDTO);
@@ -150,6 +172,8 @@ export async function createAppointment(
       minute: "2-digit",
     })}\n\n${createEventDTO.requestBody.description}`,
   });
+
+  return createdEvent.data;
 
   // PRISMA
 
@@ -172,7 +196,7 @@ export async function createAppointment(
   //   return null;
   // }
 
-  return prisma.appointment.create({ data: appointment });
+  // return prisma.appointment.create({ data: appointment });
 }
 
 export async function updateAppointment(

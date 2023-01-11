@@ -3,7 +3,7 @@ import Footer from "~/components/Footer/Footer";
 
 import { useSearchParams } from "@remix-run/react";
 import { useEffect, useMemo, useState } from "react";
-import { CONTACTS_CURRENT_TAB_PARAM } from "~/utils/constants";
+import { CONTACTS_CURRENT_TAB_QS } from "~/utils/constants";
 import ReactTooltip from "react-tooltip";
 
 import imageSrcRouteFoot from "../../../public/images/route-foot.png";
@@ -69,7 +69,7 @@ export default function Contacts() {
   const [searchParams] = useSearchParams();
   const [currentTab, setCurrentTab] = useState(
     () =>
-      searchParams.get(CONTACTS_CURRENT_TAB_PARAM) ||
+      searchParams.get(CONTACTS_CURRENT_TAB_QS) ||
       // ls.getItem(LS_FOOT_OR_CAR, "0") ||
       "0"
   );

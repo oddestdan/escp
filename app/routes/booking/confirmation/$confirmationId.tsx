@@ -11,28 +11,32 @@ import { Separator } from "~/components/Separator/Separator";
 import { clearAll } from "~/store/bookingSlice";
 import { getAppointmentById } from "~/models/appointment.server";
 import { json } from "@remix-run/server-runtime";
-import type { Appointment } from "~/models/appointment.server";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import { getHoursDiffBetweenDates } from "~/utils/date";
 import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
+import type { LoaderFunction } from "@remix-run/server-runtime";
+
 const imageSrcHurray = "https://i.imgur.com/iGfxlZi.png";
 
-type LoaderData = { appointment: Appointment };
+type LoaderData = {
+  appointmentResponse: Awaited<ReturnType<typeof getAppointmentById>>;
+};
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.confirmationId, "Expected params.confirmationId");
 
-  const appointment = await getAppointmentById(params.confirmationId);
-  if (!appointment) {
+  const appointmentResponse = await getAppointmentById(params.confirmationId);
+  if (!appointmentResponse) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ appointment });
+  return json<LoaderData>({ appointmentResponse });
 };
 
 export default function Confirmation() {
-  const { appointment } = useLoaderData() as LoaderData;
+  const {
+    appointmentResponse: { data: appointment },
+  } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -54,19 +58,39 @@ export default function Confirmation() {
     cleanupCb();
   }, [dispatch, cleanupCb]);
 
-  const allServices = JSON.parse(appointment.services);
+  const { start, end, extendedProperties } = appointment;
+
+  const hasNoEndTime = !end || (!end.dateTime && !end.date);
+  const hasNoStartTime = !start || (!start.dateTime && !start.date);
+  const hasNoSufficientData =
+    !extendedProperties || !extendedProperties.private;
+
+  if (hasNoEndTime || hasNoStartTime || hasNoSufficientData) {
+    return (
+      <div className="w-100 my-auto flex h-[100vh] flex-col justify-center text-center text-2xl">
+        😭
+        <br />
+        помилка при завантаженні замовлення
+      </div>
+    );
+  }
+
+  const stringifiedData = extendedProperties.private;
+
+  // TODO: handle full-day appointments
   const bookingPrice =
     getHoursDiffBetweenDates(
-      new Date(appointment.timeTo),
-      new Date(appointment.timeFrom)
+      new Date(appointment.end!.dateTime as string),
+      new Date(appointment.start!.dateTime as string)
     ) * BOOKING_HOURLY_PRICE;
 
+  const allServices = JSON.parse(stringifiedData!.services);
   const mappedAppointment = {
     dateTime: {
-      date: appointment.date,
+      date: appointment.start!.dateTime!.split("T")[0],
       time: {
-        start: appointment.timeFrom,
-        end: appointment.timeTo,
+        start: appointment.start!.dateTime as string,
+        end: appointment.end!.dateTime as string,
         diff: bookingPrice / BOOKING_HOURLY_PRICE,
       },
       slots: [],
@@ -76,9 +100,9 @@ export default function Confirmation() {
     additionalServices: allServices.additionalServices,
     price: {
       booking: bookingPrice,
-      services: +appointment.price - bookingPrice,
+      services: +stringifiedData!.price - bookingPrice,
     },
-    contact: JSON.parse(appointment.contactInfo),
+    contact: JSON.parse(stringifiedData!.contactInfo),
   };
 
   return (

@@ -6,7 +6,7 @@ import { getIsMobile } from "~/utils/breakpoints";
 import {
   ADMIN_FORMATTED_PHONE_NO,
   ADMIN_PLAIN_PHONE_NO,
-  CONTACTS_CURRENT_TAB_PARAM,
+  CONTACTS_CURRENT_TAB_QS,
   NUMBER_COPIED_MSG,
 } from "~/utils/constants";
 import useCopyClipboard from "~/utils/hooks/useCopyClipboard.hook";
@@ -74,7 +74,7 @@ export default function Footer() {
   return (
     <div className="mt-4 flex w-full flex-wrap justify-center text-center font-light">
       <Link
-        to={`/contacts?${CONTACTS_CURRENT_TAB_PARAM}=0`}
+        to={`/contacts?${CONTACTS_CURRENT_TAB_QS}=0`}
         className={`text-stone-900 underline hover:text-stone-400`}
       >
         контакти

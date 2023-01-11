@@ -211,7 +211,7 @@ export default function AdminBooking() {
       <div className="w-100 my-auto flex h-[100vh] flex-col justify-center text-center text-2xl">
         😉
         <br />
-        Nothing to see here
+        тут нема на що дивитися
       </div>
     );
   }
