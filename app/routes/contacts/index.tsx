@@ -95,7 +95,7 @@ export default function Contacts() {
         <ReactTooltip
           backgroundColor="#2b2b2b"
           textColor="#ffffff"
-          place="bottom"
+          place={currentTab === "0" ? "right" : "left"}
           effect="solid"
           multiline
         />

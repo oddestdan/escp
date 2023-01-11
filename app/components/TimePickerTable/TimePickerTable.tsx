@@ -29,8 +29,6 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
 }) => {
   const dispatch = useDispatch();
   const timeSlots = useMemo(() => {
-    console.log("timeSlots useMemo");
-    console.log({ timeSlotsMatrix, dayOfWeek });
     return timeSlotsMatrix[dayOfWeek];
   }, [timeSlotsMatrix, dayOfWeek]);
 

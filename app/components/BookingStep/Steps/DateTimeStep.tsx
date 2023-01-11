@@ -216,7 +216,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     const endMonth = new Date(weeks[weeks.length - 1]).toLocaleString("uk", {
       month: "long",
     });
-    console.log({ weeks, startMonth, endMonth });
 
     return startMonth === endMonth ? startMonth : `${startMonth} / ${endMonth}`;
   }, [weeks]);
