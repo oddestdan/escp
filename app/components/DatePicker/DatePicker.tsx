@@ -85,11 +85,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         ? getPrevMonday(nextWeekDay)
         : nextWeekDay;
       const tomorrow = getTomorrow();
+      const payloadDay =
+        nextStartingDay < tomorrow ? tomorrow : nextStartingDay;
 
       dispatch(setHasWeekChanged(true));
-      onChangeDate(
-        getDateFormat(nextStartingDay < tomorrow ? tomorrow : nextStartingDay)
-      );
+      onChangeDate(getDateFormat(payloadDay));
     },
     [onChangeDate, today, dispatch]
   );

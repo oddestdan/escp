@@ -64,10 +64,26 @@ export const getDayOfWeek = (date: Date = new Date()) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
+export const daysIntoYear = (date: Date = new Date()) => {
+  return (
+    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
+      Date.UTC(date.getFullYear(), 0, 0)) /
+    24 /
+    60 /
+    60 /
+    1000
+  );
+};
+
 export const getDayOfWeekNumbered = (date: Date = new Date()) => {
-  return START_FROM_MONDAY
-    ? (date.getDay() - 1 + 7) % 7
-    : (date.getDate() - new Date().getDate() + 35) % 7;
+  if (START_FROM_MONDAY) {
+    return (date.getDay() - 1 + 7) % 7;
+  }
+
+  const xInYear = daysIntoYear(date);
+  const todayInYear = daysIntoYear(new Date());
+
+  return (xInYear - todayInYear) % 7;
 };
 
 export const getWeekDates = (dateString: string): Date[] => {
@@ -82,6 +98,7 @@ export const getNextWeekFromToday = (dateString: string): Date[] => {
   const todayDay = (new Date().getDay() - 1 + 7) % 7;
   return Array.from(Array(7).keys()).map((idx) => {
     const d = new Date(dateString);
+    d.setHours(12); // hack to eliminate winter/summer time switches
     d.setDate(d.getDate() - ((d.getDay() - 1 + 14 - todayDay) % 7) + idx);
     return d;
   });
@@ -94,9 +111,10 @@ export const getLocaleTime = (date: Date = new Date()) => {
   });
 };
 
-export const getDateFormat = (date: Date = new Date()) => {
+export const getDateFormat = (date: Date = new Date(), timeZone?: number) => {
   // Today is +3 hrs from 0
   // const dateISO = addMinutes(date.toISOString(), 3 * 60);
+  date.setHours(12); // hack to eliminate winter/summer time switches
   const dateISO = date.toISOString();
   return dateISO.split("T")[0];
 };

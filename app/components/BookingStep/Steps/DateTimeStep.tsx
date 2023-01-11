@@ -153,7 +153,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
 
   // Memoed values for rendering
-  const memoedTimeSlots: BookableTimeSlot[][] = useMemo(() => {
+  const timeSlotsMatrix: BookableTimeSlot[][] = useMemo(() => {
     const bookableSlots: BookableTimeSlot[][] = weeks.map(
       (weekDate): BookableTimeSlot[] => {
         // all slots for a day
@@ -194,7 +194,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     return bookableSlots;
   }, [slots, weeks, appointments]);
 
-  const timeSlots = memoedTimeSlots[dayOfWeek];
+  const timeSlots = timeSlotsMatrix[dayOfWeek];
 
   const memoedDateSummary = useMemo(() => {
     return formatLocaleDate("uk", selectedDate || slots[0]?.date);
@@ -216,6 +216,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     const endMonth = new Date(weeks[weeks.length - 1]).toLocaleString("uk", {
       month: "long",
     });
+    console.log({ weeks, startMonth, endMonth });
 
     return startMonth === endMonth ? startMonth : `${startMonth} / ${endMonth}`;
   }, [weeks]);
@@ -229,17 +230,17 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       // console.log("> onChangeDayOfWeek");
       // console.log({
       //   newDayOfWeek,
-      //   memoedTimeSlots,
+      //   timeSlotsMatrix,
       //   savedDate: getDateFormat(
-      //     new Date(memoedTimeSlots[newDayOfWeek][0].slot)
+      //     new Date(timeSlotsMatrix[newDayOfWeek][0].slot)
       //   ),
       // });
       setDayOfWeek(newDayOfWeek);
       dispatch(
-        saveDate(getDateFormat(new Date(memoedTimeSlots[newDayOfWeek][0].slot)))
+        saveDate(getDateFormat(new Date(timeSlotsMatrix[newDayOfWeek][0].slot)))
       );
     },
-    [dispatch, memoedTimeSlots]
+    [dispatch, timeSlotsMatrix]
   );
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
@@ -296,7 +297,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           hasWeekChanged={hasWeekChanged}
           dayOfWeek={dayOfWeek}
           selectedDate={selectedDate}
-          timeSlotsMatrix={memoedTimeSlots}
+          timeSlotsMatrix={timeSlotsMatrix}
           onChangeDayOfWeek={onChangeDayOfWeek}
           onChangeTime={onChangeTime}
         />

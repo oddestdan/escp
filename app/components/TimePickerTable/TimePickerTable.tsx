@@ -16,6 +16,9 @@ export interface TimePickerTableProps {
   onChangeTime: (start: string, end: string, diff: number) => void;
 }
 
+const mapNonBookedIndexes = (timeSlots: BookableTimeSlot[]): boolean[] =>
+  timeSlots.map((slot) => !slot.isBooked);
+
 const TimePickerTable: React.FC<TimePickerTableProps> = ({
   hasWeekChanged,
   dayOfWeek,
@@ -26,10 +29,10 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
 }) => {
   const dispatch = useDispatch();
   const timeSlots = useMemo(() => {
+    console.log("timeSlots useMemo");
+    console.log({ timeSlotsMatrix, dayOfWeek });
     return timeSlotsMatrix[dayOfWeek];
   }, [timeSlotsMatrix, dayOfWeek]);
-
-  const nonBookedIndexesBool = timeSlots.map((slot) => !slot.isBooked);
 
   const firstValidIndex = useMemo(
     () =>
@@ -51,6 +54,8 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
   const [selecting, setSelecting] = useState(false);
   const mouseDownHandler = useCallback(
     (newDayOfWeek: DayOfWeek, i: number) => {
+      const nonBookedIndexesBool = mapNonBookedIndexes(timeSlots);
+
       if (dayOfWeek !== newDayOfWeek) {
         onChangeDayOfWeek(newDayOfWeek);
         dispatch(setHasWeekChanged(false));
@@ -80,15 +85,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
         setSelecting(!selecting);
       }
     },
-    [
-      dayOfWeek,
-      dispatch,
-      end,
-      nonBookedIndexesBool,
-      onChangeDayOfWeek,
-      selecting,
-      start,
-    ]
+    [dayOfWeek, dispatch, end, timeSlots, onChangeDayOfWeek, selecting, start]
   );
 
   useEffect(() => {
@@ -96,6 +93,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
       return;
     }
 
+    const nonBookedIndexesBool = mapNonBookedIndexes(timeSlots);
     const diff = nonBookedIndexesBool
       .slice(start, end + 1)
       .filter(Boolean).length;
@@ -108,18 +106,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
       ),
       diff
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, onChangeTime, timeSlots]);
-
-  // console.log({
-  //   start,
-  //   end,
-  //   timeSlots,
-  //   firstValidIndex,
-  //   hasWeekChanged,
-  //   dayOfWeek,
-  //   selectedDate,
-  // });
 
   return (
     <div className={`XXX-aoa-date-picker`}>
