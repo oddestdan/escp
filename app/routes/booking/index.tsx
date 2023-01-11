@@ -1,5 +1,6 @@
 import {
   Form,
+  useCatch,
   useLoaderData,
   useSearchParams,
   useSubmit,
@@ -28,6 +29,8 @@ import Footer from "~/components/Footer/Footer";
 import {
   BOOKING_TIME_TAKEN_MSG,
   BOOKING_TIME_TAKEN_QS,
+  ERROR_404_APPOINTMENTS_MSG,
+  ERROR_SOMETHING_BAD_HAPPENED,
 } from "~/utils/constants";
 import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotification";
 
@@ -85,6 +88,43 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     appointments,
   });
 };
+
+const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
+  <main className="flex min-h-screen w-full flex-col p-4">
+    <NavBar active="booking" />
+
+    <div className="flex w-full flex-1 flex-col items-center font-light ">
+      <Header current="booking" />
+      <div className="my-4 w-full sm:w-3/5">{wrappedComponent}</div>
+    </div>
+
+    <Footer />
+  </main>
+);
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  return (
+    <Wrapper
+      wrappedComponent={
+        <>
+          <div className="mb-4 text-xl font-medium text-red-500">
+            Помилка {caught.status} {caught.statusText}
+          </div>
+
+          <div className="w-full bg-white">
+            <span className="text-red-500">
+              {caught.status === 404
+                ? ERROR_404_APPOINTMENTS_MSG
+                : ERROR_SOMETHING_BAD_HAPPENED}
+            </span>
+          </div>
+        </>
+      }
+    />
+  );
+}
 
 export default function Booking() {
   const { appointments } = useLoaderData() as LoaderData;
@@ -149,12 +189,9 @@ export default function Booking() {
       {/* Fixed ErrorNotification */}
       {errorMessage && <ErrorNotification message={errorMessage} />}
 
-      <main className="flex min-h-screen w-full flex-col p-4">
-        <NavBar active="booking" />
-
-        <div className="flex w-full flex-1 flex-col items-center font-light ">
-          <Header current="booking" />
-          <div className="my-4 w-full sm:w-3/5">
+      <Wrapper
+        wrappedComponent={
+          <>
             <ProgressBar
               onStepClick={onStepClick}
               activeIndex={currentStep}
@@ -191,11 +228,9 @@ export default function Booking() {
                 </ActionButton>
               </Form>
             )}
-          </div>
-        </div>
-
-        <Footer />
-      </main>
+          </>
+        }
+      />
     </>
   );
 }

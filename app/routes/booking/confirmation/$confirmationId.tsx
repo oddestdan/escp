@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useCatch, useLoaderData, useNavigate } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
@@ -13,7 +13,11 @@ import { getAppointmentById } from "~/models/appointment.server";
 import { json } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import { getHoursDiffBetweenDates } from "~/utils/date";
-import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
+import {
+  BOOKING_HOURLY_PRICE,
+  ERROR_404_APPOINTMENT_BY_ID_MSG,
+  ERROR_SOMETHING_BAD_HAPPENED,
+} from "~/utils/constants";
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
 
@@ -28,10 +32,47 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const appointmentResponse = await getAppointmentById(params.confirmationId);
   if (!appointmentResponse) {
-    throw new Response("Not Found", { status: 404 });
+    throw json({ message: "Not Found", id: params.confirmationId }, 404);
   }
   return json<LoaderData>({ appointmentResponse });
 };
+
+const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
+  <main className="flex min-h-screen w-full flex-col p-4">
+    <NavBar active="booking" />
+
+    <div className="flex w-full flex-1 flex-col items-center font-light ">
+      <Header current="booking" />
+      <div className="my-4 w-full sm:w-3/5">{wrappedComponent}</div>
+    </div>
+
+    <Footer />
+  </main>
+);
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  return (
+    <Wrapper
+      wrappedComponent={
+        <>
+          <div className="mb-4 text-xl font-medium text-red-500">
+            Помилка {caught.status} {caught.statusText}
+          </div>
+
+          <div className="w-full bg-white">
+            <span className="text-red-500">
+              {caught.status === 404
+                ? `${ERROR_404_APPOINTMENT_BY_ID_MSG} ${caught.data.id}`
+                : ERROR_SOMETHING_BAD_HAPPENED}
+            </span>
+          </div>
+        </>
+      }
+    />
+  );
+}
 
 export default function Confirmation() {
   const {
@@ -106,13 +147,9 @@ export default function Confirmation() {
   };
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center p-4">
-      <NavBar />
-
-      <div className="flex w-full flex-1 flex-col font-light">
-        <Header />
-
-        <div className="mx-auto flex flex-col sm:w-3/5">
+    <Wrapper
+      wrappedComponent={
+        <>
           <img
             className="my-4 mx-auto aspect-[1/1] w-32 rounded-full text-center"
             src={imageSrcHurray}
@@ -146,10 +183,8 @@ export default function Confirmation() {
               забронювати ще
             </ActionButton>
           </div>
-        </div>
-      </div>
-
-      <Footer />
-    </main>
+        </>
+      }
+    />
   );
 }
