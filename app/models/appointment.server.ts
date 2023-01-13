@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { fromISOToRFC3339, fromRFC3339ToISO } from "~/utils/date";
+import { addMonths, fromISOToRFC3339, fromRFC3339ToISO } from "~/utils/date";
 import {
   getAppointmentDescription,
   getAppointmentTitle,
@@ -61,8 +61,9 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
 
   const events = await calendarAPI.events.list({
     calendarId: CAL_ID,
-    timeMin: new Date().toISOString(),
     timeZone: KYIV_TIME_ZONE,
+    timeMin: new Date().toISOString(),
+    timeMax: addMonths(new Date(), 3).toISOString(), // 3 months from tomorrow
   });
   const googleAppointments = events.data.items || [];
 
