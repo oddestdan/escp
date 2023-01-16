@@ -177,9 +177,11 @@ export async function createAppointment(
     ).toLocaleTimeString("uk", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "Europe/Kyiv",
     })}–${new Date(appointment.timeTo).toLocaleTimeString("uk", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "Europe/Kyiv",
     })}\n\n${createEventDTO.requestBody.description}`,
   });
 
