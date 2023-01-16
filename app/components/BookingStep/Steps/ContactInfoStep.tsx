@@ -96,7 +96,9 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
       return "";
     }
 
-    const fullName = firstName ? firstName + " " + (lastName[0] || "") : "";
+    const fullName = firstName
+      ? firstName + " " + (lastName ? lastName[0] : "")
+      : "";
     return " | " + [fullName, tel].filter(Boolean).join(", ");
   }, [localContactForm]);
 
