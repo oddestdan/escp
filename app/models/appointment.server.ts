@@ -267,7 +267,7 @@ export async function generateAppointmentPaymentData({
     merchantAccount: merchantAccount,
     merchantDomainName: merchantDomainName,
     authorizationType: "SimpleSignature",
-    orderReference: `ESCP-${id}`,
+    orderReference: `ESCP_${id}`,
     orderDate: Date.now(),
     amount: `${price}.00`,
     currency: "UAH",
@@ -276,9 +276,11 @@ export async function generateAppointmentPaymentData({
     ).toLocaleDateString("uk")}: ${new Date(timeFrom).toLocaleTimeString("uk", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "Europe/Kyiv",
     })}–${new Date(timeTo).toLocaleTimeString("uk", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "Europe/Kyiv",
     })}`,
     productPrice: price,
     productCount: "1",
@@ -288,7 +290,7 @@ export async function generateAppointmentPaymentData({
     clientPhone: info.tel,
     language: "UA",
     // https://wiki.wayforpay.com/view/852102 : paymentSystems
-    paymentSystems: "card;googlePay;applePay;privat24;qrCode;masterPass",
+    paymentSystems: "card;googlePay;applePay;privat24;qrCode",
     // defaultPaymentSystem: "applePay",
 
     merchantSignature: "",

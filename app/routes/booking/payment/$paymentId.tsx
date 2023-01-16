@@ -157,7 +157,7 @@ export default function Payment() {
     }
 
     new wfpConstructor().run(
-      paymentData,
+      { ...paymentData, straightWidget: true },
       function (response: any) {
         console.log("WFP/ on approved");
 

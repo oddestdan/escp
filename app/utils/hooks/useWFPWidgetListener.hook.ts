@@ -5,6 +5,8 @@ export const useWFPWidgetListener = (closeCb: () => void) => {
     (event: MessageEvent) => {
       if (event.data == "WfpWidgetEventClose") {
         closeCb();
+      } else if (event.data == "WfpWidgetEventApproved") {
+        console.log("Payment successful, widget approved");
       }
     },
     [closeCb]
