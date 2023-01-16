@@ -258,8 +258,10 @@ export async function confirmAppointment(
 export async function generateAppointmentPaymentData({
   id,
   price,
+  timeFrom,
+  timeTo,
   contactInfo,
-}: Pick<Appointment, "id" | "contactInfo" | "price">) {
+}: Pick<Appointment, "id" | "contactInfo" | "price" | "timeFrom" | "timeTo">) {
   const info: ContactInfo = JSON.parse(contactInfo);
   const data = {
     merchantAccount: merchantAccount,
@@ -269,7 +271,15 @@ export async function generateAppointmentPaymentData({
     orderDate: Date.now(),
     amount: `${price}.00`,
     currency: "UAH",
-    productName: `Бронювання залу студії escp.90`,
+    productName: `Бронювання залу студії escp.90 ${new Date(
+      timeFrom
+    ).toLocaleDateString("uk")}: ${new Date(timeFrom).toLocaleTimeString("uk", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}–${new Date(timeTo).toLocaleTimeString("uk", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`,
     productPrice: price,
     productCount: "1",
     clientFirstName: info.firstName,
