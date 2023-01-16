@@ -14,7 +14,7 @@ import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
 import {
-  createAppointment,
+  createPrismaAppointment,
   getAppointments,
 } from "~/models/appointment.server";
 import {
@@ -27,7 +27,7 @@ import NavBar from "~/components/NavBar/NavBar";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import Footer from "~/components/Footer/Footer";
 import {
-  BOOKING_TIME_TAKEN_MSG,
+  BOOKING_TIME_TAKEN_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
   ERROR_404_APPOINTMENTS_MSG,
   ERROR_SOMETHING_BAD_HAPPENED,
@@ -43,7 +43,8 @@ type LoaderData = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log(">> creating appointment");
+  console.log(">> creating appointment into Prisma");
+
   const formData = await request.formData();
 
   const date = formData.get("date");
@@ -69,14 +70,12 @@ export const action: ActionFunction = async ({ request }) => {
     price,
   };
 
-  const createdAppointment = await createAppointment(appointmentDTO);
-  console.log(createAppointment);
+  const createdPrismaAppointment = await createPrismaAppointment(
+    appointmentDTO
+  );
+  console.log({ createdPrismaAppointment });
 
-  if (!createdAppointment) {
-    return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
-  }
-
-  return redirect(`/booking/confirmation/${createdAppointment.id}`);
+  return redirect(`/booking/payment/${createdPrismaAppointment.id}`);
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -134,8 +133,8 @@ export function CatchBoundary() {
 
 export default function Booking() {
   const { appointments } = useLoaderData() as LoaderData;
-  const dispatch = useDispatch();
   const submit = useSubmit();
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -149,6 +148,18 @@ export default function Booking() {
     price,
     errorMessage,
   } = useSelector((store: StoreBooking) => store.booking);
+
+  useEffect(() => {
+    // https://betterprogramming.pub/4-ways-of-adding-external-js-files-in-reactjs-823f85de3668
+    const script = document.createElement("script");
+    script.src = "https://secure.wayforpay.com/server/pay-widget.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const memoedStepsData = useMemo(
     () => [
@@ -172,7 +183,7 @@ export default function Booking() {
   );
 
   const bookAppointment = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
+    async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
       submit(formRef.current);
     },
@@ -185,7 +196,7 @@ export default function Booking() {
       searchParams.delete(BOOKING_TIME_TAKEN_QS);
       setSearchParams(searchParams);
 
-      dispatch(setErrorMessage(BOOKING_TIME_TAKEN_MSG));
+      dispatch(setErrorMessage(BOOKING_TIME_TAKEN_ERROR_MSG));
       setTimeout(() => dispatch(setErrorMessage("")), 7000);
     }
   }, [dispatch, searchParams, setSearchParams]);
@@ -228,9 +239,8 @@ export default function Booking() {
                   name="price"
                   value={`${price.booking + (price.services || 0)}`}
                 />
-                <input type="hidden" />
                 <ActionButton buttonType="submit" onClick={bookAppointment}>
-                  забронювати
+                  оплатити
                 </ActionButton>
               </Form>
             )}

@@ -26,8 +26,10 @@ export const BOOKING_TIME_TAKEN_QS = "booked";
 
 // Messages
 export const NUMBER_COPIED_MSG = "номер скопійовано!";
-export const BOOKING_TIME_TAKEN_MSG =
+export const BOOKING_TIME_TAKEN_ERROR_MSG =
   "Не вийшло забронювати на цей час. \nБудь-ласка, спробуйте ще раз";
+export const BOOKING_TIME_GENERIC_ERROR_MSG =
+  "Не вийшло забронювати/оплатити. \nБудь-ласка, спробуйте ще раз";
 
 // Error Messages
 export const ERROR_SOMETHING_BAD_HAPPENED = "Щось пішло не так";

@@ -1,4 +1,5 @@
 import { prisma } from "~/db.server";
+import crypto from "crypto";
 import { addMonths, fromISOToRFC3339, fromRFC3339ToISO } from "~/utils/date";
 import {
   getAppointmentDescription,
@@ -11,6 +12,12 @@ import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
 import { KYIV_TIME_ZONE } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
+import type { ContactInfo } from "~/store/bookingSlice";
+import {
+  merchantAccount,
+  merchantDomainName,
+  merchantSecretKey,
+} from "~/lib/wayforpay.service";
 
 export type { Appointment } from "@prisma/client";
 
@@ -108,10 +115,12 @@ export async function getAppointmentById(eventId: string) {
 
   console.log({ calendarAppointment });
   return calendarAppointment;
+}
 
-  // PRISMA
+export async function getPrismaAppointmentById(id: string) {
+  console.log(`> Getting an appointment id=${id} from Prisma...`);
 
-  // return prisma.appointment.findUnique({ where: { id } });
+  return prisma.appointment.findUnique({ where: { id } });
 }
 
 export async function createAppointment(
@@ -175,8 +184,16 @@ export async function createAppointment(
   });
 
   return createdEvent.data;
+}
 
-  // PRISMA
+export async function createPrismaAppointment(
+  appointment: Pick<
+    Appointment,
+    "date" | "timeFrom" | "timeTo" | "services" | "contactInfo" | "price"
+  >
+) {
+  console.log("> Creating an appointment into Prisma...");
+  console.log({ appointment });
 
   // // check for already existing prisma appointment for that datetime
   // const appointments = await prisma.appointment.findMany({
@@ -197,13 +214,16 @@ export async function createAppointment(
   //   return null;
   // }
 
-  // return prisma.appointment.create({ data: appointment });
+  return prisma.appointment.create({ data: appointment });
 }
 
 export async function updateAppointment(
   appointment: Pick<Appointment, "date" | "timeFrom" | "timeTo" | "id">
 ) {
-  // TODO: replace with calendar.events.update or .patch({}) call
+  // calendar.events.update or .patch({}) call
+
+  // PRISMA
+
   return prisma.appointment.update({
     where: { id: appointment.id },
     data: appointment,
@@ -218,8 +238,9 @@ export async function deleteAppointment(appointmentId: string) {
   // });
   // console.log(`deleted item ${appointmentId}`);
   // console.log(res);
+}
 
-  // PRISMA
+export async function deletePrismaAppointment(appointmentId: string) {
   return prisma.appointment.delete({ where: { id: appointmentId } });
 }
 
@@ -232,4 +253,53 @@ export async function confirmAppointment(
     where: { id: appointmentId },
     data: { confirmed: confirmed },
   });
+}
+
+export async function generateAppointmentPaymentData({
+  id,
+  price,
+  contactInfo,
+}: Pick<Appointment, "id" | "contactInfo" | "price">) {
+  const info: ContactInfo = JSON.parse(contactInfo);
+  const data = {
+    merchantAccount: merchantAccount,
+    merchantDomainName: merchantDomainName,
+    authorizationType: "SimpleSignature",
+    orderReference: `ESCP-${id}`,
+    orderDate: Date.now(),
+    amount: `${price}.00`,
+    currency: "UAH",
+    productName: `Бронювання залу студії escp.90`,
+    productPrice: price,
+    productCount: "1",
+    clientFirstName: info.firstName,
+    clientLastName: info.lastName || "Прізвище",
+    clientEmail: "some@mail.com",
+    clientPhone: info.tel,
+    language: "UA",
+    // https://wiki.wayforpay.com/view/852102 : paymentSystems
+    paymentSystems: "card;googlePay;applePay;privat24;qrCode;masterPass",
+    // defaultPaymentSystem: "applePay",
+
+    merchantSignature: "",
+  };
+  const hashString = [
+    data.merchantAccount,
+    data.merchantDomainName,
+    data.orderReference,
+    data.orderDate,
+    data.amount,
+    data.currency,
+    data.productName,
+    data.productCount,
+    data.productPrice,
+  ].join(";");
+
+  const hash = crypto
+    .createHmac("md5", merchantSecretKey || `flk3409refn54t54t*FNJRET`)
+    .update(hashString)
+    .digest("hex");
+  data.merchantSignature = hash;
+  console.log({ hash, data });
+  return data;
 }

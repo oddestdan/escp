@@ -49,7 +49,7 @@ export const bookingServicesList = [
 
 export interface ContactInfo {
   firstName: string;
-  lastName: string;
+  lastName?: string;
   tel: string;
   socialMedia?: string;
 }
@@ -100,16 +100,17 @@ const get3MonthSlots = () => {
   return generateDateTimeSlots(getDateFormat(fromDate), getDateFormat(toDate));
 };
 
-export const initialState: BookingState = {
+const IS_DEV = false;
+const coreState: BookingState = {
   contact: {
-    firstName: "",
-    lastName: "",
-    tel: "",
+    firstName: IS_DEV ? "Dan" : "",
+    lastName: IS_DEV ? "Developer" : "",
+    tel: IS_DEV ? "+380983308847" : "",
     socialMedia: "",
   },
   dateTime: {
     slots: get3MonthSlots(),
-    date: getDateFormat(getTomorrow()),
+    date: IS_DEV ? "2023-02-16" : getDateFormat(getTomorrow()),
     time: { start: "", end: "", diff: 0 },
     hasWeekChanged: false,
   },
@@ -124,6 +125,33 @@ export const initialState: BookingState = {
 
   errorMessage: "",
 };
+export const initialState: BookingState = IS_DEV
+  ? {
+      ...coreState,
+      contact: {
+        firstName: "Dan",
+        lastName: "Developer",
+        tel: "+380983308847",
+        socialMedia: "",
+      },
+      dateTime: {
+        slots: get3MonthSlots(),
+        date: "2023-02-16",
+        time: {
+          start: "2023-02-16T09:00:00.000Z",
+          end: "2023-02-16T12:00:00.000Z",
+          diff: 3,
+        },
+        hasWeekChanged: false,
+      },
+      currentStep: BookingStep.Payment,
+      maxStepVisited: BookingStep.Payment,
+      price: {
+        booking: 1,
+        services: 0,
+      },
+    }
+  : coreState;
 
 const bookingSlice = createSlice({
   name: "booking",

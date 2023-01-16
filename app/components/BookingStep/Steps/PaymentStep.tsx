@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
-import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
+import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import { Separator } from "~/components/Separator/Separator";
-import { InstagramIcon, TelegramIcon } from "~/icons";
-import type { StoreBooking } from "~/store/bookingSlice";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
+
+import type { StoreBooking } from "~/store/bookingSlice";
 
 export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
@@ -29,10 +29,9 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
 
         <Separator />
 
-        <CopyableCard />
+        {/* <CopyableCard /> */}
 
-        {/* Necessary information about payment */}
-        <p className="mb-4">
+        {/* <p className="mb-4">
           <span className="mb-2 block">
             Бронювання є дійсним лише після оплати та її підтвердження. Оплатити
             бронювання необхідно протягом 12 годин.
@@ -41,32 +40,11 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
             Будь-ласка, надайте скрін оплати або певним іншим чином повідомте
             нас про успішний переказ у приватні повідомлення.
           </span>
-        </p>
+        </p> */}
 
         {/* Contact info, links */}
         <p className="mb-4 flex text-left xl:text-center">
-          <span className="flex items-center">
-            Телеграм:{" "}
-            <a
-              className="ml-1 text-stone-900 underline hover:text-stone-400"
-              target="_blank"
-              rel="noreferrer"
-              href="https://t.me/escp90"
-            >
-              <TelegramIcon height="32px" width="32px" />
-            </a>
-          </span>
-          <span className="ml-4 flex items-center">
-            Інстаграм:{" "}
-            <a
-              className="ml-1 text-stone-900 underline hover:text-stone-400"
-              target="_blank"
-              rel="noreferrer"
-              href="https://www.instagram.com/escp.90/"
-            >
-              <InstagramIcon height="32px" width="32px" />
-            </a>
-          </span>
+          <ContactLinks />
         </p>
       </div>
       <BookingStepActions hasSecondary={true} onSecondaryClick={stepBack} />

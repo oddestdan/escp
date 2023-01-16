@@ -1,9 +1,8 @@
-import { useCatch, useLoaderData, useNavigate } from "@remix-run/react";
+import { Link, useCatch, useLoaderData, useNavigate } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
-import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
 import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
@@ -15,6 +14,7 @@ import invariant from "tiny-invariant";
 import { getHoursDiffBetweenDates } from "~/utils/date";
 import {
   BOOKING_HOURLY_PRICE,
+  CONTACTS_CURRENT_TAB_QS,
   ERROR_404_APPOINTMENT_BY_ID_MSG,
   ERROR_SOMETHING_BAD_HAPPENED,
 } from "~/utils/constants";
@@ -124,7 +124,6 @@ export default function Confirmation() {
 
   const stringifiedData = extendedProperties.private;
 
-  // TODO: handle full-day appointments
   const bookingPrice =
     getHoursDiffBetweenDates(
       new Date(appointment.end!.dateTime as string),
@@ -157,14 +156,14 @@ export default function Confirmation() {
       wrappedComponent={
         <>
           <img
-            className="my-4 mx-auto aspect-[1/1] w-32 rounded-full text-center"
+            className="my-4 mx-auto aspect-[1/1] w-24 rounded-full text-center"
             src={imageSrcHurray}
             alt="Hurray"
           />
           <h2 className="my-4 text-center font-mono font-medium">
             ура!
             <br />
-            замовлення успішно створено
+            замовлення успішно сплачено
           </h2>
 
           <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
@@ -177,14 +176,20 @@ export default function Confirmation() {
 
           <Separator />
 
-          <CopyableCard />
-
-          <p className="mb-4">
-            Очікуємо від вас підтвердження вашої оплати і все готово.
-            <br />
-            Бережіть себе та свої рідних, чекаємо вас.
+          <p className="my-4">
+            Біп-біп! Обов'язково перегляньте навігацію{" "}
+            <Link
+              to={`/contacts?${CONTACTS_CURRENT_TAB_QS}=0`}
+              className={`text-stone-900 underline hover:text-stone-400`}
+            >
+              як нас знайти на території
+            </Link>{" "}
+            та приїзжайте завчасно.
           </p>
-          <div className="my-4">
+          <p className="mb-4">
+            До зустрічі ✨{/* Бережіть себе та свої рідних, чекаємо✨ */}
+          </p>
+          <div className="mb-4 mt-8">
             <ActionButton inverted={true} onClick={navigateToBooking}>
               забронювати ще
             </ActionButton>
