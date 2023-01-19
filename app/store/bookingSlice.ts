@@ -9,6 +9,8 @@ import {
 } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
 
+const IS_DEV = false;
+
 export interface StoreBooking {
   booking: BookingState;
 }
@@ -100,7 +102,6 @@ const get3MonthSlots = () => {
   return generateDateTimeSlots(getDateFormat(fromDate), getDateFormat(toDate));
 };
 
-const IS_DEV = false;
 const coreState: BookingState = {
   contact: {
     firstName: IS_DEV ? "Dan" : "",

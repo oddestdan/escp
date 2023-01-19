@@ -8,6 +8,7 @@ import { saveCurrentStep } from "~/store/bookingSlice";
 import { LS_HAS_SEEN_TERMS } from "~/utils/constants";
 import { ls } from "~/utils/localStorage.service";
 import { BookingStepActions } from "../BookingStepActions";
+import parsePhoneNumber from "libphonenumber-js";
 
 type RequiredContactInfo = Omit<ContactInfo, "lastName" | "socialMedia">;
 const isRequiredContactInfo = (
@@ -16,9 +17,13 @@ const isRequiredContactInfo = (
   return ["firstName", "tel"].includes(keyInput);
 };
 
-const errorKeyMapper: RequiredContactInfo & { terms: string } = {
+const errorKeyMapper: RequiredContactInfo & {
+  terms: string;
+  invalidTel: string;
+} = {
   firstName: "заповніть ім'я",
   tel: "заповніть номер телефону",
+  invalidTel: "формат номера телефону невірний",
   terms: "дайте згоду з нашими правилами",
 };
 
@@ -51,6 +56,8 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     tel: undefined,
     terms: undefined,
   });
+
+  const [invalidTel, setInvalidTel] = useState(false);
 
   const stepNext = useCallback(() => {
     const { firstName, tel } = localContactForm;
@@ -134,18 +141,43 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
                     : ""
                 }`}
                 defaultValue={defaultValue}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setContactFormProp(key, e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const val = e.target.value;
+                  if (key === "tel") {
+                    if (val.length > 0) {
+                      const parsedPhone = parsePhoneNumber(val, "UA");
+                      const isValidPhone = parsedPhone?.isValid();
+                      setInvalidTel(!isValidPhone);
+                    } else {
+                      setInvalidTel(false);
+                    }
+                  }
+
+                  setContactFormProp(key, e.target.value);
+                }}
               />
-              <span
-                className={`text-left text-sm text-red-500 ${
-                  isRequiredContactInfo(key) && isInvalid ? "" : "invisible"
-                }`}
-              >
-                {errorKeyMapper[key as keyof RequiredContactInfo] ||
-                  "placeholder"}
-              </span>
+              {key === "tel" ? (
+                <span
+                  className={`text-left text-sm text-red-500 ${
+                    (isRequiredContactInfo("tel") && isInvalid) || invalidTel
+                      ? ""
+                      : "invisible"
+                  }`}
+                >
+                  {invalidTel
+                    ? errorKeyMapper["invalidTel"]
+                    : errorKeyMapper["tel"]}
+                </span>
+              ) : (
+                <span
+                  className={`text-left text-sm text-red-500 ${
+                    isRequiredContactInfo(key) && isInvalid ? "" : "invisible"
+                  }`}
+                >
+                  {errorKeyMapper[key as keyof RequiredContactInfo] ||
+                    "placeholder"}
+                </span>
+              )}
             </label>
           );
         })}

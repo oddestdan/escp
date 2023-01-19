@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
 import Footer from "~/components/Footer/Footer";
@@ -17,6 +17,7 @@ import type { Appointment } from "~/models/appointment.server";
 import {
   BOOKING_TIME_GENERIC_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
+  BOOKING_WAYFORPAY_MISSING_ERROR_MSG,
 } from "~/utils/constants";
 import { setErrorMessage } from "~/store/bookingSlice";
 import { useDispatch } from "react-redux";
@@ -34,19 +35,25 @@ export const loader: LoaderFunction = async ({ params }) => {
     const appointment = await getPrismaAppointmentById(params.paymentId);
 
     if (!appointment) {
-      throw json({ message: "Appointment not found Error" }, 500);
+      // throw json({ message: "Appointment not found Error" }, 500);
+      console.error({ message: "Appointment not found Error" });
+      return redirect(`/booking`);
     }
 
     const paymentData = await generateAppointmentPaymentData(appointment);
 
     if (!paymentData) {
-      throw json({ message: "Payment info generation Error" }, 500);
+      // throw json({ message: "Payment info generation Error" }, 500);
+      console.error({ message: "Payment info generation Error" });
+      return redirect(`/booking`);
     }
 
     return json<LoaderData>({ paymentData, appointment });
   } catch (error) {
     console.error(error);
-    throw json({ message: "Payment Error" }, 500);
+    // throw json({ message: "Payment Error" }, 500);
+    console.error({ message: "Payment Error" });
+    return redirect(`/booking`);
   }
 };
 
@@ -128,6 +135,7 @@ export default function Payment() {
   const submit = useSubmit();
   const dispatch = useDispatch();
   const { paymentData, appointment } = useLoaderData() as LoaderData;
+  const [hasPaid, setHasPaid] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -144,7 +152,7 @@ export default function Payment() {
   useWFPWidgetListener(() => {
     const formData = new FormData(formRef.current || undefined);
     submit(formData, { method: "patch" }); // back to /booking
-  });
+  }, hasPaid);
 
   useEffect(() => {
     const formData = new FormData(formRef.current || undefined);
@@ -152,6 +160,9 @@ export default function Payment() {
     console.log({ wfpConstructor });
 
     if (!wfpConstructor) {
+      dispatch(setErrorMessage(BOOKING_WAYFORPAY_MISSING_ERROR_MSG));
+      setTimeout(() => dispatch(setErrorMessage("")), 7000);
+
       submit(formData, { method: "patch" }); // back to /booking
       return;
     }
@@ -161,6 +172,7 @@ export default function Payment() {
       function (response: any) {
         console.log("WFP/ on approved");
 
+        setHasPaid(true);
         submit(formData, { method: "post" });
       },
       function (response: any) {

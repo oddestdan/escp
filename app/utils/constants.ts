@@ -30,6 +30,8 @@ export const BOOKING_TIME_TAKEN_ERROR_MSG =
   "Не вийшло забронювати на цей час. \nБудь-ласка, спробуйте ще раз";
 export const BOOKING_TIME_GENERIC_ERROR_MSG =
   "Не вийшло забронювати/оплатити. \nБудь-ласка, спробуйте ще раз";
+export const BOOKING_WAYFORPAY_MISSING_ERROR_MSG =
+  "Помилка у завантаженні WayForPay. \nБудь-ласка, спробуйте ще раз";
 
 // Error Messages
 export const ERROR_SOMETHING_BAD_HAPPENED = "Щось пішло не так";

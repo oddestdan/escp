@@ -5,6 +5,13 @@ export const merchantAccount = process.env.WFP_MERCHANT_ACCOUNT;
 export const merchantDomainName = process.env.WFP_MERCHANT_DOMAIN_NAME;
 export const merchantSecretKey = process.env.WFP_MERCHANT_SECRET_KEY;
 
+export const loadScript = () => {
+  const script = document.createElement("script");
+  script.src = "https://secure.wayforpay.com/server/pay-widget.jsx";
+  script.async = true;
+  return script;
+};
+
 // const mockData = {
 //   merchantAccount: "test_merch_n1",
 //   merchantDomainName: "www.market.ua",

@@ -243,7 +243,11 @@ export async function deleteAppointment(appointmentId: string) {
 }
 
 export async function deletePrismaAppointment(appointmentId: string) {
-  return prisma.appointment.delete({ where: { id: appointmentId } });
+  try {
+    return prisma.appointment.delete({ where: { id: appointmentId } });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function confirmAppointment(
