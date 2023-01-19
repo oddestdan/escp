@@ -61,7 +61,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
 
   const stepNext = useCallback(() => {
     const { firstName, tel } = localContactForm;
-    if (![firstName, tel, hasSeenTerms].every(Boolean)) {
+    if (![firstName, tel, hasSeenTerms, !invalidTel].every(Boolean)) {
       touched.firstName = firstName.length === 0 ? "" : touched.firstName;
       touched.tel = tel.length === 0 ? "" : touched.tel;
       touched.terms = hasSeenTerms ? undefined : "";
@@ -69,7 +69,14 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     }
     dispatch(saveCurrentStep(currentStep + 1));
     dispatch(saveContactInfo(localContactForm));
-  }, [dispatch, currentStep, localContactForm, touched, hasSeenTerms]);
+  }, [
+    dispatch,
+    currentStep,
+    localContactForm,
+    touched,
+    hasSeenTerms,
+    invalidTel,
+  ]);
 
   const stepBack = useCallback(() => {
     dispatch(saveCurrentStep(currentStep - 1));
@@ -104,7 +111,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
     }
 
     const fullName = firstName
-      ? firstName + " " + (lastName ? lastName[0] : "")
+      ? `${firstName}${lastName ? ` ${lastName[0]}` : ""}`
       : "";
     return " | " + [fullName, tel].filter(Boolean).join(", ");
   }, [localContactForm]);
