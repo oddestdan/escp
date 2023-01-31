@@ -1,6 +1,11 @@
 import { prisma } from "~/db.server";
 import crypto from "crypto";
-import { addMonths, fromISOToRFC3339, fromRFC3339ToISO } from "~/utils/date";
+import {
+  addMonths,
+  fromISOToRFC3339,
+  fromRFC3339ToISO,
+  getUAFormattedFullDateString,
+} from "~/utils/date";
 import {
   getAppointmentDescription,
   getAppointmentTitle,
@@ -134,13 +139,15 @@ export async function createAppointment(
   console.log({ appointment });
 
   const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
+  const dateFrom = new Date(appointment.timeFrom);
+  const dateTo = new Date(appointment.timeTo);
   const createEventDTO = {
     calendarId: CAL_ID,
     requestBody: {
       summary: getAppointmentTitle(
         contactInfo,
-        new Date(appointment.timeFrom),
-        new Date(appointment.timeTo),
+        dateFrom,
+        dateTo,
         appointment.price
       ),
       description: getAppointmentDescription(
@@ -171,25 +178,14 @@ export async function createAppointment(
 
   // send new appointment notification email to admin
   console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
+  const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
   sendMail({
-    text: `${createEventDTO.requestBody.summary}\n\n${new Date(
-      appointment.timeFrom
-    ).toLocaleDateString("uk")}: ${new Date(
-      appointment.timeFrom
-    ).toLocaleTimeString("uk", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Europe/Kyiv",
-    })}–${new Date(appointment.timeTo).toLocaleTimeString("uk", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Europe/Kyiv",
-    })}\n\n${createEventDTO.requestBody.description}`,
+    text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
   });
 
   // send new appointment notification SMS to client
   console.log(`> Sending SMS to ${contactInfo.tel}`);
-  sendSMS(new Date(appointment.timeFrom), contactInfo.tel);
+  sendSMS(formattedUADateString, contactInfo.tel);
 
   return createdEvent.data;
 }

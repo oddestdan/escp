@@ -1,22 +1,19 @@
-export const sendSMS = async (startDate: Date, recipientPhone: string) => {
+export const sendSMS = async (
+  formattedDateString: string,
+  recipientPhone: string
+) => {
   const URL = process.env.SMS_URL;
   const API_KEY = process.env.SMS_API_KEY;
   const DOMAIN = process.env.SMS_DOMAIN;
 
-  if (!URL || !startDate) {
+  if (!URL || !formattedDateString?.length) {
     return;
   }
 
-  const date = startDate.toLocaleDateString("uk");
-  const time = startDate.toLocaleTimeString("uk", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Kyiv",
-  });
   const textMessage = `Біп-біп!
-Нагадуємо про ваше бронювання ${date} о ${time}.
+Нагадуємо про ваше бронювання ${formattedDateString}.
 
-Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts?tab=0 
+Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
 Детальніше про бронювання: ${DOMAIN}/booking/confirmation/du6j1aoev675avg7krcqiqi2ng
 
 Чекаємс!`;

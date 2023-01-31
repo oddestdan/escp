@@ -195,3 +195,19 @@ export const fromISOToRFC3339 = (isoDate: string) =>
 
 export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) =>
   Math.abs(dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
+
+export const getUADateString = (date: Date) => date.toLocaleDateString("uk");
+export const getUATwoDigitTimeString = (date: Date) =>
+  date.toLocaleTimeString("uk", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Kyiv",
+  });
+
+// e.g.: 03.02.2023 09:00–12:00
+export const getUAFormattedFullDateString = (dateFrom: Date, dateTo: Date) => {
+  const date = getUADateString(dateFrom);
+  const from = getUATwoDigitTimeString(dateFrom);
+  const to = getUATwoDigitTimeString(dateTo);
+  return `${date} ${from}-${to}`;
+};
