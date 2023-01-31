@@ -149,18 +149,19 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
                 }`}
                 defaultValue={defaultValue}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const val = e.target.value;
+                  let val = e.target.value;
                   if (key === "tel") {
                     if (val.length > 0) {
                       const parsedPhone = parsePhoneNumber(val, "UA");
                       const isValidPhone = parsedPhone?.isValid();
                       setInvalidTel(!isValidPhone);
+                      val = parsedPhone?.number || val;
                     } else {
                       setInvalidTel(false);
                     }
                   }
 
-                  setContactFormProp(key, e.target.value);
+                  setContactFormProp(key, val);
                 }}
               />
               {key === "tel" ? (

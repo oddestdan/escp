@@ -27,7 +27,7 @@ const renderByFootTab = () => (
 
     <p className="mb-4 xl:pr-2">
       <iframe
-        className="aspect-[9/16] w-full"
+        className="aspect-[9/16] w-full bg-stone-100"
         title="Video route by foot"
         src="https://www.youtube.com/embed/7G47r3wuoZE"
       ></iframe>
@@ -57,7 +57,7 @@ const renderByCarTab = () => (
 
     <p className="mb-4 xl:pr-2">
       <iframe
-        className="aspect-[9/16] w-full"
+        className="aspect-[9/16] w-full bg-stone-100"
         title="Video route by car"
         src="https://www.youtube.com/embed/9K-G9kvpRS0"
       ></iframe>
