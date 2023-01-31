@@ -18,6 +18,7 @@ import {
   merchantDomainName,
   merchantSecretKey,
 } from "~/lib/wayforpay.service";
+import { sendSMS } from "./smsNotificator.lib";
 
 export type { Appointment } from "@prisma/client";
 
@@ -132,18 +133,19 @@ export async function createAppointment(
   console.log("> Creating an appointment into Google Calendar API...");
   console.log({ appointment });
 
+  const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
   const createEventDTO = {
     calendarId: CAL_ID,
     requestBody: {
       summary: getAppointmentTitle(
-        JSON.parse(appointment.contactInfo),
+        contactInfo,
         new Date(appointment.timeFrom),
         new Date(appointment.timeTo),
         appointment.price
       ),
       description: getAppointmentDescription(
         JSON.parse(appointment.services),
-        JSON.parse(appointment.contactInfo)
+        contactInfo
       ),
       start: {
         dateTime: fromISOToRFC3339(appointment.timeFrom),
@@ -184,6 +186,10 @@ export async function createAppointment(
       timeZone: "Europe/Kyiv",
     })}\n\n${createEventDTO.requestBody.description}`,
   });
+
+  // send new appointment notification SMS to client
+  console.log(`> Sending SMS to ${contactInfo.tel}`);
+  sendSMS(new Date(appointment.timeFrom), contactInfo.tel);
 
   return createdEvent.data;
 }
@@ -318,6 +324,5 @@ export async function generateAppointmentPaymentData({
     .update(hashString)
     .digest("hex");
   data.merchantSignature = hash;
-  console.log({ hash, data });
   return data;
 }
