@@ -185,7 +185,7 @@ export async function createAppointment(
 
   // send new appointment notification SMS to client
   console.log(`> Sending SMS to ${contactInfo.tel}`);
-  sendSMS(formattedUADateString, contactInfo.tel);
+  sendSMS(formattedUADateString, contactInfo.tel, createdEvent.data.id);
 
   return createdEvent.data;
 }

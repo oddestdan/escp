@@ -1,12 +1,13 @@
 export const sendSMS = async (
   formattedDateString: string,
-  recipientPhone: string
+  recipientPhone: string,
+  confirmationId?: string | null
 ) => {
   const URL = process.env.SMS_URL;
   const API_KEY = process.env.SMS_API_KEY;
   const DOMAIN = process.env.SMS_DOMAIN;
 
-  if (!URL || !formattedDateString?.length) {
+  if (!URL || !formattedDateString?.length || !confirmationId?.length) {
     return;
   }
 
@@ -14,7 +15,7 @@ export const sendSMS = async (
 Нагадуємо про ваше бронювання ${formattedDateString}.
 
 Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
-Детальніше про бронювання: ${DOMAIN}/booking/confirmation/du6j1aoev675avg7krcqiqi2ng
+Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}
 
 Чекаємс!`;
 
