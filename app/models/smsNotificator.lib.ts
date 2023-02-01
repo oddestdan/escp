@@ -6,8 +6,16 @@ export const sendSMS = async (
   const URL = process.env.SMS_URL;
   const API_KEY = process.env.SMS_API_KEY;
   const DOMAIN = process.env.SMS_DOMAIN;
+  const SOURCE = process.env.SMS_SOURCE_NAME;
 
-  if (!URL || !formattedDateString?.length || !confirmationId?.length) {
+  if (
+    !URL ||
+    !SOURCE ||
+    !API_KEY ||
+    !DOMAIN ||
+    !formattedDateString?.length ||
+    !confirmationId?.length
+  ) {
     return;
   }
 
@@ -31,7 +39,7 @@ export const sendSMS = async (
           recipient: `${Number(recipientPhone)}`,
           channels: ["sms"],
           sms: {
-            source: "InfoCenter", // TODO: "escp.90",
+            source: SOURCE,
             ttl: 5,
             text: textMessage,
           },
