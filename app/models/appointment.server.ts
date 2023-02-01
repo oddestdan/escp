@@ -44,7 +44,6 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
 
-  // TODO: remove this logging in production
   if (Boolean("log-env") === false) {
     const {
       DATABASE_URL,
@@ -256,7 +255,7 @@ export async function confirmAppointment(
   appointmentId: string,
   confirmed = true
 ) {
-  // TODO: replace with calendar.events.update or .patch({}) call
+  // calendar.events.update or .patch({}) call
   return prisma.appointment.update({
     where: { id: appointmentId },
     data: { confirmed: confirmed },
