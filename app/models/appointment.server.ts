@@ -297,7 +297,8 @@ export async function generateAppointmentPaymentData({
     clientPhone: info.tel,
     language: "UA",
     // https://wiki.wayforpay.com/view/852102 : paymentSystems
-    paymentSystems: "card;googlePay;applePay;privat24;qrCode",
+    paymentSystems: "card",
+    // paymentSystems: "card;googlePay;applePay;privat24;qrCode",
     // defaultPaymentSystem: "applePay",
 
     merchantSignature: "",
