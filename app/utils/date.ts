@@ -1,4 +1,4 @@
-import { START_FROM_MONDAY } from "./constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, START_FROM_MONDAY } from "./constants";
 
 export enum DayOfWeek {
   Monday,
@@ -20,7 +20,7 @@ export const getDateNumber = (date: string): number => {
 
 export const getWeekDayFormat = (date: string): string => {
   return new Date(`${date}${defaultTime}`)
-    .toLocaleString("uk", { weekday: "short" })
+    .toLocaleString(KYIV_LOCALE, { weekday: "short" })
     .toLocaleLowerCase()
     .slice(0, 3);
 };
@@ -105,7 +105,7 @@ export const getNextWeekFromToday = (dateString: string): Date[] => {
 };
 
 export const getLocaleTime = (date: Date = new Date()) => {
-  return date.toLocaleTimeString("uk", {
+  return date.toLocaleTimeString(KYIV_LOCALE, {
     hour: "numeric",
     minute: "numeric",
   });
@@ -196,12 +196,13 @@ export const fromISOToRFC3339 = (isoDate: string) =>
 export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) =>
   Math.abs(dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
 
-export const getUADateString = (date: Date) => date.toLocaleDateString("uk");
+export const getUADateString = (date: Date) =>
+  date.toLocaleDateString(KYIV_LOCALE);
 export const getUATwoDigitTimeString = (date: Date) =>
-  date.toLocaleTimeString("uk", {
+  date.toLocaleTimeString(KYIV_LOCALE, {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Kyiv",
+    timeZone: KYIV_TIME_ZONE,
   });
 
 // e.g.: 03.02.2023 09:00–12:00
@@ -211,3 +212,22 @@ export const getUAFormattedFullDateString = (dateFrom: Date, dateTo: Date) => {
   const to = getUATwoDigitTimeString(dateTo);
   return `${date} ${from}-${to}`;
 };
+
+// // TODO: decide if this is needed
+// export function getTimezonedDate(date: Date, timeZone?: string) {
+//   if (!timeZone) {
+//     return new Date(date.toLocaleString("uk"));
+//   }
+//   return new Date(date.toLocaleString("uk", { timeZone }));
+// }
+
+// // TODO: decide if this is needed
+// export function getUAOffset() {
+//   const jaDate = getTimezonedDate(new Date(), "Asia/Tokyo"); // replace with Kyiv
+//   const ukDate = getTimezonedDate(new Date(), "Europe/London");
+//   return getHoursDiffBetweenDates(jaDate, ukDate);
+// }
+
+// const jaDate = getTimezonedDate(new Date(), "Asia/Tokyo");
+// const ukDate = getTimezonedDate(new Date(), "Europe/Kyiv");
+// const hoursDiff = getHoursDiffBetweenDates(jaDate, ukDate);
