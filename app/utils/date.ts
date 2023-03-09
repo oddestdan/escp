@@ -210,7 +210,7 @@ export const fromISOToRFC3339 = (isoDate: string) =>
 // ":00";
 
 export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) =>
-  Math.abs(dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
+  (dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
 
 export const getUADateString = (date: Date) =>
   date.toLocaleDateString(KYIV_LOCALE);
