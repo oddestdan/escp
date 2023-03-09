@@ -9,7 +9,7 @@ import {
 } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
 
-const IS_DEV = false;
+export const IS_DEV = false;
 
 export interface StoreBooking {
   booking: BookingState;

@@ -209,8 +209,9 @@ export const fromISOToRFC3339 = (isoDate: string) =>
 // `${getMyTZOffset(new Date(isoDate))}`.padStart(2, "0") +
 // ":00";
 
-export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) =>
-  (dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
+export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) => {
+  return (dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
+};
 
 export const getUADateString = (date: Date) =>
   date.toLocaleDateString(KYIV_LOCALE);
@@ -239,7 +240,7 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
 export function getUALocalOffsetHours() {
   const kyivDate = getTimezonedDate(new Date(), KYIV_TIME_ZONE);
   const localDate = getTimezonedDate(new Date());
-  return getHoursDiffBetweenDates(kyivDate, localDate);
+  return getHoursDiffBetweenDates(kyivDate, localDate) % 24;
 }
 
 export function getUAOffsetHours() {
