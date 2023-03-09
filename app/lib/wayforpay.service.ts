@@ -1,6 +1,5 @@
 import type { generateAppointmentPaymentData } from "~/models/appointment.server";
 
-// TODO: update with relevant data and store in ENV
 export const merchantAccount = process.env.WFP_MERCHANT_ACCOUNT;
 export const merchantDomainName = process.env.WFP_MERCHANT_DOMAIN_NAME;
 export const merchantSecretKey = process.env.WFP_MERCHANT_SECRET_KEY;

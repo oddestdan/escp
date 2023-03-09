@@ -52,8 +52,7 @@ export const action: ActionFunction = async ({ request }) => {
   const timeTo = formData.get("timeTo");
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
-  // const price = formData.get("price");
-  const price = "10";
+  const price = formData.get("price");
 
   invariant(typeof date === "string", "date must be a string");
   invariant(typeof timeFrom === "string", "timeFrom must be a string");

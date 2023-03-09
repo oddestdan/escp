@@ -1,12 +1,21 @@
 export const sendSMS = async (
   formattedDateString: string,
-  recipientPhone: string
+  recipientPhone: string,
+  confirmationId?: string | null
 ) => {
   const URL = process.env.SMS_URL;
   const API_KEY = process.env.SMS_API_KEY;
   const DOMAIN = process.env.SMS_DOMAIN;
+  const SOURCE = process.env.SMS_SOURCE_NAME;
 
-  if (!URL || !formattedDateString?.length) {
+  if (
+    !URL ||
+    !SOURCE ||
+    !API_KEY ||
+    !DOMAIN ||
+    !formattedDateString?.length ||
+    !confirmationId?.length
+  ) {
     return;
   }
 
@@ -14,7 +23,7 @@ export const sendSMS = async (
 Нагадуємо про ваше бронювання ${formattedDateString}.
 
 Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
-Детальніше про бронювання: ${DOMAIN}/booking/confirmation/du6j1aoev675avg7krcqiqi2ng
+Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}
 
 Чекаємс!`;
 
@@ -30,7 +39,7 @@ export const sendSMS = async (
           recipient: `${Number(recipientPhone)}`,
           channels: ["sms"],
           sms: {
-            source: "InfoCenter", // TODO: "escp.90",
+            source: SOURCE,
             ttl: 5,
             text: textMessage,
           },

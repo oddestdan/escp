@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { KYIV_LOCALE } from "~/utils/constants";
 
 interface MailOptions {
   from?: string;
@@ -21,7 +22,7 @@ export const sendMail = (overrideMailOptions: MailOptions) => {
   const defaultMailOptions: MailOptions = {
     from: `"escp.90-site" <${process.env.SMTP_EMAIL}>`,
     to: process.env.ADMIN_EMAIL,
-    subject: `Новий запис | ${new Date().toLocaleString("uk")}`,
+    subject: `Новий запис | ${new Date().toLocaleString(KYIV_LOCALE)}`,
   };
 
   transporter.sendMail(

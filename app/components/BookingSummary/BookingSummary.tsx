@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 
 import type { BookingState, StoreBooking } from "~/store/bookingSlice";
 import { BookingService } from "~/store/bookingSlice";
-import { ASSISTANCE_HOURLY_PRICE } from "~/utils/constants";
+import { ASSISTANCE_HOURLY_PRICE, KYIV_LOCALE } from "~/utils/constants";
+import { getKyivDateFromDate } from "~/utils/date";
 
 type SummaryBookingState = Pick<
   BookingState,
@@ -20,12 +21,24 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
     summary || booking;
 
   const memoedDateTime = useMemo(() => {
-    return `${new Date(dateTime.date).toLocaleDateString("uk")} | ${[
+    const formattedDate = getKyivDateFromDate(
+      new Date(dateTime.date)
+    ).toLocaleDateString(KYIV_LOCALE);
+
+    const formattedTime = [
       dateTime.time.start,
       dateTime.time.end || dateTime.time.start,
     ]
-      .map((date) => new Date(date).toLocaleTimeString("uk").slice(0, -3))
-      .join(" - ")}`.concat(` (${price.booking} грн)`);
+      .map((date) =>
+        getKyivDateFromDate(new Date(date))
+          .toLocaleTimeString(KYIV_LOCALE)
+          .slice(0, -3)
+      )
+      .join(" - ");
+
+    return `${formattedDate} | ${formattedTime}`.concat(
+      ` (${price.booking} грн)`
+    );
   }, [dateTime, price]);
 
   const memoedSelectedServicesList = useMemo(() => {

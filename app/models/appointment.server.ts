@@ -15,7 +15,7 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_TIME_ZONE } from "~/utils/constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
 import type { ContactInfo } from "~/store/bookingSlice";
 import {
@@ -44,7 +44,6 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
 
-  // TODO: remove this logging in production
   if (Boolean("log-env") === false) {
     const {
       DATABASE_URL,
@@ -74,7 +73,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
 
   const events = await calendarAPI.events.list({
     calendarId: CAL_ID,
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
     timeMax: addMonths(new Date(), 3).toISOString(), // 3 months from tomorrow
   });
@@ -185,7 +184,7 @@ export async function createAppointment(
 
   // send new appointment notification SMS to client
   console.log(`> Sending SMS to ${contactInfo.tel}`);
-  sendSMS(formattedUADateString, contactInfo.tel);
+  sendSMS(formattedUADateString, contactInfo.tel, createdEvent.data.id);
 
   return createdEvent.data;
 }
@@ -256,7 +255,7 @@ export async function confirmAppointment(
   appointmentId: string,
   confirmed = true
 ) {
-  // TODO: replace with calendar.events.update or .patch({}) call
+  // calendar.events.update or .patch({}) call
   return prisma.appointment.update({
     where: { id: appointmentId },
     data: { confirmed: confirmed },
@@ -281,14 +280,17 @@ export async function generateAppointmentPaymentData({
     currency: "UAH",
     productName: `Бронювання залу студії escp.90 ${new Date(
       timeFrom
-    ).toLocaleDateString("uk")}: ${new Date(timeFrom).toLocaleTimeString("uk", {
+    ).toLocaleDateString(KYIV_LOCALE)}: ${new Date(timeFrom).toLocaleTimeString(
+      KYIV_LOCALE,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: KYIV_TIME_ZONE,
+      }
+    )}–${new Date(timeTo).toLocaleTimeString(KYIV_LOCALE, {
       hour: "2-digit",
       minute: "2-digit",
-      timeZone: "Europe/Kyiv",
-    })}–${new Date(timeTo).toLocaleTimeString("uk", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Europe/Kyiv",
+      timeZone: KYIV_TIME_ZONE,
     })}`,
     productPrice: price,
     productCount: "1",
@@ -298,7 +300,8 @@ export async function generateAppointmentPaymentData({
     clientPhone: info.tel,
     language: "UA",
     // https://wiki.wayforpay.com/view/852102 : paymentSystems
-    paymentSystems: "card;googlePay;applePay;privat24;qrCode",
+    paymentSystems: "card",
+    // paymentSystems: "card;googlePay;applePay;privat24;qrCode",
     // defaultPaymentSystem: "applePay",
 
     merchantSignature: "",
