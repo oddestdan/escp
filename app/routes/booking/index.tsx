@@ -137,8 +137,6 @@ export default function Booking() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log({ googleCalendar: appointments });
-
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
