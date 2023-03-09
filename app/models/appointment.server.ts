@@ -73,7 +73,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
 
   const events = await calendarAPI.events.list({
     calendarId: CAL_ID,
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
     timeMax: addMonths(new Date(), 3).toISOString(), // 3 months from tomorrow
   });
@@ -182,10 +182,9 @@ export async function createAppointment(
     text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
   });
 
-  // TODO: UNCOMMENT!!!
-  // // send new appointment notification SMS to client
-  // console.log(`> Sending SMS to ${contactInfo.tel}`);
-  // sendSMS(formattedUADateString, contactInfo.tel, createdEvent.data.id);
+  // send new appointment notification SMS to client
+  console.log(`> Sending SMS to ${contactInfo.tel}`);
+  sendSMS(formattedUADateString, contactInfo.tel, createdEvent.data.id);
 
   return createdEvent.data;
 }

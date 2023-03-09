@@ -11,9 +11,9 @@ export const TIMESLOT_OFFSET_MINUTES = 60; // allows to offset time slot for 60 
 
 export const START_FROM_MONDAY = false;
 
-// TODO: return back!
-export const KYIV_LOCALE = "ja";
-export const KYIV_TIME_ZONE = "Asia/Tokyo";
+export const KYIV_LOCALE = "uk";
+export const KYIV_TIME_ZONE = "Europe/Riga"; // same as Europe/Kyiv
+export const DEFAULT_TIME_ZONE = "Europe/London";
 export const ADMIN_PAYMENT_CARD = "4149 6090 1440 7540";
 export const ADMIN_PLAIN_PHONE_NO = "+380636857636";
 export const ADMIN_FORMATTED_PHONE_NO = "+38 (063) 685 76 36";

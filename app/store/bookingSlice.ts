@@ -9,7 +9,7 @@ import {
 } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
 
-const IS_DEV = true;
+const IS_DEV = false;
 
 export interface StoreBooking {
   booking: BookingState;
@@ -123,8 +123,8 @@ export const initialState: BookingState = {
   },
   services: [],
   additionalServices: {},
-  currentStep: IS_DEV ? BookingStep.DateTime : BookingStep.DateTime,
-  maxStepVisited: IS_DEV ? BookingStep.DateTime : BookingStep.DateTime,
+  currentStep: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
+  maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
   price: {
     booking: IS_DEV ? 1 : 0,
     services: 0,

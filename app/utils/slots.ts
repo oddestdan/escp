@@ -2,8 +2,8 @@ import { businessHoursStart, businessHoursEnd } from "./constants";
 import {
   getDateFormat,
   getDayOfWeek,
-  getMyTZOffset,
   getTomorrow,
+  getUAOffsetHours,
 } from "./date";
 
 export const generateArrayRangeWithStep = (from: number, to: number) => {
@@ -19,8 +19,8 @@ export const generateArrayRangeWithStep = (from: number, to: number) => {
 // returns time slots in default 0 timezone
 export const generateTimeSlots = (
   day = new Date(),
-  from = Number(businessHoursStart.split(":")[0]) - getMyTZOffset(day), // 7,
-  to = Number(businessHoursEnd.split(":")[0]) - getMyTZOffset(day) // 21,
+  from = Number(businessHoursStart.split(":")[0]) - getUAOffsetHours(),
+  to = Number(businessHoursEnd.split(":")[0]) - getUAOffsetHours()
 ) => {
   const slots = generateArrayRangeWithStep(from, to).map((k) => {
     return `${getDateFormat(day)}T${`${Math.floor(k)}`.padStart(2, "0")}:${
@@ -58,8 +58,6 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
       availableTimeSlots: generateTimeSlots(day),
     };
   });
-
-  console.log({ daySlots });
 
   return daySlots;
 };
