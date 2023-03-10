@@ -21,6 +21,7 @@ import {
   saveCurrentStep,
   BookingStep,
   setErrorMessage,
+  UNDER_MAINTENANCE,
 } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import NavBar from "~/components/NavBar/NavBar";
@@ -214,35 +215,57 @@ export default function Booking() {
               activeIndex={currentStep}
               stepData={memoedStepsData}
             />
-            <ActiveBookingStep appointments={appointments} />
-            {currentStep === BookingStep.Payment && (
-              <Form method="post" className="inline-block w-1/2" ref={formRef}>
-                <input type="hidden" name="date" value={selectedDate} />
-                <input
-                  type="hidden"
-                  name="timeFrom"
-                  value={selectedTime.start}
-                />
-                <input type="hidden" name="timeTo" value={selectedTime.end} />
-                <input
-                  type="hidden"
-                  name="services"
-                  value={JSON.stringify({ services, additionalServices })}
-                />
-                <input
-                  type="hidden"
-                  name="contactInfo"
-                  value={JSON.stringify(contact)}
-                />
-                <input
-                  type="hidden"
-                  name="price"
-                  value={`${price.booking + (price.services || 0)}`}
-                />
-                <ActionButton buttonType="submit" onClick={bookAppointment}>
-                  оплатити
-                </ActionButton>
-              </Form>
+
+            {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}
+            {UNDER_MAINTENANCE ? (
+              <div className="w-full text-center text-red-500">
+                {new Date().getTimezoneOffset()} |{" "}
+                {Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone}
+                <br />
+                Функціонал бронювання зараз у процесі оновлення, будь-ласка
+                завітайте пізніше або напишіть нам ⬇
+              </div>
+            ) : (
+              <>
+                <ActiveBookingStep appointments={appointments} />
+                {currentStep === BookingStep.Payment && (
+                  <Form
+                    method="post"
+                    className="inline-block w-1/2"
+                    ref={formRef}
+                  >
+                    <input type="hidden" name="date" value={selectedDate} />
+                    <input
+                      type="hidden"
+                      name="timeFrom"
+                      value={selectedTime.start}
+                    />
+                    <input
+                      type="hidden"
+                      name="timeTo"
+                      value={selectedTime.end}
+                    />
+                    <input
+                      type="hidden"
+                      name="services"
+                      value={JSON.stringify({ services, additionalServices })}
+                    />
+                    <input
+                      type="hidden"
+                      name="contactInfo"
+                      value={JSON.stringify(contact)}
+                    />
+                    <input
+                      type="hidden"
+                      name="price"
+                      value={`${price.booking + (price.services || 0)}`}
+                    />
+                    <ActionButton buttonType="submit" onClick={bookAppointment}>
+                      оплатити
+                    </ActionButton>
+                  </Form>
+                )}
+              </>
             )}
           </>
         }

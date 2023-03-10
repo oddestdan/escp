@@ -179,6 +179,29 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
             )
         )}
       </ul>
+      {/* <pre>
+        {JSON.stringify(
+          // { getUALocalOffsetHours: [new Date(timeSlots?.[0].slot)] },
+          {
+            getUALocalOffsetHours: {
+              kyivDate: getTimezonedDate(new Date(), KYIV_TIME_ZONE),
+              kyivLocale: new Date().toLocaleString("en-US", {
+                timeZone: KYIV_TIME_ZONE,
+              }),
+              localDate: getTimezonedDate(new Date()),
+              localLocale: new Date().toLocaleString(),
+              hoursBetween: getHoursDiffBetweenDates(
+                getTimezonedDate(new Date(), KYIV_TIME_ZONE),
+                getTimezonedDate(new Date())
+              ),
+              localTimeZone:
+                Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone,
+            },
+          },
+          null,
+          2
+        )}
+      </pre> */}
     </div>
   );
 };

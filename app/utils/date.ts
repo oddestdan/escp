@@ -110,7 +110,7 @@ export const getNextWeekFromToday = (dateString: string): Date[] => {
 };
 
 export const getLocaleTime = (date: Date = new Date()) => {
-  return date.toLocaleTimeString(KYIV_LOCALE, {
+  return date.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "numeric",
   });
@@ -230,11 +230,17 @@ export const getUAFormattedFullDateString = (dateFrom: Date, dateTo: Date) => {
   return `${date} ${from}-${to}`;
 };
 
+// let flag = true
 export function getTimezonedDate(date: Date, timeZone?: string) {
   if (!timeZone) {
-    return new Date(date.toLocaleString("uk"));
+    const defaultTimeZone = Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone;
+    return new Date(
+      date.toLocaleString("en-US", {
+        timeZone: defaultTimeZone,
+      })
+    );
   }
-  return new Date(date.toLocaleString("uk", { timeZone }));
+  return new Date(date.toLocaleString("en-US", { timeZone }));
 }
 
 export function getUALocalOffsetHours() {
