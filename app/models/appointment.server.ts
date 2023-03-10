@@ -15,7 +15,7 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_TIME_ZONE } from "~/utils/constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
 import type { ContactInfo } from "~/store/bookingSlice";
 import {
@@ -73,7 +73,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
 
   const events = await calendarAPI.events.list({
     calendarId: CAL_ID,
-    timeZone: KYIV_TIME_ZONE,
+    timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
     timeMax: addMonths(new Date(), 3).toISOString(), // 3 months from tomorrow
   });
@@ -280,14 +280,17 @@ export async function generateAppointmentPaymentData({
     currency: "UAH",
     productName: `Бронювання залу студії escp.90 ${new Date(
       timeFrom
-    ).toLocaleDateString("uk")}: ${new Date(timeFrom).toLocaleTimeString("uk", {
+    ).toLocaleDateString(KYIV_LOCALE)}: ${new Date(timeFrom).toLocaleTimeString(
+      KYIV_LOCALE,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: KYIV_TIME_ZONE,
+      }
+    )}–${new Date(timeTo).toLocaleTimeString(KYIV_LOCALE, {
       hour: "2-digit",
       minute: "2-digit",
-      timeZone: "Europe/Kyiv",
-    })}–${new Date(timeTo).toLocaleTimeString("uk", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Europe/Kyiv",
+      timeZone: KYIV_TIME_ZONE,
     })}`,
     productPrice: price,
     productCount: "1",

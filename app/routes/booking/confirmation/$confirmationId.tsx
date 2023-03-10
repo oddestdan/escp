@@ -125,9 +125,11 @@ export default function Confirmation() {
   const stringifiedData = extendedProperties.private;
 
   const bookingPrice =
-    getHoursDiffBetweenDates(
-      new Date(appointment.end!.dateTime as string),
-      new Date(appointment.start!.dateTime as string)
+    Math.abs(
+      getHoursDiffBetweenDates(
+        new Date(appointment.end!.dateTime as string),
+        new Date(appointment.start!.dateTime as string)
+      )
     ) * BOOKING_HOURLY_PRICE;
 
   const allServices = JSON.parse(stringifiedData!.services);

@@ -17,7 +17,11 @@ import {
   getDayOfWeekNumbered,
   getWeekDates,
 } from "~/utils/date";
-import { BOOKING_HOURLY_PRICE, START_FROM_MONDAY } from "~/utils/constants";
+import {
+  BOOKING_HOURLY_PRICE,
+  KYIV_LOCALE,
+  START_FROM_MONDAY,
+} from "~/utils/constants";
 
 import type { DayOfWeek } from "~/utils/date";
 import type { StoreBooking, TimeState } from "~/store/bookingSlice";
@@ -142,8 +146,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     getDayOfWeekNumbered(new Date(selectedDate))
   );
 
-  // console.log({ appointments });
-
   const weeks: Date[] = useMemo(
     () =>
       START_FROM_MONDAY
@@ -176,8 +178,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           weekDate
         ).flat();
 
-        // console.log({ selectedDateSlots, todaysAppointments, weekDate });
-
         return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
           slot,
           isBooked: Boolean(
@@ -197,7 +197,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const timeSlots = timeSlotsMatrix[dayOfWeek];
 
   const memoedDateSummary = useMemo(() => {
-    return formatLocaleDate("uk", selectedDate || slots[0]?.date);
+    return formatLocaleDate(KYIV_LOCALE, selectedDate || slots[0]?.date);
   }, [selectedDate, slots]);
   const memoedTimeSlotSummary = useMemo(() => {
     return timeSlots?.length > 0 && timeSlots.some((slot) => !slot.isBooked)
@@ -210,14 +210,19 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       return "--";
     }
 
-    const startMonth = new Date(weeks[0]).toLocaleString("uk", {
+    const startMonth = new Date(weeks[0]).toLocaleString(KYIV_LOCALE, {
       month: "long",
     });
-    const endMonth = new Date(weeks[weeks.length - 1]).toLocaleString("uk", {
-      month: "long",
-    });
+    const endMonth = new Date(weeks[weeks.length - 1]).toLocaleString(
+      KYIV_LOCALE,
+      {
+        month: "long",
+      }
+    );
 
-    return startMonth === endMonth ? startMonth : `${startMonth} / ${endMonth}`;
+    const monthWording =
+      startMonth === endMonth ? startMonth : `${startMonth} / ${endMonth}`;
+    return monthWording;
   }, [weeks]);
 
   // Callbacks passed inside components
@@ -258,7 +263,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   // https://github.com/remix-run/remix/discussions/1023
   // https://github.com/ashikmeerankutty/client-test/pull/1/files
   return hasMounted ? (
-    <div className="w-full w-screen -translate-x-4 sm:w-[calc(100vw-10%)] sm:-translate-x-[calc(20%-2px)] md:w-[calc(100vw-30%)] md:-translate-x-[calc(15%-2px)] lg:w-full lg:translate-x-0 lg:px-4">
+    <div className="w-screen -translate-x-4 sm:w-[calc(100vw-10%)] sm:-translate-x-[calc(20%-2px)] md:w-[calc(100vw-30%)] md:-translate-x-[calc(15%-2px)] lg:w-full lg:translate-x-0 lg:px-4">
       {/* Standalone Tooltip */}
       {hasMounted && (
         <ReactTooltip

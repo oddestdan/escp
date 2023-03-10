@@ -9,7 +9,7 @@ import {
 } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
 
-const IS_DEV = false;
+export const IS_DEV = false;
 export const UNDER_MAINTENANCE = false;
 
 export interface StoreBooking {
@@ -103,7 +103,7 @@ const get3MonthSlots = () => {
   return generateDateTimeSlots(getDateFormat(fromDate), getDateFormat(toDate));
 };
 
-const coreState: BookingState = {
+export const initialState: BookingState = {
   contact: {
     firstName: IS_DEV ? "Dan" : "",
     lastName: IS_DEV ? "Developer" : "",
@@ -112,48 +112,27 @@ const coreState: BookingState = {
   },
   dateTime: {
     slots: get3MonthSlots(),
-    date: IS_DEV ? "2023-02-16" : getDateFormat(getTomorrow()),
-    time: { start: "", end: "", diff: 0 },
+    date: getDateFormat(getTomorrow()),
+    time: IS_DEV
+      ? {
+          start: `${getDateFormat(getTomorrow())}T09:00:00.000Z`,
+          end: `${getDateFormat(getTomorrow())}T12:00:00.000Z`,
+          diff: 3,
+        }
+      : { start: "", end: "", diff: 0 },
     hasWeekChanged: false,
   },
   services: [],
   additionalServices: {},
-  currentStep: BookingStep.DateTime,
-  maxStepVisited: BookingStep.DateTime,
+  currentStep: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
+  maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
   price: {
-    booking: 0,
+    booking: IS_DEV ? 1 : 0,
     services: 0,
   },
 
   errorMessage: "",
 };
-export const initialState: BookingState = IS_DEV
-  ? {
-      ...coreState,
-      contact: {
-        firstName: "Dan",
-        lastName: "Developer",
-        tel: "+380983308847",
-        socialMedia: "",
-      },
-      dateTime: {
-        slots: get3MonthSlots(),
-        date: "2023-02-16",
-        time: {
-          start: "2023-02-16T09:00:00.000Z",
-          end: "2023-02-16T12:00:00.000Z",
-          diff: 3,
-        },
-        hasWeekChanged: false,
-      },
-      currentStep: BookingStep.Payment,
-      maxStepVisited: BookingStep.Payment,
-      price: {
-        booking: 1,
-        services: 0,
-      },
-    }
-  : coreState;
 
 const bookingSlice = createSlice({
   name: "booking",

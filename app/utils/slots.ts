@@ -2,8 +2,8 @@ import { businessHoursStart, businessHoursEnd } from "./constants";
 import {
   getDateFormat,
   getDayOfWeek,
-  getMyTZOffset,
   getTomorrow,
+  getUAOffsetHours,
 } from "./date";
 
 export const generateArrayRangeWithStep = (from: number, to: number) => {
@@ -16,17 +16,25 @@ export const generateArrayRangeWithStep = (from: number, to: number) => {
   return arr;
 };
 
+// returns time slots in default 0 timezone
 export const generateTimeSlots = (
   day = new Date(),
-  from = Number(businessHoursStart.split(":")[0]) - getMyTZOffset(day), // 7,
-  to = Number(businessHoursEnd.split(":")[0]) - getMyTZOffset(day) // 21,
+  from = (((Number(businessHoursStart.split(":")[0]) - getUAOffsetHours()) %
+    24) +
+    24) %
+    24,
+  to = (((Number(businessHoursEnd.split(":")[0]) - getUAOffsetHours()) % 24) +
+    24) %
+    24
+  // from = Number(businessHoursStart.split(":")[0]) - getUAOffsetHours(),
+  // to = Number(businessHoursEnd.split(":")[0]) - getUAOffsetHours()
 ) => {
-  return generateArrayRangeWithStep(from, to).map(
-    (k) =>
-      `${getDateFormat(day)}T${`${Math.floor(k)}`.padStart(2, "0")}:${
-        k % 1 === 0 ? "00" : "30"
-      }:00.000Z`
-  );
+  const slots = generateArrayRangeWithStep(from, to).map((k) => {
+    return `${getDateFormat(day)}T${`${Math.floor(k)}`.padStart(2, "0")}:${
+      k % 1 === 0 ? "00" : "30"
+    }:00.000Z`;
+  });
+  return slots;
 };
 
 export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
@@ -44,7 +52,7 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
 
   const tomorrow = getDateFormat(getTomorrow());
 
-  return getDaysArray(fromDate, toDate).map((day) => {
+  const daySlots = getDaysArray(fromDate, toDate).map((day) => {
     const date = getDateFormat(day);
     // if (date === tomorrow) {
     //   console.log("> check tomorrow...");
@@ -57,4 +65,6 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
       availableTimeSlots: generateTimeSlots(day),
     };
   });
+
+  return daySlots;
 };

@@ -41,7 +41,7 @@ export const getAppointmentTitle = (
     return "Incognito";
   }
 
-  const duration = getHoursDiffBetweenDates(endDate, startDate);
+  const duration = Math.abs(getHoursDiffBetweenDates(endDate, startDate));
 
   return `${duration} год, ${info.firstName}${
     info.lastName ? ` ${info.lastName[0]}.` : ""
