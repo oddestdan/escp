@@ -10,6 +10,7 @@ import {
 import { generateDateTimeSlots } from "~/utils/slots";
 
 const IS_DEV = false;
+export const UNDER_MAINTENANCE = false;
 
 export interface StoreBooking {
   booking: BookingState;
