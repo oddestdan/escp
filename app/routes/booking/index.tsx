@@ -202,8 +202,6 @@ export default function Booking() {
     }
   }, [dispatch, searchParams, setSearchParams]);
 
-  const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone
-
   return (
     <>
       {/* Fixed ErrorNotification */}
@@ -218,7 +216,8 @@ export default function Booking() {
               stepData={memoedStepsData}
             />
 
-            {UNDER_MAINTENANCE || !sameAsKyivTimezone ? (
+            {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}
+            {UNDER_MAINTENANCE ? (
               <div className="w-full text-center text-red-500">
                 {new Date().getTimezoneOffset()} |{" "}
                 {Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone}
