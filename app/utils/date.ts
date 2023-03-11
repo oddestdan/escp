@@ -230,7 +230,7 @@ export const getUAFormattedFullDateString = (dateFrom: Date, dateTo: Date) => {
   return `${date} ${from}-${to}`;
 };
 
-// let flag = true
+// NOTE: NEEDS TO BE 'en-US' DUE TO SAFARI tolocaleString IMPLEMENTATION!!!
 export function getTimezonedDate(date: Date, timeZone?: string) {
   if (!timeZone) {
     const defaultTimeZone = Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone;
