@@ -110,7 +110,7 @@ export const getNextWeekFromToday = (dateString: string): Date[] => {
 };
 
 export const getLocaleTime = (date: Date = new Date()) => {
-  return date.toLocaleTimeString("en-US", {
+  return date.toLocaleTimeString(KYIV_LOCALE, {
     hour: "numeric",
     minute: "numeric",
   });
