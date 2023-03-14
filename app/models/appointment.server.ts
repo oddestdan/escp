@@ -161,7 +161,7 @@ export async function createAppointment(
         dateTime: fromISOToRFC3339(appointment.timeTo),
         timeZone: KYIV_TIME_ZONE,
       },
-      colorId: "4", // #ff887c at index 4
+      colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
       // for later parsing on confirmation screen
       extendedProperties: {
         private: {
