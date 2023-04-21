@@ -1,6 +1,7 @@
 export const businessHoursStart = "08:00";
 export const businessHoursEnd = "20:00";
 export const defaultEventTitle = "Зайнято";
+export const MIN_HOURS_PRIOR_NOTICE = 2;
 
 export const BOOKING_HOURLY_PRICE = 700;
 export const ASSISTANCE_HOURLY_PRICE = 200;

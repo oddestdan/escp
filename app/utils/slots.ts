@@ -3,12 +3,7 @@ import {
   businessHoursEnd,
   KYIV_TIME_ZONE,
 } from "./constants";
-import {
-  getDateFormat,
-  getDayOfWeek,
-  getTimezonedDate,
-  getTomorrow,
-} from "./date";
+import { getDateFormat, getDayOfWeek, getTimezonedDate } from "./date";
 
 export const generateArrayRangeWithStep = (from: number, to: number) => {
   const arr = [];
@@ -51,14 +46,14 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
     return arr;
   };
 
-  const tomorrow = getDateFormat(getTomorrow());
+  const today = getDateFormat();
 
   const daySlots = getDaysArray(fromDate, toDate).map((day) => {
     const date = getDateFormat(day);
 
     return {
       date,
-      isValid: date >= tomorrow,
+      isValid: date >= today,
       dayOfWeek: getDayOfWeek(day),
       availableTimeSlots: generateTimeSlots(day),
     };
