@@ -18,13 +18,14 @@ export enum DayOfWeek {
 export const defaultTime = "T00:00:00";
 
 // Formats the date to number between 1-31
-export const getDateNumber = (date: string): number => {
-  const dateFormat = new Date(`${date}${defaultTime}`);
-  return dateFormat.getDate();
+export const getDateNumber = (dateString: string): number => {
+  const date = new Date(`${dateString}`);
+  return getTimezonedDate(date, KYIV_TIME_ZONE).getDate();
 };
 
-export const getWeekDayFormat = (date: string): string => {
-  return new Date(`${date}${defaultTime}`)
+export const getWeekDayFormat = (dateString: string): string => {
+  const date = new Date(`${dateString}`);
+  return getTimezonedDate(date, KYIV_TIME_ZONE)
     .toLocaleString(KYIV_LOCALE, { weekday: "short" })
     .toLocaleLowerCase()
     .slice(0, 3);
@@ -243,14 +244,14 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
   return new Date(date.toLocaleString("en-US", { timeZone }));
 }
 
-export function getUALocalOffsetHours() {
-  const kyivDate = getTimezonedDate(new Date(), KYIV_TIME_ZONE);
-  const localDate = getTimezonedDate(new Date());
+export function getUALocalOffsetHours(date?: Date) {
+  const kyivDate = getTimezonedDate(date || new Date(), KYIV_TIME_ZONE);
+  const localDate = getTimezonedDate(date || new Date());
   return getHoursDiffBetweenDates(kyivDate, localDate) % 24;
 }
 
-export function getUAOffsetHours() {
-  const kyivDate = getTimezonedDate(new Date(), KYIV_TIME_ZONE);
-  const defaultDate = getTimezonedDate(new Date(), DEFAULT_TIME_ZONE);
+export function getUAOffsetHours(date: Date) {
+  const kyivDate = getTimezonedDate(date, KYIV_TIME_ZONE);
+  const defaultDate = getTimezonedDate(date, DEFAULT_TIME_ZONE);
   return getHoursDiffBetweenDates(kyivDate, defaultDate);
 }

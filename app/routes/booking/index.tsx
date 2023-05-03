@@ -217,7 +217,7 @@ export default function Booking() {
             />
 
             {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}
-            {UNDER_MAINTENANCE ? (
+            {UNDER_MAINTENANCE || new Date().getTimezoneOffset() > 0 ? (
               <div className="w-full text-center text-red-500">
                 {new Date().getTimezoneOffset()} |{" "}
                 {Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone}

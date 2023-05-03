@@ -1,13 +1,9 @@
-import {
-  businessHoursStart,
-  businessHoursEnd,
-  KYIV_TIME_ZONE,
-} from "./constants";
+import { businessHoursStart, businessHoursEnd } from "./constants";
 import {
   getDateFormat,
   getDayOfWeek,
-  getTimezonedDate,
   getTomorrow,
+  getUAOffsetHours,
 } from "./date";
 
 export const generateArrayRangeWithStep = (from: number, to: number) => {
@@ -23,10 +19,14 @@ export const generateArrayRangeWithStep = (from: number, to: number) => {
 // returns time slots in default 0 timezone
 export const generateTimeSlots = (
   day = new Date(),
-  from = Number(businessHoursStart.split(":")[0]) +
-    getTimezonedDate(new Date(day), KYIV_TIME_ZONE).getTimezoneOffset() / 60,
-  to = Number(businessHoursEnd.split(":")[0]) +
-    getTimezonedDate(new Date(day), KYIV_TIME_ZONE).getTimezoneOffset() / 60
+  from = (((Number(businessHoursStart.split(":")[0]) - getUAOffsetHours(day)) %
+    24) +
+    24) %
+    24,
+  to = (((Number(businessHoursEnd.split(":")[0]) - getUAOffsetHours(day)) %
+    24) +
+    24) %
+    24
   // from = Number(businessHoursStart.split(":")[0]) - getUAOffsetHours(),
   // to = Number(businessHoursEnd.split(":")[0]) - getUAOffsetHours()
 ) => {
