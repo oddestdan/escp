@@ -235,6 +235,19 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
 }
 
 export function getUAOffsetHours(date: Date) {
-  const kyivDate = getTimezonedDate(date, KYIV_TIME_ZONE);
-  return kyivDate.getHours() - kyivDate.getUTCHours();
+  // const kyivDate = getTimezonedDate(date, "Europe/Berlin");
+  // const defaultDate = getTimezonedDate(date, "Europe/London");
+  // const xDate = getTimezonedDate(date);
+  // console.log({
+  //   kyivDate,
+  //   defaultDate,
+  //   kyivHrs: kyivDate.getHours(),
+  //   kyivUtc: kyivDate.getUTCHours(),
+  //   defaultHrs: defaultDate.getHours(),
+  //   defaultUtc: defaultDate.getUTCHours(),
+  //   xHrs: xDate.getHours(),
+  //   xUtc: xDate.getUTCHours(),
+  // });
+  // return kyivDate.getHours() - kyivDate.getUTCHours();
+  return 3;
 }
