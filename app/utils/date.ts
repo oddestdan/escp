@@ -1,9 +1,4 @@
-import {
-  DEFAULT_TIME_ZONE,
-  KYIV_LOCALE,
-  KYIV_TIME_ZONE,
-  START_FROM_MONDAY,
-} from "./constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, START_FROM_MONDAY } from "./constants";
 
 export enum DayOfWeek {
   Monday,
@@ -129,18 +124,13 @@ const getUnpaddedTimeFormat = (time: string): string => {
   return time.charAt(0) === "0" ? time.slice(1) : time;
 };
 
-export const getKyivDateFromDate = (localDate: Date) => {
-  return addHoursToDate(localDate, getUALocalOffsetHours());
+export const getKyivDateFromDate = (date: Date) => {
+  return getTimezonedDate(date, KYIV_TIME_ZONE);
 };
 
 export const formatTimeSlot = (time: string) => {
   const kyivDate = getKyivDateFromDate(new Date(time));
   return getUnpaddedTimeFormat(getLocaleTime(kyivDate));
-};
-
-export const addHoursToDate = (date: Date, hours: number) => {
-  date.setTime(date.getTime() + hours * 3.6e6);
-  return date;
 };
 
 export const formatShortTimeSlot = (time: string) => {
@@ -244,14 +234,7 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
   return new Date(date.toLocaleString("en-US", { timeZone }));
 }
 
-export function getUALocalOffsetHours(date?: Date) {
-  const kyivDate = getTimezonedDate(date || new Date(), KYIV_TIME_ZONE);
-  const localDate = getTimezonedDate(date || new Date());
-  return getHoursDiffBetweenDates(kyivDate, localDate) % 24;
-}
-
 export function getUAOffsetHours(date: Date) {
   const kyivDate = getTimezonedDate(date, KYIV_TIME_ZONE);
-  const defaultDate = getTimezonedDate(date, DEFAULT_TIME_ZONE);
-  return getHoursDiffBetweenDates(kyivDate, defaultDate);
+  return kyivDate.getHours() - kyivDate.getUTCHours();
 }
