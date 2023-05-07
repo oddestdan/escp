@@ -175,6 +175,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [slots, weeks, appointments]);
 
   const timeSlots = timeSlotsMatrix[dayOfWeek];
+  const firstValidIndex = useMemo(() => {
+    return timeSlots.findIndex(
+      (timeSlot) => !timeSlot.isBooked && timeSlot.isValid
+    );
+  }, [timeSlots]);
 
   const memoedDateSummary = useMemo(() => {
     return formatLocaleDate(KYIV_LOCALE, selectedDate || slots[0]?.date);
@@ -284,12 +289,15 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           timeSlotsMatrix={timeSlotsMatrix}
           onChangeDayOfWeek={onChangeDayOfWeek}
           onChangeTime={onChangeTime}
+          firstValidIndex={firstValidIndex}
         />
         <div className="w-full px-4">
           <BookingStepActions
             hasPrimary={true}
             onPrimaryClick={stepNext}
-            disabled={memoedTimeSlotSummary === NO_SLOTS_MSG}
+            disabled={
+              memoedTimeSlotSummary === NO_SLOTS_MSG || firstValidIndex === -1
+            }
           />
         </div>
       </div>

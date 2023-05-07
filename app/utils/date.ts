@@ -204,6 +204,11 @@ export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) => {
   return (dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
 };
 
+export const addHoursToDate = (date: Date, hours: number) => {
+  date.setTime(date.getTime() + hours * 3.6e6);
+  return date;
+};
+
 export const getUADateString = (date: Date) =>
   date.toLocaleDateString(KYIV_LOCALE);
 export const getUATwoDigitTimeString = (date: Date) =>

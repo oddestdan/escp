@@ -12,6 +12,7 @@ export interface TimePickerTableProps {
   dayOfWeek: DayOfWeek;
   selectedDate: string;
   timeSlotsMatrix: BookableTimeSlot[][];
+  firstValidIndex: number;
   onChangeDayOfWeek: (dayOfWeek: DayOfWeek) => void;
   onChangeTime: (start: string, end: string, diff: number) => void;
 }
@@ -24,6 +25,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
   dayOfWeek,
   selectedDate,
   timeSlotsMatrix,
+  firstValidIndex,
   onChangeDayOfWeek,
   onChangeTime,
 }) => {
@@ -31,12 +33,6 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
   const timeSlots = useMemo(() => {
     return timeSlotsMatrix[dayOfWeek];
   }, [timeSlotsMatrix, dayOfWeek]);
-
-  const firstValidIndex = useMemo(
-    () =>
-      timeSlots.findIndex((timeSlot) => !timeSlot.isBooked && timeSlot.isValid),
-    [timeSlots]
-  );
 
   const [start, setStart] = useState(firstValidIndex);
   const [end, setEnd] = useState(firstValidIndex);
@@ -111,14 +107,15 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
       <ul
         className={`mb-8 mt-2 flex w-full flex-row justify-around font-mono text-xs sm:text-sm`}
       >
-        {timeSlotsMatrix.map(
-          (timeSlots, dayOfWeekIndex) =>
+        {timeSlotsMatrix.map((timeSlots, dayOfWeekIndex) => {
+          return (
             timeSlots?.length > 0 && (
               <div
                 key={`timeSlotRow-${dayOfWeekIndex}`}
                 className="flex w-fit flex-grow basis-0 flex-col items-center"
               >
-                {timeSlots.filter((slot) => slot.isValid).length === 0 ? (
+                {/* {timeSlots.filter((slot) => slot.isValid && !slot.isBooked).length === 0 */}
+                {false ? (
                   <div className="flex h-full w-[7ch] max-w-full items-center">
                     it was a good day :)
                   </div>
@@ -127,6 +124,7 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
                     const isCurrentDay = dayOfWeekIndex === dayOfWeek;
                     const isActive =
                       (end <= i && i <= start) || (start <= i && i <= end);
+                    const invalid = isBooked || !isValid;
                     const timeSlotStart = formatShortTimeSlot(slot);
                     const timeSlotEnd = formatShortTimeSlot(
                       addMinutes(slot, TIMESLOT_OFFSET_MINUTES)
@@ -135,36 +133,18 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
                     return (
                       <li key={`${i}-${slot}`} className="flex w-fit flex-col">
                         {/* actual time slot */}
-                        {isBooked || !isValid ? (
+                        {invalid ? (
                           <div
-                            className={`inline-flex cursor-not-allowed border-b-[1px] border-transparent bg-stone-300 px-1 text-stone-700 ${
-                              // !isValid
-                              //   ? "border-[1px] border-stone-300 bg-transparent"
-                              //   : ""
-                              !isValid ? "invisible" : ""
-                              // !isValid ? "text-transparent" : ""
-                            }`}
-                            aria-disabled={isBooked}
-                            data-tip={`Пусті слоти - недоступні<br />Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}
+                            className={`inline-flex cursor-not-allowed border-b-[1px] border-transparent bg-stone-300 px-1 text-stone-700`}
+                            aria-disabled={invalid}
+                            data-tip={`Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}
                           >
                             <div
-                              className={`w-full select-none px-[1px] py-[2px] text-center sm:px-1 sm:py-1 ${
-                                !isValid ? "" : ""
-                              }`}
+                              className={`w-full select-none px-[1px] py-[2px] text-center sm:px-1 sm:py-1`}
                             >
-                              {isValid ? (
-                                <>
-                                  {timeSlotStart}
-                                  <span className="inline-block py-[3px]">
-                                    -
-                                  </span>
-                                  {timeSlotEnd}
-                                </>
-                              ) : (
-                                <span className="inline-block py-[3px]">
-                                  нема
-                                </span>
-                              )}
+                              {timeSlotStart}
+                              <span className="inline-block py-[3px]">-</span>
+                              {timeSlotEnd}
                             </div>
                           </div>
                         ) : (
@@ -202,7 +182,8 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
                 )}
               </div>
             )
-        )}
+          );
+        })}
       </ul>
     </div>
   );
