@@ -1,9 +1,4 @@
-import {
-  DEFAULT_TIME_ZONE,
-  KYIV_LOCALE,
-  KYIV_TIME_ZONE,
-  START_FROM_MONDAY,
-} from "./constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, START_FROM_MONDAY } from "./constants";
 
 export enum DayOfWeek {
   Monday,
@@ -18,13 +13,14 @@ export enum DayOfWeek {
 export const defaultTime = "T00:00:00";
 
 // Formats the date to number between 1-31
-export const getDateNumber = (date: string): number => {
-  const dateFormat = new Date(`${date}${defaultTime}`);
-  return dateFormat.getDate();
+export const getDateNumber = (dateString: string): number => {
+  const date = new Date(`${dateString}`);
+  return getTimezonedDate(date, KYIV_TIME_ZONE).getDate();
 };
 
-export const getWeekDayFormat = (date: string): string => {
-  return new Date(`${date}${defaultTime}`)
+export const getWeekDayFormat = (dateString: string): string => {
+  const date = new Date(`${dateString}`);
+  return getTimezonedDate(date, KYIV_TIME_ZONE)
     .toLocaleString(KYIV_LOCALE, { weekday: "short" })
     .toLocaleLowerCase()
     .slice(0, 3);
@@ -128,18 +124,13 @@ const getUnpaddedTimeFormat = (time: string): string => {
   return time.charAt(0) === "0" ? time.slice(1) : time;
 };
 
-export const getKyivDateFromDate = (localDate: Date) => {
-  return addHoursToDate(localDate, getUALocalOffsetHours());
+export const getKyivDateFromDate = (date: Date) => {
+  return getTimezonedDate(date, KYIV_TIME_ZONE);
 };
 
 export const formatTimeSlot = (time: string) => {
   const kyivDate = getKyivDateFromDate(new Date(time));
   return getUnpaddedTimeFormat(getLocaleTime(kyivDate));
-};
-
-export const addHoursToDate = (date: Date, hours: number) => {
-  date.setTime(date.getTime() + hours * 3.6e6);
-  return date;
 };
 
 export const formatShortTimeSlot = (time: string) => {
@@ -243,14 +234,20 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
   return new Date(date.toLocaleString("en-US", { timeZone }));
 }
 
-export function getUALocalOffsetHours() {
-  const kyivDate = getTimezonedDate(new Date(), KYIV_TIME_ZONE);
-  const localDate = getTimezonedDate(new Date());
-  return getHoursDiffBetweenDates(kyivDate, localDate) % 24;
-}
-
-export function getUAOffsetHours() {
-  const kyivDate = getTimezonedDate(new Date(), KYIV_TIME_ZONE);
-  const defaultDate = getTimezonedDate(new Date(), DEFAULT_TIME_ZONE);
-  return getHoursDiffBetweenDates(kyivDate, defaultDate);
+export function getUAOffsetHours(date: Date) {
+  // const kyivDate = getTimezonedDate(date, "Europe/Berlin");
+  // const defaultDate = getTimezonedDate(date, "Europe/London");
+  // const xDate = getTimezonedDate(date);
+  // console.log({
+  //   kyivDate,
+  //   defaultDate,
+  //   kyivHrs: kyivDate.getHours(),
+  //   kyivUtc: kyivDate.getUTCHours(),
+  //   defaultHrs: defaultDate.getHours(),
+  //   defaultUtc: defaultDate.getUTCHours(),
+  //   xHrs: xDate.getHours(),
+  //   xUtc: xDate.getUTCHours(),
+  // });
+  // return kyivDate.getHours() - kyivDate.getUTCHours();
+  return 3;
 }
