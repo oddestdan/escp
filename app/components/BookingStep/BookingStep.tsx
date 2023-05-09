@@ -15,12 +15,14 @@ import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 import type { StoreBooking } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
+import { StudioStep } from "./Steps/StudioStep";
 
 export function WithActiveStepHOC<T>(
   Component: React.ComponentType<T>,
   [activeStep, validStep]: [BookingStep, BookingStep]
 ): React.FC<T> {
   return function WithActiveStepInner(props: T): React.ReactElement | null {
+    // @ts-ignore
     return activeStep === validStep ? <Component {...props} /> : null;
   };
 }
@@ -59,6 +61,10 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
     [dispatch]
   );
 
+  const MemoedStudioStep = useMemo(
+    () => WithActiveStepHOC(StudioStep, [currentStep, BookingStep.Studio]),
+    [currentStep]
+  );
   const MemoedDateTimeStep = useMemo(
     () => WithActiveStepHOC(DateTimeStep, [currentStep, BookingStep.DateTime]),
     [currentStep]
@@ -82,6 +88,7 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
 
   return (
     <>
+      <MemoedStudioStep isMobile={isMobile} />
       <MemoedDateTimeStep
         appointments={appointments}
         onChangeDate={onChangeDate}

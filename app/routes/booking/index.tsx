@@ -8,7 +8,7 @@ import {
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useEffect, useRef } from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
@@ -22,6 +22,7 @@ import {
   BookingStep,
   setErrorMessage,
   UNDER_MAINTENANCE,
+  bookingStepsDisplayData,
 } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import NavBar from "~/components/NavBar/NavBar";
@@ -32,6 +33,7 @@ import {
   BOOKING_TIME_TAKEN_QS,
   ERROR_404_APPOINTMENTS_MSG,
   ERROR_SOMETHING_BAD_HAPPENED,
+  STUDIO_ID_QS,
 } from "~/utils/constants";
 import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotification";
 
@@ -80,8 +82,15 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  const defaultStudioId = 0;
+
+  const url = new URL(request.url);
+  const studioId = Number(
+    url.searchParams.get(STUDIO_ID_QS) ?? defaultStudioId
+  );
+
   try {
-    const appointments = await getAppointments();
+    const appointments = await getAppointments(studioId);
 
     if (!appointments) {
       throw new Response("Not Found", { status: 404 });
@@ -162,16 +171,6 @@ export default function Booking() {
     };
   }, []);
 
-  const memoedStepsData = useMemo(
-    () => [
-      { title: "час", icon: "ч" },
-      { title: "сервіси", icon: "с" },
-      { title: "інфо", icon: "і" },
-      { title: "оплата", icon: "o" },
-    ],
-    []
-  );
-
   const onStepClick = useCallback(
     (step: BookingStep) => {
       // Can only go to previous steps OR
@@ -213,7 +212,7 @@ export default function Booking() {
             <ProgressBar
               onStepClick={onStepClick}
               activeIndex={currentStep}
-              stepData={memoedStepsData}
+              stepData={bookingStepsDisplayData}
             />
 
             {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}

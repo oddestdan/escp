@@ -4,7 +4,7 @@ import { ActionButton } from "~/components/ActionButton/ActionButton";
 import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
-import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
+import { BOOKING_HOURLY_PRICE, STUDIO_ID_QS } from "~/utils/constants";
 
 // desktop
 import imageSrcDesktopCollage from "../../../public/images/escp-desktop.jpg";
@@ -15,7 +15,7 @@ import imageSrcMobileMain from "../../../public/images/escp-mobile-1.jpg";
 export default function Escp() {
   const navigate = useNavigate();
   const navigateToBooking = useCallback(() => {
-    navigate("/booking");
+    navigate(`/booking?${STUDIO_ID_QS}=0`);
   }, [navigate]);
 
   return (

@@ -206,7 +206,8 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GOOGLE_SERVICE_EMAIL: ${{ secrets.GOOGLE_SERVICE_EMAIL }}
           GOOGLE_SERVICE_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_PRIVATE_KEY }}
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+          GOOGLE_CALENDAR_ROOM_1_ID: ${{ secrets.GOOGLE_CALENDAR_ROOM_1_ID }}
+          GOOGLE_CALENDAR_ROOM_2_ID: ${{ secrets.GOOGLE_CALENDAR_ROOM_2_ID }}
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -220,4 +221,5 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GOOGLE_SERVICE_EMAIL: ${{ secrets.GOOGLE_SERVICE_EMAIL }}
           GOOGLE_SERVICE_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_PRIVATE_KEY }}
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+          GOOGLE_CALENDAR_ROOM_1_ID: ${{ secrets.GOOGLE_CALENDAR_ROOM_1_ID }}
+          GOOGLE_CALENDAR_ROOM_2_ID: ${{ secrets.GOOGLE_CALENDAR_ROOM_2_ID }}

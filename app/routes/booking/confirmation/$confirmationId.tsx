@@ -17,6 +17,7 @@ import {
   CONTACTS_CURRENT_TAB_QS,
   ERROR_404_APPOINTMENT_BY_ID_MSG,
   ERROR_SOMETHING_BAD_HAPPENED,
+  STUDIO_ID_QS,
 } from "~/utils/constants";
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
@@ -90,7 +91,7 @@ export default function Confirmation() {
   const cleanupCb = useCallback(() => dispatch(clearAll()), [dispatch]);
 
   const navigateToBooking = useCallback(() => {
-    navigate("/booking");
+    navigate(`/booking?${STUDIO_ID_QS}=0`);
   }, [navigate]);
 
   // redirect if not sufficient information

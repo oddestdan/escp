@@ -18,6 +18,7 @@ import {
   BOOKING_TIME_GENERIC_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
   BOOKING_WAYFORPAY_MISSING_ERROR_MSG,
+  STUDIO_ID_QS,
 } from "~/utils/constants";
 import { setErrorMessage } from "~/store/bookingSlice";
 import { useDispatch } from "react-redux";
@@ -37,7 +38,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!appointment) {
       // throw json({ message: "Appointment not found Error" }, 500);
       console.error({ message: "Appointment not found Error" });
-      return redirect(`/booking`);
+      return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
 
     const paymentData = await generateAppointmentPaymentData(appointment);
@@ -45,7 +46,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!paymentData) {
       // throw json({ message: "Payment info generation Error" }, 500);
       console.error({ message: "Payment info generation Error" });
-      return redirect(`/booking`);
+      return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
 
     return json<LoaderData>({ paymentData, appointment });
@@ -53,7 +54,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     console.error(error);
     // throw json({ message: "Payment Error" }, 500);
     console.error({ message: "Payment Error" });
-    return redirect(`/booking`);
+    return redirect(`/booking?${STUDIO_ID_QS}=0`);
   }
 };
 
@@ -98,7 +99,9 @@ export const action: ActionFunction = async ({ request }) => {
       deletePrismaAppointment(prismaId);
 
       if (!createdAppointment) {
-        return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
+        return redirect(
+          `/booking?${STUDIO_ID_QS}=0&${BOOKING_TIME_TAKEN_QS}=true`
+        );
       }
 
       return redirect(`/booking/confirmation/${createdAppointment.id}`);
@@ -111,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       deletePrismaAppointment(prismaId);
 
-      return redirect(`/booking`);
+      return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
     default:
       return null;
