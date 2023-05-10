@@ -124,7 +124,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   date.date === today ? "underline underline-offset-4" : ""
                 }`}
               >
-                <span>{getDateNumber(date.date)}</span>
+                <span
+                  data-tip={`Клікайте на вільні годинки нижче<br/>щоб обрати зручний час і дату`}
+                >
+                  {getDateNumber(date.date)}
+                </span>
               </div>
             </button>
           </label>
