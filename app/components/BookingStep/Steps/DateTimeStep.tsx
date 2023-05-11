@@ -176,9 +176,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
 
   const timeSlots = timeSlotsMatrix[dayOfWeek];
   const firstValidIndex = useMemo(() => {
-    return timeSlots.findIndex(
-      (timeSlot) => !timeSlot.isBooked && timeSlot.isValid
-    );
+    return timeSlots
+      ? timeSlots.findIndex(
+          (timeSlot) => !timeSlot.isBooked && timeSlot.isValid
+        )
+      : -1;
   }, [timeSlots]);
 
   const memoedDateSummary = useMemo(() => {
