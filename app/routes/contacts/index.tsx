@@ -15,6 +15,7 @@ const byFootText = `
       <br />йдіть прямо донизу до останнього корпусу
       <br />перед ним ліворуч та з правого боку розташовані вхідні двері
       <br />підніміться на 4й поверх`;
+const byFootLink = "https://www.youtube.com/embed/-qkv7-icgOs";
 
 const renderByFootTab = () => (
   <div className="flex flex-col pt-2 pb-4 xl:flex-row-reverse">
@@ -30,7 +31,7 @@ const renderByFootTab = () => (
       <iframe
         className="aspect-[9/16] w-full bg-stone-100"
         title="Video route by foot"
-        src="https://www.youtube.com/embed/7G47r3wuoZE"
+        src={byFootLink}
       ></iframe>
     </p>
   </div>
@@ -45,6 +46,7 @@ const byCarText = `
       <br />за навісним цегляним переходом ліворуч розташоване наше місце для паркінгу
       <br />(escp.90), а праворуч — вхідні двері
       <br />підніміться на 4й поверх`;
+const byCarLink = "https://www.youtube.com/embed/4N8zupiOIcQ";
 
 const renderByCarTab = () => (
   <div className="flex flex-col pt-2 pb-4 xl:flex-row-reverse">
@@ -60,7 +62,7 @@ const renderByCarTab = () => (
       <iframe
         className="aspect-[9/16] w-full bg-stone-100"
         title="Video route by car"
-        src="https://www.youtube.com/embed/9K-G9kvpRS0"
+        src={byCarLink}
       ></iframe>
     </p>
   </div>
