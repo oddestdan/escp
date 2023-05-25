@@ -204,6 +204,11 @@ export const getHoursDiffBetweenDates = (dateA: Date, dateB: Date) => {
   return (dateA.getTime() - dateB.getTime()) / 3.6e6; // 60 * 60 * 1000
 };
 
+export const addHoursToDate = (date: Date, hours: number) => {
+  date.setTime(date.getTime() + hours * 3.6e6);
+  return date;
+};
+
 export const getUADateString = (date: Date) =>
   date.toLocaleDateString(KYIV_LOCALE);
 export const getUATwoDigitTimeString = (date: Date) =>
@@ -235,6 +240,19 @@ export function getTimezonedDate(date: Date, timeZone?: string) {
 }
 
 export function getUAOffsetHours(date: Date) {
-  const kyivDate = getTimezonedDate(date, KYIV_TIME_ZONE);
-  return kyivDate.getHours() - kyivDate.getUTCHours();
+  // const kyivDate = getTimezonedDate(date, "Europe/Berlin");
+  // const defaultDate = getTimezonedDate(date, "Europe/London");
+  // const xDate = getTimezonedDate(date);
+  // console.log({
+  //   kyivDate,
+  //   defaultDate,
+  //   kyivHrs: kyivDate.getHours(),
+  //   kyivUtc: kyivDate.getUTCHours(),
+  //   defaultHrs: defaultDate.getHours(),
+  //   defaultUtc: defaultDate.getUTCHours(),
+  //   xHrs: xDate.getHours(),
+  //   xUtc: xDate.getUTCHours(),
+  // });
+  // return kyivDate.getHours() - kyivDate.getUTCHours();
+  return 3;
 }

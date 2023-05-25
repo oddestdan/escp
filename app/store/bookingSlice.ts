@@ -3,12 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studiosData } from "~/components/BookingStep/Steps/StudioStep";
 import { START_FROM_MONDAY } from "~/utils/constants";
-import {
-  addMonths,
-  getDateFormat,
-  getPrevMonday,
-  getTomorrow,
-} from "~/utils/date";
+import { addMonths, getDateFormat, getPrevMonday } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
 
 export const IS_DEV = false;
@@ -125,11 +120,11 @@ export const initialState: BookingState = {
   },
   dateTime: {
     slots: get3MonthSlots(),
-    date: getDateFormat(getTomorrow()),
+    date: getDateFormat(),
     time: IS_DEV
       ? {
-          start: `${getDateFormat(getTomorrow())}T09:00:00.000Z`,
-          end: `${getDateFormat(getTomorrow())}T12:00:00.000Z`,
+          start: `${getDateFormat()}T09:00:00.000Z`,
+          end: `${getDateFormat()}T12:00:00.000Z`,
           diff: 3,
         }
       : { start: "", end: "", diff: 0 },

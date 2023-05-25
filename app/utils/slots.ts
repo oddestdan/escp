@@ -1,10 +1,5 @@
 import { businessHoursStart, businessHoursEnd } from "./constants";
-import {
-  getDateFormat,
-  getDayOfWeek,
-  getTomorrow,
-  getUAOffsetHours,
-} from "./date";
+import { getDateFormat, getDayOfWeek, getUAOffsetHours } from "./date";
 
 export const generateArrayRangeWithStep = (from: number, to: number) => {
   const arr = [];
@@ -51,14 +46,14 @@ export const generateDateTimeSlots = (fromDate: string, toDate: string) => {
     return arr;
   };
 
-  const tomorrow = getDateFormat(getTomorrow());
+  const today = getDateFormat();
 
   const daySlots = getDaysArray(fromDate, toDate).map((day) => {
     const date = getDateFormat(day);
 
     return {
       date,
-      isValid: date >= tomorrow,
+      isValid: date >= today,
       dayOfWeek: getDayOfWeek(day),
       availableTimeSlots: generateTimeSlots(day),
     };

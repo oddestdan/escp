@@ -10,7 +10,6 @@ import {
   getDateFormat,
   getDateNumber,
   getPrevMonday,
-  getTomorrow,
   getWeekDayFormat,
 } from "~/utils/date";
 
@@ -84,9 +83,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       const nextStartingDay = START_FROM_MONDAY
         ? getPrevMonday(nextWeekDay)
         : nextWeekDay;
-      const tomorrow = getTomorrow();
+      const todaysDate = new Date();
       const payloadDay =
-        nextStartingDay < tomorrow ? tomorrow : nextStartingDay;
+        nextStartingDay < todaysDate ? todaysDate : nextStartingDay;
 
       dispatch(setHasWeekChanged(true));
       onChangeDate(getDateFormat(payloadDay));
@@ -125,7 +124,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   date.date === today ? "underline underline-offset-4" : ""
                 }`}
               >
-                <span>{getDateNumber(date.date)}</span>
+                <span
+                  data-tip={`Клікайте на вільні годинки нижче<br/>щоб обрати зручний час і дату`}
+                >
+                  {getDateNumber(date.date)}
+                </span>
               </div>
             </button>
           </label>

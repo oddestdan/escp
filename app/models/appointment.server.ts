@@ -79,7 +79,7 @@ export async function getAppointments(
     calendarId: googleCalendarIdList[calendarIndex],
     timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
-    timeMax: addMonths(new Date(), 3).toISOString(), // 3 months from tomorrow
+    timeMax: addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
   });
   const googleAppointments = events.data.items || [];
 

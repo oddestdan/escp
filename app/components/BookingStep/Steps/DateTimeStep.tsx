@@ -11,6 +11,8 @@ import {
   formatLocaleDate,
   formatCalculatedTimePeriod,
   formatTimeSlot,
+  addHoursToDate,
+  getCleanDate,
 } from "~/utils/date";
 import {
   getDateFormat,
@@ -20,7 +22,9 @@ import {
 import {
   BOOKING_HOURLY_PRICE,
   KYIV_LOCALE,
+  MIN_HOURS_PRIOR_NOTICE,
   START_FROM_MONDAY,
+  businessHoursStart,
 } from "~/utils/constants";
 
 import type { DayOfWeek } from "~/utils/date";
@@ -60,10 +64,22 @@ const renderTimeSlotsRange = (
   );
 };
 
+const validateSlot = (slot: string) => {
+  const minTime = addHoursToDate(
+    getCleanDate(),
+    Number(businessHoursStart.split(":")[0]) + MIN_HOURS_PRIOR_NOTICE
+  );
+  const bookingTime = new Date(slot);
+  const isValid =
+    bookingTime >= minTime &&
+    bookingTime >= addHoursToDate(new Date(), MIN_HOURS_PRIOR_NOTICE);
+
+  return isValid;
+};
+
 const mapAppointmentsToSlots = (
   appointments: GoogleAppointment[],
-  date: Date,
-  isValid = false
+  date: Date
 ): BookableTimeSlot[][] => {
   return appointments.map((app) => {
     const timeFromArr = app.timeFrom.split("T")[1].split(":");
@@ -77,52 +93,10 @@ const mapAppointmentsToSlots = (
       slot,
       isConfirmed: app.confirmed,
       isBooked: true, // unused prop with new Table booking view
-      isValid,
+      isValid: false,
     }));
   });
 };
-
-// sum wrong wit dis hoe
-// const formAvailableWeeklySlots = (
-//   slots: DateSlot[],
-//   appointments: GoogleAppointment[],
-//   weeks: Date[]
-// ): BookableTimeSlot[][] => {
-//   return weeks.map((weekDate) => {
-//     // all slots for a day
-//     const selectedDateSlots = slots.find(
-//       ({ date }) => date === getDateFormat(weekDate)
-//     );
-//     const isValid = Boolean(
-//       slots.find(({ date }) => date === getDateFormat(weekDate))?.isValid
-//     );
-
-//     const todaysAppointments =
-//       appointments.filter(
-//         ({ date, timeFrom, timeTo }) =>
-//           timeFrom && timeTo && date === getDateFormat(weekDate)
-//       ) || [];
-
-//     // all appointments' time slots for a day
-//     const bookedSlots = mapAppointmentsToSlots(
-//       todaysAppointments,
-//       weekDate
-//     ).flat();
-
-//     console.log({ selectedDateSlots, todaysAppointments, weekDate });
-
-//     return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
-//       slot,
-//       isBooked: Boolean(
-//         bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isBooked
-//       ),
-//       isConfirmed: Boolean(
-//         bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)?.isConfirmed
-//       ),
-//       isValid,
-//     }));
-//   });
-// };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   appointments,
@@ -162,7 +136,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         const selectedDateSlots = slots.find(
           ({ date }) => date === getDateFormat(weekDate)
         );
-        const isValid = Boolean(
+        const dateValid = Boolean(
           slots.find(({ date }) => date === getDateFormat(weekDate))?.isValid
         );
 
@@ -178,6 +152,9 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           weekDate
         ).flat();
 
+        const currentDate = new Date();
+        currentDate.setHours(12, 0, 0, 0);
+
         return (selectedDateSlots?.availableTimeSlots || []).map((slot) => ({
           slot,
           isBooked: Boolean(
@@ -187,7 +164,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
             bookedSlots.find((bookedSlot) => bookedSlot.slot === slot)
               ?.isConfirmed
           ),
-          isValid,
+          isValid:
+            currentDate.getTime() === weekDate.getTime()
+              ? validateSlot(slot)
+              : dateValid,
         }));
       }
     );
@@ -195,6 +175,13 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [slots, weeks, appointments]);
 
   const timeSlots = timeSlotsMatrix[dayOfWeek];
+  const firstValidIndex = useMemo(() => {
+    return timeSlots
+      ? timeSlots.findIndex(
+          (timeSlot) => !timeSlot.isBooked && timeSlot.isValid
+        )
+      : -1;
+  }, [timeSlots]);
 
   const memoedDateSummary = useMemo(() => {
     return formatLocaleDate(KYIV_LOCALE, selectedDate || slots[0]?.date);
@@ -307,6 +294,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           timeSlotsMatrix={timeSlotsMatrix}
           onChangeDayOfWeek={onChangeDayOfWeek}
           onChangeTime={onChangeTime}
+          firstValidIndex={firstValidIndex}
         />
         <div className="w-full px-4">
           <BookingStepActions
@@ -314,7 +302,9 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
             onPrimaryClick={stepNext}
             hasSecondary={true}
             onSecondaryClick={stepBack}
-            disabled={memoedTimeSlotSummary === NO_SLOTS_MSG}
+            disabled={
+              memoedTimeSlotSummary === NO_SLOTS_MSG || firstValidIndex === -1
+            }
           />
         </div>
       </div>
