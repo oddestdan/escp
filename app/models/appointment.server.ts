@@ -166,7 +166,6 @@ export async function createAppointment(
         dateTime: fromISOToRFC3339(appointment.timeTo),
         timeZone: KYIV_TIME_ZONE,
       },
-      colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
       // for later parsing on confirmation screen
       extendedProperties: {
         private: {
@@ -175,6 +174,9 @@ export async function createAppointment(
           price: appointment.price,
         },
       },
+      colorId: "4", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
+      // TODO: return the following for actual payment flow
+      // colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
     },
   };
   const createdEvent = await calendarAPI.events.insert(createEventDTO);

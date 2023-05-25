@@ -42,10 +42,16 @@ export const StudioStep: React.FC<{ isMobile?: boolean }> = () => {
 
   const onSaveStudio = useCallback(
     (studioIndex: number) => {
+      if (
+        studiosData.findIndex((s) => s.name === studio.name) === studioIndex
+      ) {
+        return;
+      }
+
       searchParams.set(STUDIO_ID_QS, `${studioIndex}`);
       setSearchParams(searchParams);
     },
-    [searchParams, setSearchParams]
+    [searchParams, setSearchParams, studio]
   );
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
 import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import { Separator } from "~/components/Separator/Separator";
+import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
 import { saveCurrentStep } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 
@@ -29,9 +30,9 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
 
         <Separator />
 
-        {/* <CopyableCard /> */}
+        <CopyableCard />
 
-        <p className="mb-4">
+        {/* <p className="mb-4">
           <span className="mb-1 block">
             Будь-ласка, <span className="font-bold">обов'язково</span>{" "}
             поверніться до сайту після оплати, щоб побачити
@@ -40,6 +41,16 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
           <span className="block">
             Якщо ви не побачили оновлену сторінку або ваше бронювання не було
             занесено у календар - просимо звернутися до нас.
+          </span>
+        </p> */}
+        <p className="mb-4">
+          <span className="mb-2 block">
+            Бронювання є дійсним лише після оплати та її підтвердження. Оплатити
+            бронювання необхідно протягом 12 годин.
+          </span>
+          <span className="block">
+            Будь-ласка, надайте скрін оплати або певним іншим чином повідомте
+            нас про успішний переказ у приватні повідомлення.
           </span>
         </p>
 

@@ -14,7 +14,7 @@ import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
 import {
-  createPrismaAppointment,
+  createAppointment,
   getAppointments,
 } from "~/models/appointment.server";
 import {
@@ -43,6 +43,7 @@ import type { GoogleAppointment } from "~/models/googleApi.lib";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
+  studioId: number;
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -56,6 +57,7 @@ export const action: ActionFunction = async ({ request }) => {
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
   const price = formData.get("price");
+  const studioId = Number(formData.get("studioId"));
 
   invariant(typeof date === "string", "date must be a string");
   invariant(typeof timeFrom === "string", "timeFrom must be a string");
@@ -63,6 +65,7 @@ export const action: ActionFunction = async ({ request }) => {
   invariant(typeof services === "string", "services must be a string");
   invariant(typeof contactInfo === "string", "contactInfo must be a string");
   invariant(typeof price === "string", "price must be a string");
+  invariant(typeof studioId === "number", "studioId must be a number");
 
   const appointmentDTO = {
     date,
@@ -73,12 +76,23 @@ export const action: ActionFunction = async ({ request }) => {
     price,
   };
 
-  const createdPrismaAppointment = await createPrismaAppointment(
-    appointmentDTO
-  );
-  console.log({ createdPrismaAppointment });
+  // TODO: return the following for actual payment flow
+  // const createdPrismaAppointment = await createPrismaAppointment(
+  //   appointmentDTO
+  // );
+  // console.log({ createdPrismaAppointment });
+  // return redirect(`/booking/payment/${createdPrismaAppointment.id}`);
 
-  return redirect(`/booking/payment/${createdPrismaAppointment.id}`);
+  const createdAppointment = await createAppointment(appointmentDTO, studioId);
+  console.log(createdAppointment);
+
+  if (!createdAppointment) {
+    return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
+  }
+
+  return redirect(
+    `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+  );
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -98,6 +112,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     return json<LoaderData>({
       appointments,
+      studioId,
     });
   } catch (error: any) {
     throw new Response(`Error: ${error.message}`, { status: 500 });
@@ -142,7 +157,7 @@ export function CatchBoundary() {
 }
 
 export default function Booking() {
-  const { appointments } = useLoaderData() as LoaderData;
+  const { appointments, studioId } = useLoaderData() as LoaderData;
   const submit = useSubmit();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -259,6 +274,7 @@ export default function Booking() {
                       name="price"
                       value={`${price.booking + (price.services || 0)}`}
                     />
+                    <input type="hidden" name="studioId" value={studioId} />
                     <ActionButton buttonType="submit" onClick={bookAppointment}>
                       оплатити
                     </ActionButton>
