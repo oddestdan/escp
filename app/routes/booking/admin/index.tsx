@@ -186,7 +186,7 @@ type LoaderData = { appointments: Appointment[] };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
-  const appointments = (await getAppointments()) as Appointment[];
+  const appointments = (await getAppointments(0)) as Appointment[];
   if (!userId) {
     return redirect("/login");
   }

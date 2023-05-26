@@ -216,6 +216,9 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));
   }, [dispatch, currentStep]);
+  const stepBack = useCallback(() => {
+    dispatch(saveCurrentStep(currentStep - 1));
+  }, [dispatch, currentStep]);
   const onChangeDayOfWeek = useCallback(
     (newDayOfWeek: DayOfWeek) => {
       // console.log("> onChangeDayOfWeek");
@@ -297,6 +300,8 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           <BookingStepActions
             hasPrimary={true}
             onPrimaryClick={stepNext}
+            hasSecondary={true}
+            onSecondaryClick={stepBack}
             disabled={
               memoedTimeSlotSummary === NO_SLOTS_MSG || firstValidIndex === -1
             }

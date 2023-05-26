@@ -23,6 +23,7 @@ export const LS_HAS_SEEN_TERMS = "escp90-has-seen-terms";
 export const LS_FOOT_OR_CAR = "escp90-foot-or-car";
 
 // Query Params keys
+export const STUDIO_ID_QS = "studioId";
 export const CONTACTS_CURRENT_TAB_QS = "tab";
 export const BOOKING_TIME_TAKEN_QS = "booked";
 

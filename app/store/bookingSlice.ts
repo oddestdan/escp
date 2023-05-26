@@ -1,5 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import { studiosData } from "~/components/BookingStep/Steps/StudioStep";
 import { START_FROM_MONDAY } from "~/utils/constants";
 import { addMonths, getDateFormat, getPrevMonday } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
@@ -12,12 +14,21 @@ export interface StoreBooking {
 }
 
 export enum BookingStep {
+  Studio,
   DateTime,
   Services,
   ContactInfo,
   Payment,
   Confirmation,
 }
+
+export const bookingStepsDisplayData = [
+  { title: "зал", icon: "з" },
+  { title: "час", icon: "ч" },
+  { title: "сервіси", icon: "с" },
+  { title: "інфо", icon: "і" },
+  { title: "оплата", icon: "o" },
+];
 
 export enum BookingService {
   assistance = "асистент",
@@ -80,6 +91,7 @@ export interface TotalPrice {
 }
 
 export interface BookingState {
+  studio: StudioInfo;
   contact: ContactInfo;
   dateTime: DateTime;
   services: CustomizableBookingService[]; // static string[] services, currently empty
@@ -99,6 +111,7 @@ const get3MonthSlots = () => {
 };
 
 export const initialState: BookingState = {
+  studio: studiosData[0],
   contact: {
     firstName: IS_DEV ? "Dan" : "",
     lastName: IS_DEV ? "Developer" : "",
@@ -119,8 +132,8 @@ export const initialState: BookingState = {
   },
   services: [],
   additionalServices: {},
-  currentStep: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
-  maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.DateTime,
+  currentStep: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
+  maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
   price: {
     booking: IS_DEV ? 1 : 0,
     services: 0,
@@ -134,6 +147,7 @@ const bookingSlice = createSlice({
   initialState,
   reducers: {
     clearAll(state: BookingState) {
+      state.studio = { ...initialState.studio };
       state.contact = { ...initialState.contact };
       state.dateTime = { ...initialState.dateTime };
       state.services = initialState.services;
@@ -144,6 +158,9 @@ const bookingSlice = createSlice({
       if (state.maxStepVisited < action.payload) {
         state.maxStepVisited = action.payload;
       }
+    },
+    saveStudio(state: BookingState, action: PayloadAction<number>) {
+      state.studio = studiosData[action.payload];
     },
     saveDate(state: BookingState, action: PayloadAction<string>) {
       state.dateTime = { ...state.dateTime, date: action.payload };
@@ -185,6 +202,7 @@ const bookingSlice = createSlice({
 export const {
   clearAll,
   saveCurrentStep,
+  saveStudio,
   saveDate,
   saveTime,
   setHasWeekChanged,

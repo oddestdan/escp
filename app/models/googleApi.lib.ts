@@ -6,7 +6,10 @@ export type GoogleAppointment = Pick<
   "date" | "timeFrom" | "timeTo" | "confirmed"
 >;
 
-export const CAL_ID = process.env.GOOGLE_CALENDAR_ID;
+export const googleCalendarIdList = [
+  process.env.GOOGLE_CALENDAR_ROOM_1_ID,
+  process.env.GOOGLE_CALENDAR_ROOM_2_ID,
+];
 
 const beginString = "-----BEGIN PRIVATE KEY-----";
 const endString = "-----END PRIVATE KEY-----";

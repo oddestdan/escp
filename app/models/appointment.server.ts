@@ -10,7 +10,7 @@ import {
   getAppointmentDescription,
   getAppointmentTitle,
 } from "~/routes/booking/admin";
-import { calendarAPI, CAL_ID, googleAuth } from "./googleApi.lib";
+import { calendarAPI, googleAuth, googleCalendarIdList } from "./googleApi.lib";
 import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
@@ -40,7 +40,9 @@ const createAllDayEvent = (dateString: string) => {
   };
 };
 
-export async function getAppointments(): Promise<GoogleAppointment[]> {
+export async function getAppointments(
+  calendarIndex: number
+): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
 
@@ -52,7 +54,8 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
       ADMIN_PASSWORD,
       GOOGLE_API_KEY,
       GOOGLE_SERVICE_EMAIL,
-      GOOGLE_CALENDAR_ID,
+      GOOGLE_CALENDAR_ROOM_1_ID,
+      GOOGLE_CALENDAR_ROOM_2_ID,
       GOOGLE_SERVICE_PRIVATE_KEY,
     } = process.env;
 
@@ -63,7 +66,8 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
       ADMIN_PASSWORD,
       GOOGLE_API_KEY,
       GOOGLE_SERVICE_EMAIL,
-      GOOGLE_CALENDAR_ID,
+      GOOGLE_CALENDAR_ROOM_1_ID,
+      GOOGLE_CALENDAR_ROOM_2_ID,
       GOOGLE_SERVICE_PRIVATE_KEY,
     });
   }
@@ -72,7 +76,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   google.options({ auth: authClient });
 
   const events = await calendarAPI.events.list({
-    calendarId: CAL_ID,
+    calendarId: googleCalendarIdList[calendarIndex],
     timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
     timeMax: addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
@@ -105,7 +109,7 @@ export async function getAppointments(): Promise<GoogleAppointment[]> {
   return mappedGoogleAppointments;
 }
 
-export async function getAppointmentById(eventId: string) {
+export async function getAppointmentById(eventId: string, calendarIndex = 0) {
   console.log(
     `> Getting an appointment id=${eventId} from Google Calendar API...`
   );
@@ -114,7 +118,7 @@ export async function getAppointmentById(eventId: string) {
   google.options({ auth: authClient });
 
   const calendarAppointment = await calendarAPI.events.get({
-    calendarId: CAL_ID,
+    calendarId: googleCalendarIdList[calendarIndex],
     eventId,
   });
 
@@ -132,7 +136,8 @@ export async function createAppointment(
   appointment: Pick<
     Appointment,
     "date" | "timeFrom" | "timeTo" | "services" | "contactInfo" | "price"
-  >
+  >,
+  calendarIndex = 0 // TODO: get dynamic value instead of 0 for calendarIndex
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
   console.log({ appointment });
@@ -141,7 +146,7 @@ export async function createAppointment(
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
   const createEventDTO = {
-    calendarId: CAL_ID,
+    calendarId: googleCalendarIdList[calendarIndex],
     requestBody: {
       summary: getAppointmentTitle(
         contactInfo,
@@ -161,7 +166,6 @@ export async function createAppointment(
         dateTime: fromISOToRFC3339(appointment.timeTo),
         timeZone: KYIV_TIME_ZONE,
       },
-      colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
       // for later parsing on confirmation screen
       extendedProperties: {
         private: {
@@ -170,6 +174,9 @@ export async function createAppointment(
           price: appointment.price,
         },
       },
+      colorId: "4", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
+      // TODO: return the following for actual payment flow
+      // colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
     },
   };
   const createdEvent = await calendarAPI.events.insert(createEventDTO);
@@ -236,7 +243,7 @@ export async function updateAppointment(
 export async function deleteAppointment(appointmentId: string) {
   // GOOGLE CALENDAR
   // const res = await calendar.events.delete({
-  //   calendarId: CAL_ID,
+  // calendarId: googleCalendarIdList[0], // needs get dynamic value instead of 0
   //   eventId: appointmentId || "",
   // });
   // console.log(`deleted item ${appointmentId}`);

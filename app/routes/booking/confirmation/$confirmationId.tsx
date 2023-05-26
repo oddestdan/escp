@@ -7,6 +7,7 @@ import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
 import { Separator } from "~/components/Separator/Separator";
+import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
 import { clearAll } from "~/store/bookingSlice";
 import { getAppointmentById } from "~/models/appointment.server";
 import { json } from "@remix-run/server-runtime";
@@ -17,6 +18,7 @@ import {
   CONTACTS_CURRENT_TAB_QS,
   ERROR_404_APPOINTMENT_BY_ID_MSG,
   ERROR_SOMETHING_BAD_HAPPENED,
+  STUDIO_ID_QS,
 } from "~/utils/constants";
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
@@ -27,11 +29,16 @@ type LoaderData = {
   appointmentResponse: Awaited<ReturnType<typeof getAppointmentById>>;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   invariant(params.confirmationId, "Expected params.confirmationId");
 
+  const studioId = new URL(request.url).searchParams.get(STUDIO_ID_QS);
+
   try {
-    const appointmentResponse = await getAppointmentById(params.confirmationId);
+    const appointmentResponse = await getAppointmentById(
+      params.confirmationId,
+      studioId ? Number(studioId) : undefined
+    );
 
     if (!appointmentResponse) {
       throw json({ message: "Not Found", id: params.confirmationId }, 404);
@@ -90,7 +97,7 @@ export default function Confirmation() {
   const cleanupCb = useCallback(() => dispatch(clearAll()), [dispatch]);
 
   const navigateToBooking = useCallback(() => {
-    navigate("/booking");
+    navigate(`/booking?${STUDIO_ID_QS}=0`);
   }, [navigate]);
 
   // redirect if not sufficient information
@@ -165,7 +172,8 @@ export default function Confirmation() {
           <h2 className="my-4 text-center font-mono font-medium">
             ура!
             <br />
-            замовлення успішно сплачено
+            {/* замовлення успішно сплачено */}
+            замовлення успішно створено
           </h2>
 
           <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
@@ -179,7 +187,13 @@ export default function Confirmation() {
           <Separator />
 
           <p className="my-4">
-            Біп-біп! Обов'язково перегляньте навігацію{" "}
+            Біп-біп! Очікуємо від вас підтвердження вашої оплати і все готово.
+          </p>
+
+          <CopyableCard />
+
+          <p className="mb-4">
+            Обов'язково перегляньте навігацію{" "}
             <Link
               to={`/contacts?${CONTACTS_CURRENT_TAB_QS}=0`}
               className={`text-stone-900 underline hover:text-stone-400`}
