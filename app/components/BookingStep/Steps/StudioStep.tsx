@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveCurrentStep, saveStudio } from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 
-import imageSrcStudio1 from "../../../../public/images/highq/4.jpg";
-import imageSrcStudio2 from "../../../../public/images/highq/7.jpg";
+import imageSrcStudio1 from "../../../../public/images/highq/room1-1.jpg";
+import imageSrcStudio2 from "../../../../public/images/highq/room2-1.jpg";
 
 import type { StoreBooking } from "~/store/bookingSlice";
 import { useSearchParams } from "@remix-run/react";
