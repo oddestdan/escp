@@ -172,7 +172,8 @@ export default function Confirmation() {
           <h2 className="my-4 text-center font-mono font-medium">
             ура!
             <br />
-            замовлення успішно сплачено
+            {/* замовлення успішно сплачено */}
+            замовлення успішно створено
           </h2>
 
           <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
