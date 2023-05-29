@@ -29,8 +29,8 @@ import imageSrcStudio2Back from "../../../public/images/highq/2-4851.jpg";
 const gallery1Images: [string, string][] = [
   [highq1_1, highq1_1],
   [highq1_2, highq1_2],
-  [highq1_4861, highq1_4861],
   [highq1_4863, highq1_4863],
+  [highq1_4861, highq1_4861],
 ];
 
 const room1Items = [
@@ -60,7 +60,7 @@ const room1Items = [
 ];
 const Studio1Description = () => (
   <p className="my-4">
-    <span className="font-medium">90 м².</span>
+    <span className="font-medium">room1, 90 м².</span>
     <br />
     Вікна виходять на південну сторону
     <br />
@@ -71,10 +71,10 @@ const Studio1Description = () => (
 const gallery2Images: [string, string][] = [
   [highq2_1, highq2_1],
   [highq2_2, highq2_2],
-  [highq2_4854, highq2_4854],
-  [highq2_4857, highq2_4857],
-  [highq2_4864, highq2_4864],
   [highq2_4865, highq2_4865],
+  [highq2_4864, highq2_4864],
+  [highq2_4857, highq2_4857],
+  [highq2_4854, highq2_4854],
 ];
 const room2Items = [
   "блекаут штори",
