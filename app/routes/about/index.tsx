@@ -10,16 +10,12 @@ import { useCallback } from "react";
 
 import highq1_1 from "../../../public/images/highq/1-1.jpg";
 import highq1_2 from "../../../public/images/highq/1-2.jpg";
-import highq1_4860 from "../../../public/images/highq/1-4860.jpg";
 import highq1_4861 from "../../../public/images/highq/1-4861.jpg";
-import highq1_4862 from "../../../public/images/highq/1-4862.jpg";
 import highq1_4863 from "../../../public/images/highq/1-4863.jpg";
 
 import highq2_1 from "../../../public/images/highq/2-1.jpg";
 import highq2_2 from "../../../public/images/highq/2-2.jpg";
-import highq2_4851 from "../../../public/images/highq/2-4851.jpg";
 import highq2_4854 from "../../../public/images/highq/2-4854.jpg";
-import highq2_4855 from "../../../public/images/highq/2-4855.jpg";
 import highq2_4857 from "../../../public/images/highq/2-4857.jpg";
 import highq2_4864 from "../../../public/images/highq/2-4864.jpg";
 import highq2_4865 from "../../../public/images/highq/2-4865.jpg";
@@ -33,9 +29,7 @@ import imageSrcStudio2Back from "../../../public/images/highq/2-4851.jpg";
 const gallery1Images: [string, string][] = [
   [highq1_1, highq1_1],
   [highq1_2, highq1_2],
-  [highq1_4860, highq1_4860],
   [highq1_4861, highq1_4861],
-  [highq1_4862, highq1_4862],
   [highq1_4863, highq1_4863],
 ];
 
@@ -77,9 +71,7 @@ const Studio1Description = () => (
 const gallery2Images: [string, string][] = [
   [highq2_1, highq2_1],
   [highq2_2, highq2_2],
-  [highq2_4851, highq2_4851],
   [highq2_4854, highq2_4854],
-  [highq2_4855, highq2_4855],
   [highq2_4857, highq2_4857],
   [highq2_4864, highq2_4864],
   [highq2_4865, highq2_4865],
@@ -106,7 +98,7 @@ const room2Items = [
 ];
 const Studio2Description = () => (
   <p className="my-4">
-    <span className="font-medium">room 1, 90 м².</span>
+    <span className="font-medium">room 2, 90 м².</span>
     <br />
     Циклорама 7х4,5м
     <br />

@@ -19,7 +19,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   useEffect(() => {
     const intervalId = setInterval(() => {
       setIsAltImage((prev) => !prev);
-    }, 5000);
+    }, 2000);
     return () => clearInterval(intervalId);
   }, []);
 
