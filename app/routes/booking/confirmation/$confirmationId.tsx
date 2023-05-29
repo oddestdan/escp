@@ -140,9 +140,8 @@ export default function Confirmation() {
       )
     ) * BOOKING_HOURLY_PRICE;
 
-  console.log({ stringifiedData });
   const studio: StudioInfo = JSON.parse(
-    stringifiedData!.studio || `{ "name": "escp.90", "area": "90" }`
+    stringifiedData!.studio || `{ "name": "escp.90", "area": 90 }`
   );
   const allServices = JSON.parse(stringifiedData!.services);
   const mappedAppointment = {

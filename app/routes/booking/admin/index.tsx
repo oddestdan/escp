@@ -144,7 +144,7 @@ export const action: ActionFunction = async ({ request }) => {
         services: "[]",
         contactInfo: JSON.stringify(contact),
         price: "0",
-        studio: {},
+        studio: "",
       });
     }
     case "PUT": {
@@ -222,7 +222,7 @@ export default function AdminBooking() {
   const toCalendarAppointment = useCallback(
     (app: Appointment) => {
       const title = getAppointmentTitle(
-        {},
+        { name: "xyz", area: 90, img: "", altImg: "" },
         JSON.parse(app.contactInfo),
         new Date(app.timeFrom),
         new Date(app.timeTo),
