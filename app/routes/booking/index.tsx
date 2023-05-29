@@ -51,6 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const formData = await request.formData();
 
+  const studio = formData.get("studio");
   const date = formData.get("date");
   const timeFrom = formData.get("timeFrom");
   const timeTo = formData.get("timeTo");
@@ -59,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
   const price = formData.get("price");
   const studioId = Number(formData.get("studioId"));
 
+  invariant(typeof studio === "string", "studio must be a string");
   invariant(typeof date === "string", "date must be a string");
   invariant(typeof timeFrom === "string", "timeFrom must be a string");
   invariant(typeof timeTo === "string", "timeTo must be a string");
@@ -68,6 +70,7 @@ export const action: ActionFunction = async ({ request }) => {
   invariant(typeof studioId === "number", "studioId must be a number");
 
   const appointmentDTO = {
+    studio,
     date,
     timeFrom,
     timeTo,
@@ -172,6 +175,7 @@ export default function Booking() {
     additionalServices,
     price,
     errorMessage,
+    studio,
   } = useSelector((store: StoreBooking) => store.booking);
 
   useEffect(() => {
@@ -248,6 +252,11 @@ export default function Booking() {
                     className="inline-block w-1/2"
                     ref={formRef}
                   >
+                    <input
+                      type="hidden"
+                      name="studio"
+                      value={JSON.stringify(studio)}
+                    />
                     <input type="hidden" name="date" value={selectedDate} />
                     <input
                       type="hidden"

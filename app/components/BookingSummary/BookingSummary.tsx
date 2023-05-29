@@ -8,7 +8,12 @@ import { getKyivDateFromDate } from "~/utils/date";
 
 type SummaryBookingState = Pick<
   BookingState,
-  "dateTime" | "services" | "additionalServices" | "contact" | "price"
+  | "dateTime"
+  | "services"
+  | "additionalServices"
+  | "contact"
+  | "price"
+  | "studio"
 >;
 
 export interface BookingSummaryProps {
@@ -17,7 +22,7 @@ export interface BookingSummaryProps {
 
 export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
   const { booking } = useSelector((store: StoreBooking) => store);
-  const { dateTime, services, additionalServices, contact, price } =
+  const { dateTime, services, additionalServices, contact, price, studio } =
     summary || booking;
 
   const memoedDateTime = useMemo(() => {
@@ -78,6 +83,12 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
 
   return (
     <>
+      {/* Studio */}
+      <p className="mb-4">
+        <span className="font-medium">зал: </span>
+        {studio.name}, {studio.area} м²
+      </p>
+
       {/* Date & Time */}
       {memoedDateTime && (
         <p className="mb-4">

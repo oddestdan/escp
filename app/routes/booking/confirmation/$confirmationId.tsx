@@ -22,6 +22,7 @@ import {
 } from "~/utils/constants";
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 
 const imageSrcHurray = "https://i.imgur.com/iGfxlZi.png";
 
@@ -139,8 +140,10 @@ export default function Confirmation() {
       )
     ) * BOOKING_HOURLY_PRICE;
 
+  const studio: StudioInfo = JSON.parse(stringifiedData!.studio);
   const allServices = JSON.parse(stringifiedData!.services);
   const mappedAppointment = {
+    studio,
     dateTime: {
       date: appointment.start!.dateTime!.split("T")[0],
       time: {

@@ -1,4 +1,5 @@
 export const sendSMS = async (
+  roomName: string,
   formattedDateString: string,
   recipientPhone: string,
   confirmationId?: string | null
@@ -13,6 +14,7 @@ export const sendSMS = async (
     !SOURCE ||
     !API_KEY ||
     !DOMAIN ||
+    !roomName?.length ||
     !formattedDateString?.length ||
     !confirmationId?.length
   ) {
@@ -20,7 +22,7 @@ export const sendSMS = async (
   }
 
   const textMessage = `Біп-біп!
-Нагадуємо про ваше бронювання ${formattedDateString}.
+Нагадуємо про ваше бронювання зали ${roomName} ${formattedDateString}.
 
 Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
 Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}

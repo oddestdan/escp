@@ -40,13 +40,14 @@ model Note {
 
 
 model Appointment {
-  id      String @id @default(cuid())
-  date    String
-  timeFrom String
-  timeTo   String
+  id          String @id @default(cuid())
+  studio      String
+  date        String
+  timeFrom    String
+  timeTo      String
   contactInfo String
-  price    String @default("0")
-  services String
+  price       String @default("0")
+  services    String
 
   confirmed Boolean @default(false)
 

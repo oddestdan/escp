@@ -18,11 +18,16 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendMail = (overrideMailOptions: MailOptions) => {
+export const sendMail = (
+  overrideMailOptions: MailOptions,
+  studioName: string
+) => {
   const defaultMailOptions: MailOptions = {
     from: `"escp.90-site" <${process.env.SMTP_EMAIL}>`,
     to: process.env.ADMIN_EMAIL,
-    subject: `Новий запис | ${new Date().toLocaleString(KYIV_LOCALE)}`,
+    subject: `Новий запис ${studioName} | ${new Date().toLocaleString(
+      KYIV_LOCALE
+    )}`,
   };
 
   transporter.sendMail(

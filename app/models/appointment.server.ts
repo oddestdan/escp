@@ -24,6 +24,7 @@ import {
   merchantSecretKey,
 } from "~/lib/wayforpay.service";
 import { sendSMS } from "./smsNotificator.lib";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 
 export type { Appointment } from "@prisma/client";
 
@@ -135,13 +136,20 @@ export async function getPrismaAppointmentById(id: string) {
 export async function createAppointment(
   appointment: Pick<
     Appointment,
-    "date" | "timeFrom" | "timeTo" | "services" | "contactInfo" | "price"
+    | "date"
+    | "timeFrom"
+    | "timeTo"
+    | "services"
+    | "contactInfo"
+    | "price"
+    | "studio"
   >,
   calendarIndex = 0 // TODO: get dynamic value instead of 0 for calendarIndex
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
   console.log({ appointment });
 
+  const studioInfo: StudioInfo = JSON.parse(appointment.studio);
   const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
@@ -149,6 +157,7 @@ export async function createAppointment(
     calendarId: googleCalendarIdList[calendarIndex],
     requestBody: {
       summary: getAppointmentTitle(
+        studioInfo,
         contactInfo,
         dateFrom,
         dateTo,
@@ -172,6 +181,7 @@ export async function createAppointment(
           contactInfo: appointment.contactInfo,
           services: appointment.services,
           price: appointment.price,
+          studio: appointment.studio,
         },
       },
       colorId: "4", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
@@ -185,13 +195,21 @@ export async function createAppointment(
   // send new appointment notification email to admin
   console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
   const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
-  sendMail({
-    text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
-  });
+  sendMail(
+    {
+      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
+    },
+    `R${studioInfo.name[studioInfo.name.length - 1]}`
+  );
 
   // send new appointment notification SMS to client
   console.log(`> Sending SMS to ${contactInfo.tel}`);
-  sendSMS(formattedUADateString, contactInfo.tel, createdEvent.data.id);
+  sendSMS(
+    studioInfo.name,
+    formattedUADateString,
+    contactInfo.tel,
+    createdEvent.data.id
+  );
 
   return createdEvent.data;
 }
@@ -199,7 +217,13 @@ export async function createAppointment(
 export async function createPrismaAppointment(
   appointment: Pick<
     Appointment,
-    "date" | "timeFrom" | "timeTo" | "services" | "contactInfo" | "price"
+    | "date"
+    | "timeFrom"
+    | "timeTo"
+    | "services"
+    | "contactInfo"
+    | "price"
+    | "studio"
   >
 ) {
   console.log("> Creating an appointment into Prisma...");
@@ -275,8 +299,13 @@ export async function generateAppointmentPaymentData({
   timeFrom,
   timeTo,
   contactInfo,
-}: Pick<Appointment, "id" | "contactInfo" | "price" | "timeFrom" | "timeTo">) {
+  studio,
+}: Pick<
+  Appointment,
+  "id" | "contactInfo" | "price" | "timeFrom" | "timeTo" | "studio"
+>) {
   const info: ContactInfo = JSON.parse(contactInfo);
+  const parsedStudio: StudioInfo = JSON.parse(studio);
   const data = {
     merchantAccount: merchantAccount,
     merchantDomainName: merchantDomainName,
@@ -285,7 +314,7 @@ export async function generateAppointmentPaymentData({
     orderDate: Date.now(),
     amount: `${price}.00`,
     currency: "UAH",
-    productName: `Бронювання залу студії escp.90 ${new Date(
+    productName: `Бронювання залу "${`${parsedStudio.name}, ${parsedStudio.area} м²`}" студії escp.90 ${new Date(
       timeFrom
     ).toLocaleDateString(KYIV_LOCALE)}: ${new Date(timeFrom).toLocaleTimeString(
       KYIV_LOCALE,

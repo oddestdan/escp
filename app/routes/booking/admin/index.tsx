@@ -25,6 +25,7 @@ import type { ActionFunction } from "@remix-run/node";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import type { AdditionalServices, ContactInfo } from "~/store/bookingSlice";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 
 // [active, non-active]
 const confirmedColors = ["mediumblue", "royalblue"];
@@ -32,6 +33,7 @@ const defaultColors = ["dimgrey", "grey"];
 const importedColors = ["darkorange", "orange"];
 
 export const getAppointmentTitle = (
+  studioInfo: StudioInfo,
   info: ContactInfo,
   startDate: Date,
   endDate: Date,
@@ -43,9 +45,9 @@ export const getAppointmentTitle = (
 
   const duration = Math.abs(getHoursDiffBetweenDates(endDate, startDate));
 
-  return `${duration} год, ${info.firstName}${
-    info.lastName ? ` ${info.lastName[0]}.` : ""
-  }, ${price}грн`;
+  return `R${studioInfo.name[studioInfo.name.length - 1]}, ${duration}h, ${
+    info.firstName
+  }${info.lastName ? ` ${info.lastName[0]}.` : ""}, ${price}`;
 };
 
 export const getAppointmentDescription = (
@@ -142,6 +144,7 @@ export const action: ActionFunction = async ({ request }) => {
         services: "[]",
         contactInfo: JSON.stringify(contact),
         price: "0",
+        studio: {},
       });
     }
     case "PUT": {
@@ -219,6 +222,7 @@ export default function AdminBooking() {
   const toCalendarAppointment = useCallback(
     (app: Appointment) => {
       const title = getAppointmentTitle(
+        {},
         JSON.parse(app.contactInfo),
         new Date(app.timeFrom),
         new Date(app.timeTo),
