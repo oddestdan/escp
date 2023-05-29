@@ -111,7 +111,7 @@ const get3MonthSlots = () => {
 };
 
 export const initialState: BookingState = {
-  studio: studiosData[0],
+  studio: studiosData?.[0],
   contact: {
     firstName: IS_DEV ? "Dan" : "",
     lastName: IS_DEV ? "Developer" : "",
