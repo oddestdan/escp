@@ -65,6 +65,7 @@ export const action: ActionFunction = async ({ request }) => {
   switch (method) {
     case "POST": {
       console.log(">> Creating an appointment into Google API");
+      const studio = formData.get("studio");
       const prismaId = formData.get("prismaId");
       const date = formData.get("date");
       const timeFrom = formData.get("timeFrom");
@@ -73,6 +74,7 @@ export const action: ActionFunction = async ({ request }) => {
       const contactInfo = formData.get("contactInfo");
       const price = formData.get("price");
 
+      invariant(typeof studio === "string", "studio must be a string");
       invariant(typeof prismaId === "string", "prismaId must be a string");
       invariant(typeof date === "string", "date must be a string");
       invariant(typeof timeFrom === "string", "timeFrom must be a string");
@@ -85,6 +87,7 @@ export const action: ActionFunction = async ({ request }) => {
       invariant(typeof price === "string", "price must be a string");
 
       const appointmentDTO = {
+        studio,
         date,
         timeFrom,
         timeTo,
@@ -143,6 +146,7 @@ export default function Payment() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
+    studio,
     timeFrom,
     timeTo,
     date,
@@ -200,6 +204,7 @@ export default function Payment() {
           </h2>
 
           <Form method="post" ref={formRef}>
+            <input type="hidden" name="studio" value={studio} />
             <input type="hidden" name="prismaId" value={prismaId} />
             <input type="hidden" name="date" value={date} />
             <input type="hidden" name="timeFrom" value={timeFrom} />
