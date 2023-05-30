@@ -1,8 +1,11 @@
+import { STUDIO_ID_QS } from "~/utils/constants";
+
 export const sendSMS = async (
   roomName: string,
   formattedDateString: string,
   recipientPhone: string,
-  confirmationId?: string | null
+  confirmationId?: string | null,
+  studioId?: number
 ) => {
   const URL = process.env.SMS_URL;
   const API_KEY = process.env.SMS_API_KEY;
@@ -16,7 +19,8 @@ export const sendSMS = async (
     !DOMAIN ||
     !roomName?.length ||
     !formattedDateString?.length ||
-    !confirmationId?.length
+    !confirmationId?.length ||
+    !studioId
   ) {
     return;
   }
@@ -25,7 +29,7 @@ export const sendSMS = async (
 Нагадуємо про ваше бронювання зали ${roomName} ${formattedDateString}.
 
 Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
-Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}
+Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}?${STUDIO_ID_QS}=${studioId}
 
 Чекаємс!`;
 

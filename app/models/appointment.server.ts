@@ -25,6 +25,7 @@ import {
 } from "~/lib/wayforpay.service";
 import { sendSMS } from "./smsNotificator.lib";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import { studiosData } from "~/components/BookingStep/Steps/StudioStep";
 
 export type { Appointment } from "@prisma/client";
 
@@ -208,7 +209,8 @@ export async function createAppointment(
     studioInfo.name,
     formattedUADateString,
     contactInfo.tel,
-    createdEvent.data.id
+    createdEvent.data.id,
+    studiosData.findIndex((s) => s.name === studioInfo.name)
   );
 
   return createdEvent.data;
