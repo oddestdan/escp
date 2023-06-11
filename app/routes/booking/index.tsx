@@ -15,6 +15,7 @@ import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
 import {
   createAppointment,
+  createPrismaAppointment,
   getAppointments,
 } from "~/models/appointment.server";
 import {
@@ -79,23 +80,31 @@ export const action: ActionFunction = async ({ request }) => {
     price,
   };
 
-  // TODO: return the following for actual payment flow
-  // const createdPrismaAppointment = await createPrismaAppointment(
-  //   appointmentDTO
-  // );
-  // console.log({ createdPrismaAppointment });
-  // return redirect(`/booking/payment/${createdPrismaAppointment.id}`);
+  const isPaymentWorking = true;
+  if (isPaymentWorking) {
+    const createdPrismaAppointment = await createPrismaAppointment(
+      appointmentDTO
+    );
+    console.log({ createdPrismaAppointment });
 
-  const createdAppointment = await createAppointment(appointmentDTO, studioId);
-  console.log(createdAppointment);
+    return redirect(
+      `/booking/payment/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+    );
+  } else {
+    const createdAppointment = await createAppointment(
+      appointmentDTO,
+      studioId
+    );
+    console.log(createdAppointment);
 
-  if (!createdAppointment) {
-    return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
+    if (!createdAppointment) {
+      return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
+    }
+
+    return redirect(
+      `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+    );
   }
-
-  return redirect(
-    `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
-  );
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {

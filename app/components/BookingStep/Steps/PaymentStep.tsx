@@ -10,6 +10,8 @@ import { BookingStepActions } from "../BookingStepActions";
 import type { StoreBooking } from "~/store/bookingSlice";
 import ReactTooltip from "react-tooltip";
 
+const isPaymentWorking = true;
+
 export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
   const { currentStep, price } = useSelector(
@@ -46,45 +48,51 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
 
         <Separator />
 
-        <CopyableCard />
-
-        {/* <p className="mb-4">
-          <span className="mb-1 block">
-            Будь-ласка, <span className="font-bold">обов'язково</span>{" "}
-            поверніться до сайту після оплати, щоб побачити
-            сторінку-підтвердження.
-          </span>
-          <span className="block">
-            Якщо ви не побачили оновлену сторінку або ваше бронювання не було
-            занесено у календар - просимо звернутися до нас.
-          </span>
-        </p> */}
-        <p className="mb-4">
-          <span className="mb-2 block">
-            Бронювання є дійсним лише після оплати та її підтвердження. Оплатити
-            бронювання необхідно протягом 12 годин.
-          </span>
-          <span className="block">
-            Будь-ласка, надайте скрін оплати або певним іншим чином повідомте
-            нас про успішний переказ у приватні повідомлення.
-          </span>
-        </p>
+        {isPaymentWorking ? (
+          <p className="mb-4">
+            <span className="mb-1 block">
+              Будь-ласка, <span className="font-bold">обов'язково</span>{" "}
+              поверніться до сайту після оплати, щоб побачити
+              сторінку-підтвердження.
+            </span>
+            <span className="block">
+              Якщо ви не побачили оновлену сторінку або ваше бронювання не було
+              занесено у календар - просимо звернутися до нас.
+            </span>
+          </p>
+        ) : (
+          <>
+            <CopyableCard />
+            <p className="mb-4">
+              <span className="mb-2 block">
+                Бронювання є дійсним лише після оплати та її підтвердження.
+                Оплатити бронювання необхідно протягом 12 годин.
+              </span>
+              <span className="block">
+                Будь-ласка, надайте скрін оплати або певним іншим чином
+                повідомте нас про успішний переказ у приватні повідомлення.
+              </span>
+            </p>
+          </>
+        )}
 
         {/* Contact info, links */}
         <p className="mb-4 flex text-left xl:text-center">
           <ContactLinks />
         </p>
 
-        <div className="relative">
-          <div className="absolute right-[calc(50%-1.5ch)] top-0">
-            <span
-              className="radius box-content inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full border-4 border-white bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
-              data-tip={`Ми в процесі оновлення платіжного сервісу,<br/> тому оплата поки що мануальна.<br />Скоро буде краще!`}
-            >
-              i
-            </span>
+        {!isPaymentWorking && (
+          <div className="relative">
+            <div className="absolute right-[calc(50%-1.5ch)] top-0">
+              <span
+                className="radius box-content inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full border-4 border-white bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
+                data-tip={`Ми в процесі оновлення платіжного сервісу,<br/> тому оплата поки що мануальна.<br />Скоро буде краще!`}
+              >
+                i
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <BookingStepActions hasSecondary={true} onSecondaryClick={stepBack} />
     </>

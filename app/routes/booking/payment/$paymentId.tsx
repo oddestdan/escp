@@ -23,6 +23,22 @@ import {
 import { setErrorMessage } from "~/store/bookingSlice";
 import { useDispatch } from "react-redux";
 import { useWFPWidgetListener } from "~/utils/hooks/useWFPWidgetListener.hook";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+
+const studiosData: StudioInfo[] = [
+  {
+    img: "",
+    name: "room 1",
+    area: 90,
+    altImg: "",
+  },
+  {
+    img: "",
+    name: "room 2",
+    area: 90,
+    altImg: "",
+  },
+];
 
 type LoaderData = {
   paymentData: Awaited<ReturnType<typeof generateAppointmentPaymentData>>;
@@ -96,18 +112,26 @@ export const action: ActionFunction = async ({ request }) => {
         price,
       };
 
-      const createdAppointment = await createAppointment(appointmentDTO);
+      const studioParsed = JSON.parse(studio) as StudioInfo;
+      const studioId =
+        studiosData.findIndex((s) => s.name === studioParsed.name) || 0;
+      const createdAppointment = await createAppointment(
+        appointmentDTO,
+        studioId
+      );
       console.log({ createdAppointment });
 
       deletePrismaAppointment(prismaId);
 
       if (!createdAppointment) {
         return redirect(
-          `/booking?${STUDIO_ID_QS}=0&${BOOKING_TIME_TAKEN_QS}=true`
+          `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
         );
       }
 
-      return redirect(`/booking/confirmation/${createdAppointment.id}`);
+      return redirect(
+        `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+      );
     }
     case "PATCH": {
       console.log(">> Navigating back to /booking after unsuccessful payment");
