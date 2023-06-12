@@ -185,9 +185,10 @@ export async function createAppointment(
           studio: appointment.studio,
         },
       },
-      colorId: "4", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
-      // TODO: return the following for actual payment flow
-      // colorId: "2", // #33b679 https://lukeboyle.com/blog/posts/google-calendar-api-color-id
+      // https://lukeboyle.com/blog/posts/google-calendar-api-color-id
+      colorId: studioInfo.name === studiosData[0].name ? "2" : "10",
+      // if payment is not working or is not verifiable
+      // colorId: "4",
     },
   };
   const createdEvent = await calendarAPI.events.insert(createEventDTO);

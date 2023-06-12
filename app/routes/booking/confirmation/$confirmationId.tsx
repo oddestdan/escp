@@ -177,8 +177,8 @@ export default function Confirmation() {
           <h2 className="my-4 text-center font-mono font-medium">
             ура!
             <br />
-            {/* замовлення успішно сплачено */}
-            замовлення успішно створено
+            замовлення успішно сплачено
+            {/* замовлення успішно створено */}
           </h2>
 
           <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
@@ -191,11 +191,11 @@ export default function Confirmation() {
 
           <Separator />
 
-          <p className="my-4">
+          {/* <p className="my-4">
             Біп-біп! Очікуємо від вас підтвердження вашої оплати і все готово.
           </p>
 
-          <CopyableCard />
+          <CopyableCard /> */}
 
           <p className="mb-4">
             Обов'язково перегляньте навігацію{" "}
