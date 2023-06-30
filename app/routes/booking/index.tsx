@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
+import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import {
   createAppointment,
   createPrismaAppointment,
@@ -245,12 +246,19 @@ export default function Booking() {
 
             {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}
             {UNDER_MAINTENANCE || new Date().getTimezoneOffset() > 0 ? (
-              <div className="w-full text-center text-red-500">
-                {new Date().getTimezoneOffset()} |{" "}
-                {Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone}
-                <br />
-                Функціонал бронювання зараз у процесі оновлення, будь-ласка
-                завітайте пізніше або напишіть нам ⬇
+              <div className="w-full">
+                <p className="text-center text-red-500">
+                  {new Date().getTimezoneOffset()} |{" "}
+                  {Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone}
+                  <br />
+                  йой, на жаль наш календарик не синхронізується з вашим часовим
+                  поясом :(
+                  <br />
+                  напишіть нам, з радістю допоможемо забронювати потрібний час.
+                </p>
+                <p className="my-4 flex justify-center text-center">
+                  <ContactLinks />
+                </p>
               </div>
             ) : (
               <>
