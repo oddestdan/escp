@@ -1,5 +1,3 @@
-import { STUDIO_ID_QS } from "~/utils/constants";
-
 export const sendSMS = async (
   roomName: string,
   formattedDateString: string,
@@ -25,14 +23,13 @@ export const sendSMS = async (
     return;
   }
 
+  // Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}?${STUDIO_ID_QS}=${studioId}
   const textMessage = `Біп-біп!
-Нагадуємо про ваше бронювання зали ${roomName} ${formattedDateString}.
-
-Як нас знайти (бул. Вацлава Гавела, 4): ${DOMAIN}/contacts
-Детальніше про бронювання: ${DOMAIN}/booking/confirmation/${confirmationId}?${STUDIO_ID_QS}=${studioId}
-
+Нагадуємо про бронювання зали ${roomName} ${formattedDateString}.
+Як нас знайти: ${DOMAIN}/contacts
 Чекаємс!`;
 
+  console.log("------- SENDING SMS -------");
   try {
     const response = await fetch(URL, {
       method: "POST",
