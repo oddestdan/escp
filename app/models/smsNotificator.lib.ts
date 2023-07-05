@@ -18,7 +18,7 @@ export const sendSMS = async (
     !roomName?.length ||
     !formattedDateString?.length ||
     !confirmationId?.length ||
-    !studioId
+    studioId === undefined
   ) {
     return;
   }
