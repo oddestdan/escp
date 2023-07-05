@@ -15,7 +15,7 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_LOCALE, KYIV_TIME_ZONE } from "~/utils/constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
 import type { ContactInfo } from "~/store/bookingSlice";
 import {
@@ -199,7 +199,15 @@ export async function createAppointment(
   const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
   sendMail(
     {
-      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
+      text: `${
+        createEventDTO.requestBody.summary
+      }\n\n${formattedUADateString}\n\n${
+        createEventDTO.requestBody.description
+      }\n\n${process.env.SMS_DOMAIN}/booking/confirmation/${
+        createdEvent.data.id
+      }?${STUDIO_ID_QS}=${studiosData.findIndex(
+        (s) => s.name === studioInfo.name
+      )}`,
     },
     `R${studioInfo.name[studioInfo.name.length - 1]}`
   );
@@ -210,8 +218,8 @@ export async function createAppointment(
     studioInfo.name,
     formattedUADateString,
     contactInfo.tel,
-    createdEvent.data.id,
-    studiosData.findIndex((s) => s.name === studioInfo.name)
+    createdEvent.data.id
+    // studiosData.findIndex((s) => s.name === studioInfo.name)
   );
 
   return createdEvent.data;
