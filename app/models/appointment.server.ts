@@ -197,17 +197,10 @@ export async function createAppointment(
   // send new appointment notification email to admin
   console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
   const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
+  const studioId = studiosData.findIndex((s) => s.name === studioInfo.name);
   sendMail(
     {
-      text: `${
-        createEventDTO.requestBody.summary
-      }\n\n${formattedUADateString}\n\n${
-        createEventDTO.requestBody.description
-      }\n\n${process.env.SMS_DOMAIN}/booking/confirmation/${
-        createdEvent.data.id
-      }?${STUDIO_ID_QS}=${studiosData.findIndex(
-        (s) => s.name === studioInfo.name
-      )}`,
+      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}\n\n${process.env.SMS_DOMAIN}/booking/confirmation/${createdEvent.data.id}?${STUDIO_ID_QS}=${studioId}`,
     },
     `R${studioInfo.name[studioInfo.name.length - 1]}`
   );
@@ -218,8 +211,8 @@ export async function createAppointment(
     studioInfo.name,
     formattedUADateString,
     contactInfo.tel,
-    createdEvent.data.id
-    // studiosData.findIndex((s) => s.name === studioInfo.name)
+    createdEvent.data.id,
+    studioId
   );
 
   return createdEvent.data;

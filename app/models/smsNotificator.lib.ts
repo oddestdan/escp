@@ -10,6 +10,17 @@ export const sendSMS = async (
   const DOMAIN = process.env.SMS_DOMAIN;
   const SOURCE = process.env.SMS_SOURCE_NAME;
 
+  console.log({
+    URL,
+    SOURCE,
+    API_KEY,
+    DOMAIN,
+    roomName,
+    formattedDateString,
+    confirmationId,
+    studioId,
+  });
+
   if (
     !URL ||
     !SOURCE ||

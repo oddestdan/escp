@@ -180,10 +180,20 @@ export default function Payment() {
     id: prismaId,
   } = appointment;
 
-  useWFPWidgetListener(() => {
-    const formData = new FormData(formRef.current || undefined);
-    submit(formData, { method: "patch" }); // back to /booking
-  }, hasPaid);
+  useWFPWidgetListener(
+    () => {
+      console.log("useWFPWidgetListener patch");
+      const formData = new FormData(formRef.current || undefined);
+      submit(formData, { method: "patch" }); // back to /booking
+    },
+    () => {
+      console.log("useWFPWidgetListener post");
+      const formData = new FormData(formRef.current || undefined);
+      setHasPaid(true);
+      submit(formData, { method: "post" }); // back to /booking
+    },
+    hasPaid
+  );
 
   useEffect(() => {
     const formData = new FormData(formRef.current || undefined);
@@ -203,8 +213,8 @@ export default function Payment() {
       function (response: any) {
         console.log("WFP/ on approved");
 
-        setHasPaid(true);
-        submit(formData, { method: "post" });
+        // setHasPaid(true);
+        // submit(formData, { method: "post" });
       },
       function (response: any) {
         console.log("WFP/ on declined");
