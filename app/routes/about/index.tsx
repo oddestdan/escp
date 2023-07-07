@@ -44,7 +44,7 @@ const room1Items = [
   "стіл на коліщатках",
   "диван на коліщатках",
   "матрац",
-  "два світла godox fv150",
+  "два постійних світла godox fv150 та один спалах godox qs-600ii",
   "фрост рама",
   "чорно-білі прапори",
   "килим",
@@ -91,6 +91,7 @@ const room2Items = [
   "чорно-білі прапори",
   "пульверизатор",
   "відпарювач",
+  "два постійних світла godox litemons la200d та один спалах godox qs-600ii",
   [
     "гардероб",
     "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
