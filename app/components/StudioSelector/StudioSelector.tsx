@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { StudioInfo } from "../BookingStep/Steps/StudioStep";
 
 export interface StudioSelectorProps {
@@ -8,7 +8,7 @@ export interface StudioSelectorProps {
   highlightable?: boolean;
 }
 
-const fadeInOutAnimation = "fadeInOut 4000ms ease-in-out infinite";
+// const fadeInOutAnimation = "fadeInOut 4000ms ease-in-out infinite";
 
 export const StudioSelector: React.FC<StudioSelectorProps> = ({
   studiosData,
@@ -17,29 +17,16 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   highlightable = false,
 }) => {
   const [isAltImage, setIsAltImage] = useState(false);
-  const overlayRef1 = useRef<HTMLDivElement>(null);
-  const overlayRef2 = useRef<HTMLDivElement>(null);
   const [start, setStart] = useState<Date>();
+  const [animationClasses, setAnimationClasses] = useState("");
 
   useEffect(() => {
     setStart(new Date());
   }, []);
 
   useEffect(() => {
-    if (!overlayRef1.current || !overlayRef2.current) return;
-
-    setTimeout(() => {
-      if (!overlayRef1.current || !overlayRef2.current) return;
-
-      overlayRef1.current.style.animation = fadeInOutAnimation;
-      overlayRef2.current.style.animation = fadeInOutAnimation;
-    }, 0);
-    const intervalId = setInterval(() => {
-      // console.log(`${new Date().getSeconds() - (start?.getSeconds() || 0)}`);
-
-      setIsAltImage((prev) => !prev);
-    }, 4000);
-
+    setTimeout(() => setAnimationClasses("animate-fadeInOut"), 0);
+    const intervalId = setInterval(() => setIsAltImage((prev) => !prev), 4000);
     return () => {
       clearInterval(intervalId);
     };
@@ -76,8 +63,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
                     alt={`Studio ${i}: ${studio.name}`}
                   />
                   <div
-                    ref={i === 0 ? overlayRef1 : overlayRef2}
-                    className={`pointer-events-none absolute top-0 left-0 h-full w-full bg-white`}
+                    className={`pointer-events-none absolute top-0 left-0 h-full w-full bg-white ${animationClasses}`}
                   >
                     {/* White overlapping layer */}
                   </div>
