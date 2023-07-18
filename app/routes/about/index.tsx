@@ -166,7 +166,7 @@ export default function About() {
                 studiosData={studiosData}
                 selectedStudioIndex={0}
                 onSaveStudio={onSaveStudio}
-                highlightable={true}
+                highlightable={true} // as both can be selected for /about
               />
             </div>
           </div>
