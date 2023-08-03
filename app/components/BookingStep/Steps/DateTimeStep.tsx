@@ -107,6 +107,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   const dispatch = useDispatch();
   const {
     currentStep,
+    studio,
     dateTime: { date: selectedDate, time: selectedTime, slots, hasWeekChanged },
     price,
   } = useSelector((store: StoreBooking) => store.booking);
@@ -266,7 +267,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       )}
 
       <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
-        {memoedDateSummary}, {memoedTimeSlotSummary}{" "}
+        {studio.name} | {memoedDateSummary}, {memoedTimeSlotSummary}{" "}
         <span
           className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
           data-tip={`${BOOKING_HOURLY_PRICE} грн/год<br />Свайпайте тижні, обирайте слоти<br />Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}
