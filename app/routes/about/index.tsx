@@ -113,7 +113,7 @@ const room1Data = {
   images: gallery1Images,
   items: room1Items,
   Description: Studio1Description,
-  Additional: null,
+  Additional: () => null,
   data: {
     img: imageSrcStudio1Front,
     name: "room 1",
@@ -126,9 +126,10 @@ const room2Data = {
   images: gallery2Images,
   items: room2Items,
   Description: Studio2Description,
-  Additional: () => (
-    <p className="my-4">Зараз в цьому залі відсутнє студійне світло!</p>
-  ),
+  Additional: () => null,
+  // Additional: () => (
+  //   <p className="my-4">Зараз в цьому залі відсутнє студійне світло!</p>
+  // ),
   data: {
     img: imageSrcStudio2Front,
     name: "room 2",
