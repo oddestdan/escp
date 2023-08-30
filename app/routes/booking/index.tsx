@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
   const timeTo = formData.get("timeTo");
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
-  const price = "1"; // formData.get("price");
+  const price = formData.get("price");
   const studioId = Number(formData.get("studioId"));
 
   invariant(typeof studio === "string", "studio must be a string");
