@@ -1,6 +1,7 @@
 import { prisma } from "~/db.server";
 import crypto from "crypto";
 import {
+  addDays,
   addMonths,
   fromISOToRFC3339,
   fromRFC3339ToISO,
@@ -83,7 +84,7 @@ export async function getAppointments(
     timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
     timeMax: dateString
-      ? new Date(dateString).toISOString() // parametrized end date
+      ? addDays(new Date(dateString), 1).toISOString() // parametrized end date
       : addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
   });
   const googleAppointments = events.data.items || [];
