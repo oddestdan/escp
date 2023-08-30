@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
   const timeTo = formData.get("timeTo");
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
-  const price = formData.get("price");
+  const price = "1"; // formData.get("price");
   const studioId = Number(formData.get("studioId"));
 
   invariant(typeof studio === "string", "studio must be a string");
@@ -116,7 +116,7 @@ export const action: ActionFunction = async ({ request }) => {
     console.log({ createdPrismaAppointment });
 
     console.log(
-      `prisma appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
+      `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
     );
     setTimeout(
       () => deletePrismaAppointment(createdPrismaAppointment.id),
