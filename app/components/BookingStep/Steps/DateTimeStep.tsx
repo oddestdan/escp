@@ -26,15 +26,19 @@ import {
   START_FROM_MONDAY,
   businessHoursStart,
 } from "~/utils/constants";
+import { useLoaderData } from "@remix-run/react";
 
 import type { DayOfWeek } from "~/utils/date";
 import type { StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
-import { useLoaderData } from "@remix-run/react";
+import type { Appointment } from "@prisma/client";
 
 const NO_SLOTS_MSG = "Немає вільних слотів";
 
-type DateTimeLoaderData = { appointments: GoogleAppointment[] };
+type DateTimeLoaderData = {
+  appointments: GoogleAppointment[];
+  prismaAppointments: Appointment[];
+};
 
 export interface DateTimeStepProps {
   onChangeDate: (date: string) => void;
@@ -105,7 +109,8 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   onChangeTime,
   isMobile = false,
 }) => {
-  const { appointments } = useLoaderData<DateTimeLoaderData>();
+  const { appointments, prismaAppointments } =
+    useLoaderData<DateTimeLoaderData>();
   const dispatch = useDispatch();
   const {
     currentStep,
@@ -148,10 +153,15 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
             ({ date, timeFrom, timeTo }) =>
               timeFrom && timeTo && date === getDateFormat(weekDate)
           ) || [];
+        const todaysPrismaAppointments =
+          prismaAppointments.filter(
+            ({ date, timeFrom, timeTo }) =>
+              timeFrom && timeTo && date === getDateFormat(weekDate)
+          ) || [];
 
         // all appointments' time slots for a day
         const bookedSlots = mapAppointmentsToSlots(
-          todaysAppointments,
+          [...todaysAppointments, ...todaysPrismaAppointments],
           weekDate
         ).flat();
 
@@ -175,7 +185,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       }
     );
     return bookableSlots;
-  }, [slots, weeks, appointments]);
+  }, [slots, weeks, appointments, prismaAppointments]);
 
   const timeSlots = timeSlotsMatrix[dayOfWeek];
   const firstValidIndex = useMemo(() => {

@@ -132,12 +132,21 @@ export async function getAppointmentById(eventId: string, calendarIndex = 0) {
   return calendarAppointment;
 }
 
+export async function getPrismaAppointments(
+  studioId: number
+): Promise<Appointment[]> {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  console.log(`> Getting all appointments from Prisma...`);
+
+  return prisma.appointment.findMany({ where: { studioId } });
+}
+
 export async function getPrismaAppointmentsByDate(
   studioId: number,
   date: string
 ): Promise<Appointment[]> {
   console.log("**************************************");
-  console.log(`> Getting all appointments from Prisma...`);
+  console.log(`> Getting all appointments from Prisma for date ${date}...`);
 
   return prisma.appointment.findMany({ where: { date, studioId } });
 }

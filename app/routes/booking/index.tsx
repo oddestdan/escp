@@ -14,11 +14,13 @@ import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import Header from "~/components/Header/Header";
 import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
+import type { Appointment } from "~/models/appointment.server";
 import {
   createAppointment,
   createPrismaAppointment,
   deletePrismaAppointment,
   getAppointments,
+  getPrismaAppointments,
   getPrismaAppointmentsByDate,
 } from "~/models/appointment.server";
 import {
@@ -49,6 +51,7 @@ import { slotOverlapsAnotherSlot } from "~/utils/slots";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
+  prismaAppointments: Appointment[];
   studioId: number;
 };
 
@@ -153,12 +156,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   try {
     const appointments = await getAppointments(studioId);
+    const prismaAppointments = await getPrismaAppointments(studioId);
 
     if (!appointments) {
       throw new Response("Not Found", { status: 404 });
     }
 
     return json<LoaderData>({
+      prismaAppointments,
       appointments,
       studioId,
     });
