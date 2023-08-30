@@ -1,6 +1,21 @@
 import { businessHoursStart, businessHoursEnd } from "./constants";
 import { getDateFormat, getDayOfWeek, getUAOffsetHours } from "./date";
 
+type Slot = { timeFrom: string; timeTo: string };
+export const slotOverlapsAnotherSlot = (slotA: Slot, slotB: Slot) => {
+  const aStartOverlaps =
+    slotA.timeFrom >= slotB.timeFrom && slotA.timeFrom < slotB.timeTo;
+  const aEndOverlaps =
+    slotA.timeTo > slotB.timeFrom && slotA.timeTo <= slotB.timeTo;
+
+  const bStartOverlaps =
+    slotB.timeFrom >= slotA.timeFrom && slotB.timeFrom < slotA.timeTo;
+  const bEndOverlaps =
+    slotB.timeTo > slotA.timeFrom && slotB.timeTo <= slotA.timeTo;
+
+  return aStartOverlaps || aEndOverlaps || bStartOverlaps || bEndOverlaps;
+};
+
 export const generateArrayRangeWithStep = (from: number, to: number) => {
   const arr = [];
   const step = 1; // can also be half-hourly by using step === 0.5

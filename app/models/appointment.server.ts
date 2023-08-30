@@ -43,7 +43,8 @@ const createAllDayEvent = (dateString: string) => {
 };
 
 export async function getAppointments(
-  calendarIndex: number
+  calendarIndex: number,
+  dateString?: string
 ): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
@@ -81,7 +82,9 @@ export async function getAppointments(
     calendarId: googleCalendarIdList[calendarIndex],
     timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
-    timeMax: addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
+    timeMax: dateString
+      ? new Date(dateString).toISOString() // parametrized end date
+      : addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
   });
   const googleAppointments = events.data.items || [];
 
@@ -126,6 +129,16 @@ export async function getAppointmentById(eventId: string, calendarIndex = 0) {
 
   console.log({ calendarAppointment });
   return calendarAppointment;
+}
+
+export async function getPrismaAppointmentsByDate(
+  studioId: number,
+  date: string
+): Promise<Appointment[]> {
+  console.log("**************************************");
+  console.log(`> Getting all appointments from Prisma...`);
+
+  return prisma.appointment.findMany({ where: { date, studioId } });
 }
 
 export async function getPrismaAppointmentById(id: string) {
@@ -228,6 +241,7 @@ export async function createPrismaAppointment(
     | "contactInfo"
     | "price"
     | "studio"
+    | "studioId"
   >
 ) {
   console.log("> Creating an appointment into Prisma...");
