@@ -10,7 +10,7 @@ interface MailOptions {
 
 export const transporter = nodemailer.createTransport({
   secure: true,
-  port: 465,
+  port: 2525,
   host: process.env.SMTP_HOST,
   auth: {
     user: process.env.SMTP_EMAIL,

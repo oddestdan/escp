@@ -42,3 +42,5 @@ export const ERROR_404_APPOINTMENTS_MSG =
   "Не вдалося підвантажити замовлення з календаря";
 export const ERROR_404_APPOINTMENT_BY_ID_MSG =
   "Не вдалося підвантажити замовлення по ID";
+export const ERROR_APPOINTMENT_ALREADY_BOOKED =
+  "Бронювання на вказаний час вже здійснено. \nБудь-ласка, спробуйте ще раз";

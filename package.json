@@ -55,6 +55,7 @@
     "react-redux": "^8.0.2",
     "react-slick": "^0.29.0",
     "react-tooltip": "^4.2.21",
+    "react-use": "^17.4.0",
     "redux": "^4.2.0",
     "slick-carousel": "^1.8.1",
     "tiny-invariant": "^1.2.0",

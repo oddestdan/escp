@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
 import Footer from "~/components/Footer/Footer";
@@ -24,6 +24,7 @@ import { setErrorMessage } from "~/store/bookingSlice";
 import { useDispatch } from "react-redux";
 import { useWFPWidgetListener } from "~/utils/hooks/useWFPWidgetListener.hook";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import { useBeforeUnload } from "react-use";
 
 const studiosData: StudioInfo[] = [
   {
@@ -121,7 +122,9 @@ export const action: ActionFunction = async ({ request }) => {
       );
       console.log({ createdAppointment });
 
-      deletePrismaAppointment(prismaId);
+      try {
+        deletePrismaAppointment(prismaId);
+      } catch (error) {}
 
       if (!createdAppointment) {
         return redirect(
@@ -139,7 +142,9 @@ export const action: ActionFunction = async ({ request }) => {
       const prismaId = formData.get("prismaId");
       invariant(typeof prismaId === "string", "prismaId must be a string");
 
-      deletePrismaAppointment(prismaId);
+      try {
+        deletePrismaAppointment(prismaId);
+      } catch (error) {}
 
       return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
@@ -179,6 +184,15 @@ export default function Payment() {
     price,
     id: prismaId,
   } = appointment;
+
+  const deleteFromPrisma = useCallback(() => {
+    deletePrismaAppointment(prismaId);
+  }, [prismaId]);
+
+  useBeforeUnload(() => {
+    deleteFromPrisma();
+    return true;
+  });
 
   useWFPWidgetListener(
     () => {

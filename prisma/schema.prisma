@@ -42,6 +42,7 @@ model Note {
 model Appointment {
   id          String @id @default(cuid())
   studio      String
+  studioId    Int
   date        String
   timeFrom    String
   timeTo      String

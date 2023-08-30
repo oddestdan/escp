@@ -17,7 +17,9 @@ import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import {
   createAppointment,
   createPrismaAppointment,
+  deletePrismaAppointment,
   getAppointments,
+  getPrismaAppointmentsByDate,
 } from "~/models/appointment.server";
 import {
   saveCurrentStep,
@@ -34,6 +36,7 @@ import {
   BOOKING_TIME_TAKEN_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
   ERROR_404_APPOINTMENTS_MSG,
+  ERROR_APPOINTMENT_ALREADY_BOOKED,
   ERROR_SOMETHING_BAD_HAPPENED,
   STUDIO_ID_QS,
 } from "~/utils/constants";
@@ -42,6 +45,7 @@ import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotificat
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import type { StoreBooking } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
+import { slotOverlapsAnotherSlot } from "~/utils/slots";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
@@ -79,14 +83,45 @@ export const action: ActionFunction = async ({ request }) => {
     services,
     contactInfo,
     price,
+    studioId,
   };
 
   const isPaymentWorking = true;
   if (isPaymentWorking) {
+    const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
+      studioId,
+      date
+    );
+    const calendarAppointments = await getAppointments(studioId, date);
+    const todaysCalendarAppointments = calendarAppointments.filter(
+      (app) => app.date === date
+    );
+    const overlaps = [
+      ...todaysPrismaAppointments,
+      ...todaysCalendarAppointments,
+    ].filter((todays) => slotOverlapsAnotherSlot(todays, appointmentDTO));
+
+    // if the dates match and timeFrom + timeTo are overlapping any of the existing appointments
+    if (overlaps.length > 0) {
+      console.log({ overlaps });
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
+      );
+    }
+    // create Prisma Appointment and redirect to booking/payment
+
     const createdPrismaAppointment = await createPrismaAppointment(
       appointmentDTO
     );
     console.log({ createdPrismaAppointment });
+
+    console.log(
+      `prisma appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
+    );
+    setTimeout(
+      () => deletePrismaAppointment(createdPrismaAppointment.id),
+      1000 * 60 * 10
+    );
 
     return redirect(
       `/booking/payment/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
@@ -148,6 +183,20 @@ const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
 export function CatchBoundary() {
   const caught = useCatch();
 
+  let errorStatus = "";
+  switch (caught.status) {
+    case 404:
+      errorStatus = ERROR_404_APPOINTMENTS_MSG;
+      break;
+    case 502:
+      errorStatus = ERROR_APPOINTMENT_ALREADY_BOOKED;
+      break;
+
+    default:
+      errorStatus = ERROR_SOMETHING_BAD_HAPPENED;
+      break;
+  }
+
   return (
     <Wrapper
       wrappedComponent={
@@ -157,11 +206,7 @@ export function CatchBoundary() {
           </div>
 
           <div className="w-full bg-white">
-            <span className="text-red-500">
-              {caught.status === 404
-                ? ERROR_404_APPOINTMENTS_MSG
-                : ERROR_SOMETHING_BAD_HAPPENED}
-            </span>
+            <span className="text-red-500">{errorStatus}</span>
           </div>
         </>
       }
@@ -170,7 +215,7 @@ export function CatchBoundary() {
 }
 
 export default function Booking() {
-  const { appointments, studioId } = useLoaderData() as LoaderData;
+  const { studioId } = useLoaderData() as LoaderData;
   const submit = useSubmit();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -262,7 +307,7 @@ export default function Booking() {
               </div>
             ) : (
               <>
-                <ActiveBookingStep appointments={appointments} />
+                <ActiveBookingStep />
                 {currentStep === BookingStep.Payment && (
                   <Form
                     method="post"
