@@ -170,7 +170,7 @@ export function CatchBoundary() {
 }
 
 export default function Booking() {
-  const { appointments, studioId } = useLoaderData() as LoaderData;
+  const { studioId } = useLoaderData() as LoaderData;
   const submit = useSubmit();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -262,7 +262,7 @@ export default function Booking() {
               </div>
             ) : (
               <>
-                <ActiveBookingStep appointments={appointments} />
+                <ActiveBookingStep />
                 {currentStep === BookingStep.Payment && (
                   <Form
                     method="post"

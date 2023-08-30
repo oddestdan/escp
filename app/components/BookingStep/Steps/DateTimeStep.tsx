@@ -30,11 +30,13 @@ import {
 import type { DayOfWeek } from "~/utils/date";
 import type { StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
+import { useLoaderData } from "@remix-run/react";
 
 const NO_SLOTS_MSG = "Немає вільних слотів";
 
+type DateTimeLoaderData = { appointments: GoogleAppointment[] };
+
 export interface DateTimeStepProps {
-  appointments: GoogleAppointment[];
   onChangeDate: (date: string) => void;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
@@ -99,11 +101,11 @@ const mapAppointmentsToSlots = (
 };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
-  appointments,
   onChangeDate,
   onChangeTime,
   isMobile = false,
 }) => {
+  const { appointments } = useLoaderData<DateTimeLoaderData>();
   const dispatch = useDispatch();
   const {
     currentStep,

@@ -14,7 +14,6 @@ import { PaymentStep } from "./Steps/PaymentStep";
 import { BOOKING_HOURLY_PRICE } from "~/utils/constants";
 
 import type { StoreBooking } from "~/store/bookingSlice";
-import type { GoogleAppointment } from "~/models/googleApi.lib";
 import { StudioStep } from "./Steps/StudioStep";
 
 export function WithActiveStepHOC<T>(
@@ -27,13 +26,7 @@ export function WithActiveStepHOC<T>(
   };
 }
 
-export interface ActiveBookingStepProps {
-  appointments: GoogleAppointment[];
-}
-
-const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
-  appointments,
-}) => {
+const ActiveBookingStep: React.FC = () => {
   const dispatch = useDispatch();
   const { currentStep } = useSelector((store: StoreBooking) => store.booking);
 
@@ -90,7 +83,6 @@ const ActiveBookingStep: React.FC<ActiveBookingStepProps> = ({
     <>
       <MemoedStudioStep isMobile={isMobile} />
       <MemoedDateTimeStep
-        appointments={appointments}
         onChangeDate={onChangeDate}
         onChangeTime={onChangeTime}
         isMobile={isMobile}
