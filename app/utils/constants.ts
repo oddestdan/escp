@@ -15,8 +15,8 @@ export const START_FROM_MONDAY = false;
 export const KYIV_LOCALE = "uk"; // does not fkin work
 export const KYIV_TIME_ZONE = "Europe/Riga";
 export const ADMIN_PAYMENT_CARD = "4149 6090 1440 7540";
-export const ADMIN_PLAIN_PHONE_NO = "+380636857636";
-export const ADMIN_FORMATTED_PHONE_NO = "+38 (063) 685 76 36";
+export const ADMIN_PLAIN_PHONE_NO = "+380633992732"; // "+380636857636";
+export const ADMIN_FORMATTED_PHONE_NO = "+38 (063) 399 27 32"; // "+38 (063) 685 76 36";
 
 // Local Storage keys
 export const LS_HAS_SEEN_TERMS = "escp90-has-seen-terms";
