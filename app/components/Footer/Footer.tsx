@@ -104,7 +104,7 @@ export default function Footer() {
         <a href="tel:+380636857636">+38 (063) 685 76 36</a>
       </span> */}
       {/* Clickable copy-paste phone number */}
-      <span className="relative mt-4 inline-block flex w-full justify-center md:mt-0 md:w-auto">
+      <span className="relative mt-4 flex w-full justify-center md:mt-0 md:w-auto whitespace-nowrap">
         <span
           className={`radius absolute -top-8 bg-stone-100 px-2 py-1 text-center text-sm text-stone-900 ${
             hasCopiedPhoneNo ? "" : "invisible"
