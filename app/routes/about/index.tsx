@@ -8,55 +8,56 @@ import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { useCallback } from "react";
 
-import highq1_1 from "../../../public/images/highq/1-1.jpg";
-import highq1_2 from "../../../public/images/highq/1-2.jpg";
-import highq1_4861 from "../../../public/images/highq/1-4861.jpg";
-import highq1_4863 from "../../../public/images/highq/1-4863.jpg";
+import highq1_Numbered1 from "../../../public/images/highq/numbered/room1 (1).jpg";
+import highq1_Numbered2 from "../../../public/images/highq/numbered/room1 (2).jpg";
+import highq1_1 from "../../../public/images/highq/r1 (1).jpg";
+import highq1_2 from "../../../public/images/highq/r1 (2).jpg";
+import highq1_3 from "../../../public/images/highq/r1 (3).jpg";
+import highq1_4 from "../../../public/images/highq/r1 (4).jpg";
+import highq1_5 from "../../../public/images/highq/r1 (5).jpg";
 
-import highq2_1 from "../../../public/images/highq/2-1.jpg";
-import highq2_2 from "../../../public/images/highq/2-2.jpg";
-import highq2_4854 from "../../../public/images/highq/2-4854.jpg";
-import highq2_4857 from "../../../public/images/highq/2-4857.jpg";
-import highq2_4864 from "../../../public/images/highq/2-4864.jpg";
-import highq2_4865 from "../../../public/images/highq/2-4865.jpg";
-
-import imageSrcStudio1Front from "../../../public/images/highq/1-4860.jpg";
-import imageSrcStudio1Back from "../../../public/images/highq/1-4862.jpg";
-import imageSrcStudio2Front from "../../../public/images/highq/2-4855.jpg";
-import imageSrcStudio2Back from "../../../public/images/highq/2-4851.jpg";
+import highq2_Numbered1 from "../../../public/images/highq/numbered/room2 (1).jpg";
+import highq2_Numbered2 from "../../../public/images/highq/numbered/room2 (2).jpg";
+import highq2_1 from "../../../public/images/highq/r2 (1).jpg";
+import highq2_2 from "../../../public/images/highq/r2 (2).jpg";
+import highq2_3 from "../../../public/images/highq/r2 (3).jpg";
+import highq2_4 from "../../../public/images/highq/r2 (4).jpg";
+import highq2_5 from "../../../public/images/highq/r2 (5).jpg";
 
 // pairs of [highQuality, lowQuality]
 const gallery1Images: [string, string][] = [
-  [highq1_1, highq1_1],
-  [highq1_2, highq1_2],
-  [highq1_4863, highq1_4863],
-  [highq1_4861, highq1_4861],
+  [highq1_Numbered1, highq1_Numbered1],
+  [highq1_Numbered2, highq1_Numbered2],
+  [highq1_3, highq1_3],
+  [highq1_4, highq1_4],
+  [highq1_5, highq1_5],
 ];
 
 const room1Items = [
-  "дзекрало",
-  "крісло",
+  "дзеркало",
+  "диван на коліщатках",
   "паперові фони",
+  "крісло",
+  "вентилятор",
   "блекаут штори",
   "стільці",
-  "вентилятор",
   "драбина",
   "стіл на коліщатках",
-  "диван на коліщатках",
-  "матрац",
-  "два світла godox fv150",
+  "два постійних світла godox fv150 та один спалах godox qs-600ii",
   "фрост рама",
   "чорно-білі прапори",
   "килим",
+  "матрац",
+  "дерев'яний ящик",
+  [
+    "гардероб",
+    "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
+  ],
   "рейл для одягу",
   "чорна та біла тканини",
   "колонка jbl",
   "пульверизатор",
   "відпарювач",
-  [
-    "гардероб",
-    "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
-  ],
 ];
 const Studio1Description = () => (
   <p className="my-4">
@@ -69,32 +70,33 @@ const Studio1Description = () => (
 );
 
 const gallery2Images: [string, string][] = [
-  [highq2_1, highq2_1],
-  [highq2_2, highq2_2],
-  [highq2_4865, highq2_4865],
-  [highq2_4864, highq2_4864],
-  [highq2_4857, highq2_4857],
-  [highq2_4854, highq2_4854],
+  [highq2_Numbered1, highq2_Numbered1],
+  [highq2_Numbered2, highq2_Numbered2],
+  [highq2_3, highq2_3],
+  [highq2_4, highq2_4],
+  [highq2_5, highq2_5],
 ];
 const room2Items = [
   "блекаут штори",
-  "лавка",
-  "драбина",
-  "рейл для одягу ",
-  "стіл на коліщатках",
-  "дзеркало ",
-  "паперові фони: чорний та сірий",
-  "диван на коліщатках",
-  "стільці",
   "вентилятор",
-  "колонка jbl",
-  "чорно-білі прапори",
-  "пульверизатор",
-  "відпарювач",
+  "дерев'яна лавка ",
+  "дерев'яний ящик",
+  "драбина",
   [
     "гардероб",
     "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
   ],
+  "рейл для одягу",
+  "дзеркало",
+  "стіл на коліщатках",
+  "диван на коліщатках",
+  "стільці",
+  "паперові фони: чорний, сірий та оливковий",
+  "колонка jbl",
+  "чорно-білі прапори",
+  "пульверизатор",
+  "відпарювач",
+  "два постійних світла godox litemons la200d та один спалах godox qs-600ii",
 ];
 const Studio2Description = () => (
   <p className="my-4">
@@ -114,10 +116,10 @@ const room1Data = {
   Description: Studio1Description,
   Additional: null,
   data: {
-    img: imageSrcStudio1Front,
+    img: highq1_1,
     name: "room 1",
     area: 90,
-    altImg: imageSrcStudio1Back,
+    altImg: highq1_2,
   },
 };
 
@@ -129,10 +131,10 @@ const room2Data = {
     <p className="my-4">Зараз в цьому залі відсутнє студійне світло!</p>
   ),
   data: {
-    img: imageSrcStudio2Front,
+    img: highq2_1,
     name: "room 2",
     area: 90,
-    altImg: imageSrcStudio2Back,
+    altImg: highq2_2,
   },
 };
 

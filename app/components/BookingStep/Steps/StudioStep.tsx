@@ -5,10 +5,10 @@ import { BookingStepActions } from "../BookingStepActions";
 import { useSearchParams } from "@remix-run/react";
 import { STUDIO_ID_QS } from "~/utils/constants";
 
-import imageSrcStudio1Front from "../../../../public/images/highq/1-4860.jpg";
-import imageSrcStudio1Back from "../../../../public/images/highq/1-4862.jpg";
-import imageSrcStudio2Front from "../../../../public/images/highq/2-4855.jpg";
-import imageSrcStudio2Back from "../../../../public/images/highq/2-4851.jpg";
+import imageSrcStudio1Front from "../../../../public/images/highq/r1 (1).jpg";
+import imageSrcStudio1Back from "../../../../public/images/highq/r1 (2).jpg";
+import imageSrcStudio2Front from "../../../../public/images/highq/r2 (1).jpg";
+import imageSrcStudio2Back from "../../../../public/images/highq/r2 (2).jpg";
 
 import type { StoreBooking } from "~/store/bookingSlice";
 import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
