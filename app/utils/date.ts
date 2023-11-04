@@ -254,5 +254,5 @@ export function getUAOffsetHours(date: Date) {
   //   xUtc: xDate.getUTCHours(),
   // });
   // return kyivDate.getHours() - kyivDate.getUTCHours();
-  return 3;
+  return 2;
 }

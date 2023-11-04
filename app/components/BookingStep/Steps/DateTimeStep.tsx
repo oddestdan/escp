@@ -26,15 +26,21 @@ import {
   START_FROM_MONDAY,
   businessHoursStart,
 } from "~/utils/constants";
+import { useLoaderData } from "@remix-run/react";
 
 import type { DayOfWeek } from "~/utils/date";
 import type { StoreBooking, TimeState } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
+import type { Appointment } from "@prisma/client";
 
 const NO_SLOTS_MSG = "Немає вільних слотів";
 
-export interface DateTimeStepProps {
+type DateTimeLoaderData = {
   appointments: GoogleAppointment[];
+  prismaAppointments: Appointment[];
+};
+
+export interface DateTimeStepProps {
   onChangeDate: (date: string) => void;
   onChangeTime: (start: string, end: string, diff: number) => void;
   isMobile?: boolean;
@@ -99,14 +105,16 @@ const mapAppointmentsToSlots = (
 };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
-  appointments,
   onChangeDate,
   onChangeTime,
   isMobile = false,
 }) => {
+  const { appointments, prismaAppointments } =
+    useLoaderData<DateTimeLoaderData>();
   const dispatch = useDispatch();
   const {
     currentStep,
+    studio,
     dateTime: { date: selectedDate, time: selectedTime, slots, hasWeekChanged },
     price,
   } = useSelector((store: StoreBooking) => store.booking);
@@ -145,10 +153,15 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
             ({ date, timeFrom, timeTo }) =>
               timeFrom && timeTo && date === getDateFormat(weekDate)
           ) || [];
+        const todaysPrismaAppointments =
+          prismaAppointments.filter(
+            ({ date, timeFrom, timeTo }) =>
+              timeFrom && timeTo && date === getDateFormat(weekDate)
+          ) || [];
 
         // all appointments' time slots for a day
         const bookedSlots = mapAppointmentsToSlots(
-          todaysAppointments,
+          [...todaysAppointments, ...todaysPrismaAppointments],
           weekDate
         ).flat();
 
@@ -172,7 +185,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       }
     );
     return bookableSlots;
-  }, [slots, weeks, appointments]);
+  }, [slots, weeks, appointments, prismaAppointments]);
 
   const timeSlots = timeSlotsMatrix[dayOfWeek];
   const firstValidIndex = useMemo(() => {
@@ -266,7 +279,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       )}
 
       <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
-        {memoedDateSummary}, {memoedTimeSlotSummary}{" "}
+        {studio.name} | {memoedDateSummary}, {memoedTimeSlotSummary}{" "}
         <span
           className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
           data-tip={`${BOOKING_HOURLY_PRICE} грн/год<br />Свайпайте тижні, обирайте слоти<br />Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}

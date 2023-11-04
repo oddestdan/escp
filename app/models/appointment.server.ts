@@ -1,6 +1,7 @@
 import { prisma } from "~/db.server";
 import crypto from "crypto";
 import {
+  addDays,
   addMonths,
   fromISOToRFC3339,
   fromRFC3339ToISO,
@@ -15,7 +16,7 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_LOCALE, KYIV_TIME_ZONE } from "~/utils/constants";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
 import type { ContactInfo } from "~/store/bookingSlice";
 import {
@@ -43,7 +44,8 @@ const createAllDayEvent = (dateString: string) => {
 };
 
 export async function getAppointments(
-  calendarIndex: number
+  calendarIndex: number,
+  dateString?: string
 ): Promise<GoogleAppointment[]> {
   // const prismaAppointments = await prisma.appointment.findMany();
   console.log("> Getting appointments from Google Calendar API...");
@@ -81,7 +83,9 @@ export async function getAppointments(
     calendarId: googleCalendarIdList[calendarIndex],
     timeZone: KYIV_TIME_ZONE, //  Intl.DateTimeFormat().resolvedOptions().timeZone,
     timeMin: new Date().toISOString(),
-    timeMax: addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
+    timeMax: dateString
+      ? addDays(new Date(dateString), 1).toISOString() // parametrized end date
+      : addMonths(new Date(), 3).toISOString(), // 3 months worth of calendar bookings
   });
   const googleAppointments = events.data.items || [];
 
@@ -126,6 +130,25 @@ export async function getAppointmentById(eventId: string, calendarIndex = 0) {
 
   console.log({ calendarAppointment });
   return calendarAppointment;
+}
+
+export async function getPrismaAppointments(
+  studioId: number
+): Promise<Appointment[]> {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  console.log(`> Getting all appointments from Prisma...`);
+
+  return prisma.appointment.findMany({ where: { studioId } });
+}
+
+export async function getPrismaAppointmentsByDate(
+  studioId: number,
+  date: string
+): Promise<Appointment[]> {
+  console.log("**************************************");
+  console.log(`> Getting all appointments from Prisma for date ${date}...`);
+
+  return prisma.appointment.findMany({ where: { date, studioId } });
 }
 
 export async function getPrismaAppointmentById(id: string) {
@@ -197,9 +220,10 @@ export async function createAppointment(
   // send new appointment notification email to admin
   console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
   const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
+  const studioId = studiosData.findIndex((s) => s.name === studioInfo.name);
   sendMail(
     {
-      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}`,
+      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}\n\n${process.env.SMS_DOMAIN}/booking/confirmation/${createdEvent.data.id}?${STUDIO_ID_QS}=${studioId}`,
     },
     `R${studioInfo.name[studioInfo.name.length - 1]}`
   );
@@ -211,7 +235,7 @@ export async function createAppointment(
     formattedUADateString,
     contactInfo.tel,
     createdEvent.data.id,
-    studiosData.findIndex((s) => s.name === studioInfo.name)
+    studioId
   );
 
   return createdEvent.data;
@@ -227,6 +251,7 @@ export async function createPrismaAppointment(
     | "contactInfo"
     | "price"
     | "studio"
+    | "studioId"
   >
 ) {
   console.log("> Creating an appointment into Prisma...");

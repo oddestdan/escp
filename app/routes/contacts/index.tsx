@@ -117,7 +117,7 @@ export default function Contacts() {
               className="text-stone-900 underline hover:text-stone-400"
               target="_blank"
               rel="noreferrer"
-              href="https://goo.gl/maps/bT3pDgCpEC1Hsvn59"
+              href="https://maps.app.goo.gl/arzErU4Hb5Q4kAUC9"
             >
               📍 Бул. Вацлава Гавела, 4.
             </a>

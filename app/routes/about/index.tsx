@@ -114,7 +114,7 @@ const room1Data = {
   images: gallery1Images,
   items: room1Items,
   Description: Studio1Description,
-  Additional: null,
+  Additional: () => null,
   data: {
     img: highq1_1,
     name: "room 1",
@@ -127,9 +127,10 @@ const room2Data = {
   images: gallery2Images,
   items: room2Items,
   Description: Studio2Description,
-  Additional: () => (
-    <p className="my-4">Зараз в цьому залі відсутнє студійне світло!</p>
-  ),
+  Additional: () => null,
+  // Additional: () => (
+  //   <p className="my-4">Зараз в цьому залі відсутнє студійне світло!</p>
+  // ),
   data: {
     img: highq2_1,
     name: "room 2",
@@ -167,7 +168,7 @@ export default function About() {
                 studiosData={studiosData}
                 selectedStudioIndex={0}
                 onSaveStudio={onSaveStudio}
-                highlightable={false}
+                highlightable={true} // as both can be selected for /about
               />
             </div>
           </div>

@@ -35,9 +35,7 @@ export default function rules() {
               капцях.
             </span>
           </p>
-
           {/* --- */}
-
           <p className="mt-12">
             <span className="bg-white">
               Фактичний час оренди при бронюванні однієї години – 55 хвилин.
@@ -64,9 +62,22 @@ export default function rules() {
               час для прибирання.
             </span>
           </p>
-
           {/* --- */}
-
+          <p className="mt-12">
+            <span className="bg-white">
+              Розгортати та переставляти паперові фони можна виключно в
+              присутності адміністратора та з його допомогою.
+              <br />
+              Штраф за псування фону 300 грн/м.
+            </span>
+          </p>
+          <p className="mt-2">
+            <span className="bg-white">
+              Штрафи за псування обладнання та реквізиту визначаються
+              адміністратором.
+            </span>
+          </p>
+          {/* --- */}
           <h2 className="mt-12 flex w-full justify-between font-medium text-stone-900 sm:w-3/5">
             Правила користування циклорамою
           </h2>
@@ -93,9 +104,7 @@ export default function rules() {
               враховуючи ремонтні роботи, матеріали та простій залу.
             </span>
           </p>
-
           {/* --- */}
-
           <p className="mt-12">
             <span className="border-b-2 border-red-500 bg-white">
               Замовник має ознайомити всіх учасників зйомки з правилами.
