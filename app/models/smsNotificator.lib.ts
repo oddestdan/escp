@@ -1,3 +1,18 @@
+interface SMSError {
+  code: string;
+  date: string;
+  description: string;
+}
+
+interface SMSResponse {
+  success: number;
+  // good
+  date?: string;
+  data?: any;
+  // bad
+  error?: SMSError;
+}
+
 export const sendSMS = async (
   roomName: string,
   formattedDateString: string,
@@ -61,10 +76,15 @@ export const sendSMS = async (
       }),
     });
 
-    const result = await response.text();
+    const result: SMSResponse = await response.json();
     console.log({ textMessage, result });
 
     if (!result) throw new Error("Invalid SMS result");
+
+    if (result.success !== 1 && result.error)
+      throw new Error(
+        `SMS Failed with error ${result.error.code}: ${result.error.description} `
+      );
   } catch (error) {
     console.error("error", error);
   }
