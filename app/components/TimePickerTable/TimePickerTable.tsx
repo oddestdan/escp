@@ -83,7 +83,12 @@ const TimePickerTable: React.FC<TimePickerTableProps> = ({
   );
 
   useEffect(() => {
-    if (!timeSlots[start] || !timeSlots[end]) {
+    if (
+      !timeSlots ||
+      timeSlots.length === 0 ||
+      !timeSlots[start] ||
+      !timeSlots[end]
+    ) {
       return;
     }
 

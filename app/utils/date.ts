@@ -65,26 +65,33 @@ export const getDayOfWeek = (date: Date = new Date()) => {
   return date.toLocaleDateString("en-US", { weekday: "long" });
 };
 
-export const daysIntoYear = (date: Date = new Date()) => {
-  return (
-    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
-      Date.UTC(date.getFullYear(), 0, 0)) /
-    24 /
-    60 /
-    60 /
-    1000
-  );
-};
+// export const daysIntoYear = (date: Date = new Date()) => {
+//   return (
+//     (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
+//       Date.UTC(date.getFullYear(), 0, 0)) /
+//     24 /
+//     60 /
+//     60 /
+//     1000
+//   );
+// };
 
 export const getDayOfWeekNumbered = (date: Date = new Date()) => {
   if (START_FROM_MONDAY) {
     return (date.getDay() - 1 + 7) % 7;
   }
 
-  const xInYear = daysIntoYear(date);
-  const todayInYear = daysIntoYear(new Date());
+  const today = new Date();
+  const todayIndex = today.getDay();
+  const passedDateIndex = date.getDay();
 
-  return (xInYear - todayInYear) % 7;
+  let diff = passedDateIndex - todayIndex;
+
+  if (diff < 0) {
+    diff += 7;
+  }
+
+  return diff;
 };
 
 export const getWeekDates = (dateString: string): Date[] => {
