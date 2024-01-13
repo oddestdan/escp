@@ -10,14 +10,25 @@ import imageSrcStudio1Back from "../../../../public/images/highq/r1 (2).jpg";
 import imageSrcStudio2Front from "../../../../public/images/highq/r2 (1).jpg";
 import imageSrcStudio2Back from "../../../../public/images/highq/r2 (2).jpg";
 
+import imageSrcStudio1FrontLowres from "../../../../public/images/highq/lowres/r1 (1).jpg";
+import imageSrcStudio1BackLowres from "../../../../public/images/highq/lowres/r1 (2).jpg";
+import imageSrcStudio2FrontLowres from "../../../../public/images/highq/lowres/r2 (1).jpg";
+import imageSrcStudio2BackLowres from "../../../../public/images/highq/lowres/r2 (2).jpg";
+
 import type { StoreBooking } from "~/store/bookingSlice";
 import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
+
+type imageSet = {
+  img: string;
+  altImg: string;
+};
 
 export interface StudioInfo {
   img: string;
   name: string;
   area: number;
   altImg: string;
+  lowres: imageSet;
 }
 
 export const studiosData: StudioInfo[] = [
@@ -26,12 +37,20 @@ export const studiosData: StudioInfo[] = [
     name: "room 1",
     area: 90,
     altImg: imageSrcStudio1Back,
+    lowres: {
+      img: imageSrcStudio1FrontLowres,
+      altImg: imageSrcStudio1BackLowres,
+    },
   },
   {
     img: imageSrcStudio2Front,
     name: "room 2",
     area: 90,
     altImg: imageSrcStudio2Back,
+    lowres: {
+      img: imageSrcStudio2FrontLowres,
+      altImg: imageSrcStudio2BackLowres,
+    },
   },
 ];
 

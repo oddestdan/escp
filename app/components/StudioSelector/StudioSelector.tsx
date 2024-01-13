@@ -44,11 +44,12 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
 
   return (
     <div className="mt-4 mb-12 flex flex-col">
-      <Slider
+      <div className="flex w-full flex-row justify-between gap-2">
+        {/* <Slider
         className={`studio-selector-slider`}
         {...sliderSettings}
         initialSlide={0}
-      >
+      > */}
         {studiosData.map((studio, i) => {
           const isSelected = selectedStudioIndex === i;
           return (
@@ -57,15 +58,8 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               onClick={() => onSaveStudio(i)}
               className={`flex flex-1 flex-col items-center text-stone-900 ${
                 isSelected ? "opacity-100" : ""
-              } ${i > 0 ? "ml-4" : ""}`}
+              }`}
             >
-              <span
-                className={`mx-auto mb-2 ml-4 inline-flex text-center ${
-                  isSelected ? "underline underline-offset-2" : ""
-                }`}
-              >
-                {studio.name} | {studio.area} м²
-              </span>
               <div
                 className={`relative flex w-full items-center justify-center text-transparent transition-all duration-200 ease-in-out ${
                   isSelected && !highlightable
@@ -75,12 +69,12 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               >
                 <span className="relative w-full">
                   <img
-                    className={`aspect-[3/3] w-full border-b-2 border-transparent object-cover lg:aspect-[3/2] ${
+                    className={`aspect-[3/2] w-full border-b-2 border-transparent object-cover lg:aspect-[3/2] ${
                       isSelected || highlightable
                         ? "border-b-stone-800 bg-stone-400"
                         : "bg-stone-200 opacity-30 hover:border-b-stone-800 hover:opacity-80"
                     } ${highlightable || !isSelected ? "cursor-pointer" : ""}`}
-                    src={isAltImage ? studio.altImg : studio.img}
+                    src={isAltImage ? studio.lowres.altImg : studio.lowres.img}
                     alt={`Studio ${i}: ${studio.name}`}
                   />
                   <div
@@ -90,15 +84,23 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
                   </div>
                 </span>
                 <p
-                  className={`pointer-events-none absolute cursor-pointer text-9xl font-light `}
+                  className={`pointer-events-none absolute cursor-pointer text-6xl font-light lg:text-9xl `}
                 >
                   {studio.name[studio.name.length - 1]}
                 </p>
               </div>
+              <span
+                className={`mx-auto mt-2 inline-flex justify-center text-center ${
+                  isSelected ? "underline underline-offset-2" : ""
+                }`}
+              >
+                {studio.name} | {studio.area} м²
+              </span>
             </div>
           );
         })}
-      </Slider>
+        {/* </Slider> */}
+      </div>
     </div>
   );
 };

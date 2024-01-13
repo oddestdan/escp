@@ -24,6 +24,11 @@ import highq2_3 from "../../../public/images/highq/r2 (3).jpg";
 import highq2_4 from "../../../public/images/highq/r2 (4).jpg";
 import highq2_5 from "../../../public/images/highq/r2 (5).jpg";
 
+import lowres1_1 from "../../../public/images/highq/lowres/r1 (1).jpg";
+import lowres1_2 from "../../../public/images/highq/lowres/r1 (2).jpg";
+import lowres2_1 from "../../../public/images/highq/lowres/r2 (1).jpg";
+import lowres2_2 from "../../../public/images/highq/lowres/r2 (2).jpg";
+
 // pairs of [highQuality, lowQuality]
 const gallery1Images: [string, string][] = [
   [highq1_Numbered1, highq1_Numbered1],
@@ -120,6 +125,10 @@ const room1Data = {
     name: "room 1",
     area: 90,
     altImg: highq1_2,
+    lowres: {
+      img: lowres1_1,
+      altImg: lowres1_2,
+    },
   },
 };
 
@@ -136,6 +145,10 @@ const room2Data = {
     name: "room 2",
     area: 90,
     altImg: highq2_2,
+    lowres: {
+      img: lowres2_1,
+      altImg: lowres2_2,
+    },
   },
 };
 

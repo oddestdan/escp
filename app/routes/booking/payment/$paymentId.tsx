@@ -32,12 +32,20 @@ const studiosData: StudioInfo[] = [
     name: "room 1",
     area: 90,
     altImg: "",
+    lowres: {
+      img: "",
+      altImg: "",
+    },
   },
   {
     img: "",
     name: "room 2",
     area: 90,
     altImg: "",
+    lowres: {
+      img: "",
+      altImg: "",
+    },
   },
 ];
 
