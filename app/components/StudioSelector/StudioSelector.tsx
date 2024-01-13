@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { StudioInfo } from "../BookingStep/Steps/StudioStep";
+import Slider from "react-slick";
 
 export interface StudioSelectorProps {
   studiosData: StudioInfo[];
@@ -7,6 +8,15 @@ export interface StudioSelectorProps {
   onSaveStudio: (i: number) => void;
   highlightable?: boolean;
 }
+
+const sliderSettings = {
+  dots: true,
+  arrows: false,
+  infinite: false,
+  slidesToShow: 1.25,
+  slidesToScroll: 1.25,
+  focusOnSelect: true,
+};
 
 // const fadeInOutAnimation = "fadeInOut 4000ms ease-in-out infinite";
 
@@ -33,18 +43,29 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   }, [start]);
 
   return (
-    <div className="my-4 flex flex-col">
-      <div className="flex w-full flex-col justify-between lg:flex-row lg:gap-4">
+    <div className="mt-4 mb-12 flex flex-col">
+      <Slider
+        className={`studio-selector-slider`}
+        {...sliderSettings}
+        initialSlide={0}
+      >
         {studiosData.map((studio, i) => {
           const isSelected = selectedStudioIndex === i;
           return (
             <div
               key={studio.name}
               onClick={() => onSaveStudio(i)}
-              className={`flex w-full flex-1 flex-col items-center text-stone-900 ${
+              className={`flex flex-1 flex-col items-center text-stone-900 ${
                 isSelected ? "opacity-100" : ""
-              }`}
+              } ${i > 0 ? "ml-4" : ""}`}
             >
+              <span
+                className={`mx-auto mb-2 ml-4 inline-flex text-center ${
+                  isSelected ? "underline underline-offset-2" : ""
+                }`}
+              >
+                {studio.name} | {studio.area} м²
+              </span>
               <div
                 className={`relative flex w-full items-center justify-center text-transparent transition-all duration-200 ease-in-out ${
                   isSelected && !highlightable
@@ -54,16 +75,16 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               >
                 <span className="relative w-full">
                   <img
-                    className={`mb-1 aspect-[3/2] w-full border-b-2 border-transparent ${
+                    className={`aspect-[3/3] w-full border-b-2 border-transparent object-cover lg:aspect-[3/2] ${
                       isSelected || highlightable
-                        ? "border-stone-900 bg-stone-400"
-                        : "bg-stone-200 opacity-30 hover:opacity-80"
+                        ? "border-b-stone-800 bg-stone-400"
+                        : "bg-stone-200 opacity-30 hover:border-b-stone-800 hover:opacity-80"
                     } ${highlightable || !isSelected ? "cursor-pointer" : ""}`}
                     src={isAltImage ? studio.altImg : studio.img}
                     alt={`Studio ${i}: ${studio.name}`}
                   />
                   <div
-                    className={`pointer-events-none absolute top-0 left-0 h-full w-full bg-white ${animationClasses}`}
+                    className={`pointer-events-none absolute top-[-1px] left-[-1px] h-[calc(100%+2px)] w-[calc(100%+2px)] bg-white ${animationClasses}`}
                   >
                     {/* White overlapping layer */}
                   </div>
@@ -74,19 +95,10 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
                   {studio.name[studio.name.length - 1]}
                 </p>
               </div>
-              <span
-                className={`mx-auto mb-4 text-center ${
-                  isSelected ? "underline underline-offset-2" : ""
-                }`}
-              >
-                {studio.name}
-                <br />
-                {studio.area} м²
-              </span>
             </div>
           );
         })}
-      </div>
+      </Slider>
     </div>
   );
 };

@@ -465,6 +465,24 @@
   font-size: 11px;
 }
 
+.studio-selector-slider .slick-dots li button:before {
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: Commissioner, Montserrat;
+}
+.studio-selector-slider .slick-dots li:nth-child(1) button:before {
+  content: "r1";
+}
+.studio-selector-slider .slick-dots li:nth-child(2) button:before {
+  content: "r2";
+}
+.studio-selector-slider .slick-dots li:nth-child(3) button:before {
+  content: "r3";
+}
+.studio-selector-slider .slick-dots li:nth-child(4) button:before {
+  content: "r4";
+}
+
 .XXX-date-carousel {
   position: relative;
   padding: 0 0.2rem 1rem;
