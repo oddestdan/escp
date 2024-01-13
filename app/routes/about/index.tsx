@@ -179,9 +179,10 @@ export default function About() {
             <div className="mt-12 mb-4 w-full sm:w-3/5">
               <StudioSelector
                 studiosData={studiosData}
-                selectedStudioIndex={0}
+                selectedStudioIndex={-1}
                 onSaveStudio={onSaveStudio}
-                highlightable={true} // as both can be selected for /about
+                highlightable // as both can be selected for /about
+                vertical
               />
             </div>
           </div>

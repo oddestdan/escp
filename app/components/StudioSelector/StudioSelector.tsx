@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import type { StudioInfo } from "../BookingStep/Steps/StudioStep";
-import Slider from "react-slick";
+// import Slider from "react-slick";
 
 export interface StudioSelectorProps {
   studiosData: StudioInfo[];
   selectedStudioIndex: number;
   onSaveStudio: (i: number) => void;
   highlightable?: boolean;
+  vertical?: boolean;
 }
 
-const sliderSettings = {
-  dots: true,
-  arrows: false,
-  infinite: false,
-  slidesToShow: 1.25,
-  slidesToScroll: 1.25,
-  focusOnSelect: true,
-};
+// const sliderSettings = {
+//   dots: true,
+//   arrows: false,
+//   infinite: false,
+//   slidesToShow: 1.25,
+//   slidesToScroll: 1.25,
+//   focusOnSelect: true,
+// };
 
 // const fadeInOutAnimation = "fadeInOut 4000ms ease-in-out infinite";
 
@@ -25,6 +26,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   selectedStudioIndex,
   onSaveStudio,
   highlightable = false,
+  vertical = false,
 }) => {
   const [isAltImage, setIsAltImage] = useState(false);
   const [start, setStart] = useState<Date>();
@@ -44,7 +46,11 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
 
   return (
     <div className="mt-4 mb-12 flex flex-col">
-      <div className="flex w-full flex-row justify-between gap-2">
+      <div
+        className={`flex w-full justify-between ${
+          vertical ? "flex-col lg:flex-row lg:gap-4" : "flex-row gap-2"
+        }`}
+      >
         {/* <Slider
         className={`studio-selector-slider`}
         {...sliderSettings}
@@ -58,7 +64,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               onClick={() => onSaveStudio(i)}
               className={`flex flex-1 flex-col items-center text-stone-900 ${
                 isSelected ? "opacity-100" : ""
-              }`}
+              } ${vertical ? "mb-4" : ""}`}
             >
               <div
                 className={`relative flex w-full items-center justify-center text-transparent transition-all duration-200 ease-in-out ${
