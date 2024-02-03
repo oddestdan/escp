@@ -21,7 +21,7 @@ const renderByFootTab = () => (
   <div className="flex flex-col pt-2 pb-4 xl:flex-row-reverse">
     <p className="mb-4 w-full flex-1 xl:w-3/5 xl:pl-2">
       <img
-        className="aspect-[3/2] w-full bg-stone-100 object-cover xl:aspect-[2/2]"
+        className="aspect-[2/2] w-full bg-stone-100 object-cover 2xl:aspect-[3/2]"
         src={imageSrcRouteFoot}
         alt="Route by foot"
       />
@@ -52,7 +52,7 @@ const renderByCarTab = () => (
   <div className="flex flex-col pt-2 pb-4 xl:flex-row-reverse">
     <p className="mb-4 w-full flex-1 xl:w-3/5 xl:pl-2">
       <img
-        className="aspect-[3/2] w-full bg-stone-100 object-cover xl:aspect-[2/2]"
+        className="aspect-[2/2] w-full bg-stone-100 object-cover 2xl:aspect-[3/2]"
         src={imageSrcRouteCar}
         alt="Route by car"
       />
