@@ -261,5 +261,9 @@ export function getUAOffsetHours(date: Date) {
   //   xUtc: xDate.getUTCHours(),
   // });
   // return kyivDate.getHours() - kyivDate.getUTCHours();
-  return 2;
+
+  // TODO: make this summer time shit dynamic !!!
+  const march30th = new Date(date.getFullYear(), 2, 30);
+
+  return date < march30th ? 2 : 3;
 }
