@@ -177,7 +177,7 @@ const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
 export default function Payment() {
   const submit = useSubmit();
   const dispatch = useDispatch();
-  const { paymentData, appointment } = useLoaderData() as LoaderData;
+  const { paymentData, appointment } = useLoaderData() as unknown as LoaderData;
   const [hasPaid, setHasPaid] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);

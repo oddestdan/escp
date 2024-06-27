@@ -3,12 +3,14 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextInput } from "~/components/TextInput/TextInput";
 import type { StoreBooking } from "~/store/bookingSlice";
-import { saveTotalPrice } from "~/store/bookingSlice";
-import { saveAdditionalServices } from "~/store/bookingSlice";
-import { BookingService } from "~/store/bookingSlice";
-import { bookingServicesList } from "~/store/bookingSlice";
-import { saveServices } from "~/store/bookingSlice";
-import { saveCurrentStep } from "~/store/bookingSlice";
+import {
+  saveTotalPrice,
+  saveAdditionalServices,
+  BookingService,
+  bookingServicesList,
+  saveServices,
+  saveCurrentStep,
+} from "~/store/bookingSlice";
 import {
   ASSISTANCE_HOURLY_PRICE,
   INSTAX_CARTRIDGED_PRICE,

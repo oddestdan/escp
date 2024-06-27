@@ -7,7 +7,6 @@ import Footer from "~/components/Footer/Footer";
 import Header from "~/components/Header/Header";
 import NavBar from "~/components/NavBar/NavBar";
 import { Separator } from "~/components/Separator/Separator";
-import { CopyableCard } from "~/components/CopyableCard/CopyableCard";
 import { clearAll } from "~/store/bookingSlice";
 import { getAppointmentById } from "~/models/appointment.server";
 import { json } from "@remix-run/server-runtime";
@@ -170,7 +169,7 @@ export default function Confirmation() {
       wrappedComponent={
         <>
           <img
-            className="my-4 mx-auto aspect-[1/1] w-24 rounded-full text-center"
+            className="aspect-[1/1] my-4 mx-auto w-24 rounded-full text-center"
             src={imageSrcHurray}
             alt="Hurray"
           />

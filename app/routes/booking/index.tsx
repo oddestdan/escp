@@ -5,10 +5,9 @@ import {
   useSearchParams,
   useSubmit,
 } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
-import { useEffect, useRef } from "react";
-import { useCallback } from "react";
+import { redirect, json } from "@remix-run/server-runtime";
+import { useEffect, useRef, useCallback } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
@@ -220,7 +219,7 @@ export function CatchBoundary() {
 }
 
 export default function Booking() {
-  const { studioId } = useLoaderData() as LoaderData;
+  const { studioId } = useLoaderData() as unknown as LoaderData;
   const submit = useSubmit();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();

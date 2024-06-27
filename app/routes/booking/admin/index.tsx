@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useRef, useState } from "react";
-import { redirect } from "@remix-run/server-runtime";
+import { redirect, json } from "@remix-run/server-runtime";
 import {
   confirmAppointment,
   createAppointment,
+  updateAppointment,
+  deleteAppointment,
+  getAppointments,
 } from "~/models/appointment.server";
-import { updateAppointment } from "~/models/appointment.server";
-import { deleteAppointment } from "~/models/appointment.server";
-import { json } from "@remix-run/server-runtime";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
-import { getAppointments } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
 import { requireUserId } from "~/session.server";
 import NavBar from "~/components/NavBar/NavBar";
@@ -200,7 +199,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export default function AdminBooking() {
-  const { appointments } = useLoaderData() as LoaderData;
+  const { appointments } = useLoaderData() as unknown as LoaderData;
   const submit = useSubmit();
   const formRef = useRef<HTMLFormElement>(null);
   const [selectedAppointment, setSelectedAppointment] =

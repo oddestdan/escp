@@ -13,8 +13,6 @@ import {
   formatTimeSlot,
   addHoursToDate,
   getCleanDate,
-} from "~/utils/date";
-import {
   getDateFormat,
   getDayOfWeekNumbered,
   getWeekDates,

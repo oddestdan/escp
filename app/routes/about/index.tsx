@@ -8,16 +8,16 @@ import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { useCallback } from "react";
 
-import highq1_Numbered1 from "../../../public/images/highq/numbered/room1 (1).jpg";
-import highq1_Numbered2 from "../../../public/images/highq/numbered/room1 (2).jpg";
+import highq1_Numbered1 from "../../../public/images/highq/numbered/room1 (1).png";
+import highq1_Numbered2 from "../../../public/images/highq/numbered/room1 (2).png";
 import highq1_1 from "../../../public/images/highq/r1 (1).jpg";
 import highq1_2 from "../../../public/images/highq/r1 (2).jpg";
 import highq1_3 from "../../../public/images/highq/r1 (3).jpg";
 import highq1_4 from "../../../public/images/highq/r1 (4).jpg";
 import highq1_5 from "../../../public/images/highq/r1 (5).jpg";
 
-import highq2_Numbered1 from "../../../public/images/highq/numbered/room2 (1).jpg";
-import highq2_Numbered2 from "../../../public/images/highq/numbered/room2 (2).jpg";
+import highq2_Numbered1 from "../../../public/images/highq/numbered/room2 (1).png";
+import highq2_Numbered2 from "../../../public/images/highq/numbered/room2 (2).png";
 import highq2_1 from "../../../public/images/highq/r2 (1).jpg";
 import highq2_2 from "../../../public/images/highq/r2 (2).jpg";
 import highq2_3 from "../../../public/images/highq/r2 (3).jpg";
@@ -42,27 +42,28 @@ const room1Items = [
   "дзеркало",
   "диван на коліщатках",
   "паперові фони",
-  "крісло",
-  "вентилятор",
   "блекаут штори",
+  "вентилятор",
   "стільці",
-  "драбина",
+  "дерев'яний злет",
   "стіл на коліщатках",
-  "два постійних світла godox fv150 та один спалах godox qs-600ii",
-  "фрост рама",
-  "чорно-білі прапори",
-  "килим",
+  "тканини",
   "матрац",
+  "крісло",
   "дерев'яний ящик",
+  "лавка",
+  "драбина",
   [
     "гардероб",
     "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
   ],
   "рейл для одягу",
-  "чорна та біла тканини",
   "колонка jbl",
+  "чорно-білі прапори",
   "пульверизатор",
   "відпарювач",
+  "фрост рама",
+  "два постійних світла godox fv150 та один спалах godox qs-600ii",
 ];
 const Studio1Description = () => (
   <p className="my-4">
