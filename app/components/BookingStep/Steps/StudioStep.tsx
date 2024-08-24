@@ -5,15 +5,15 @@ import { BookingStepActions } from "../BookingStepActions";
 import { useSearchParams } from "@remix-run/react";
 import { STUDIO_ID_QS } from "~/utils/constants";
 
-import imageSrcStudio1Front from "../../../../public/images/highq/r1 (1).jpg";
-import imageSrcStudio1Back from "../../../../public/images/highq/r1 (2).jpg";
-import imageSrcStudio2Front from "../../../../public/images/highq/r2 (1).jpg";
-import imageSrcStudio2Back from "../../../../public/images/highq/r2 (2).jpg";
+import imageSrcStudio1Front from "../../../../public/images/highq/r1/1.jpg";
+import imageSrcStudio1Back from "../../../../public/images/highq/r1/2.jpg";
+import imageSrcStudio2Front from "../../../../public/images/highq/r2/1.jpg";
+import imageSrcStudio2Back from "../../../../public/images/highq/r2/2.jpg";
 
-import imageSrcStudio1FrontLowres from "../../../../public/images/highq/lowres/r1 (1).jpg";
-import imageSrcStudio1BackLowres from "../../../../public/images/highq/lowres/r1 (2).jpg";
-import imageSrcStudio2FrontLowres from "../../../../public/images/highq/lowres/r2 (1).jpg";
-import imageSrcStudio2BackLowres from "../../../../public/images/highq/lowres/r2 (2).jpg";
+import imageSrcStudio1FrontLowres from "../../../../public/images/lowres/r1 (1).jpg";
+import imageSrcStudio1BackLowres from "../../../../public/images/lowres/r1 (2).jpg";
+import imageSrcStudio2FrontLowres from "../../../../public/images/lowres/r2 (1).jpg";
+import imageSrcStudio2BackLowres from "../../../../public/images/lowres/r2 (2).jpg";
 
 import type { StoreBooking } from "~/store/bookingSlice";
 import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
