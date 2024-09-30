@@ -3,7 +3,7 @@ export const businessHoursEnd = "20:00";
 export const defaultEventTitle = "Зайнято";
 export const MIN_HOURS_PRIOR_NOTICE = 2;
 
-export const BOOKING_HOURLY_PRICE = 700;
+export const BOOKING_HOURLY_PRICE = 800;
 export const ASSISTANCE_HOURLY_PRICE = 200;
 export const INSTAX_PRICE = 300;
 export const INSTAX_CARTRIDGED_PRICE = 800;
