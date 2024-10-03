@@ -38,6 +38,25 @@ export default function rules() {
           {/* --- */}
           <p className="mt-12">
             <span className="bg-white">
+              Обов’язково відмічайте паркомісце при бронюванні якщо плануєте
+              заїжджати на авто!
+            </span>
+          </p>
+          <p className="mt-2">
+            <span className="bg-white">
+              Наші паркомісця підписані табличками «escp.90 parking».
+            </span>
+          </p>
+          <p className="mt-2">
+            <span className="bg-white">
+              Ми будемо вимушені застосувати штраф, якщо ви залишите авто не на
+              нашому місці або в бронюванні не буде вказане паркомісце – 100
+              грн.
+            </span>
+          </p>
+          {/* --- */}
+          <p className="mt-12">
+            <span className="bg-white">
               Фактичний час оренди при бронюванні однієї години – 55 хвилин.
             </span>
           </p>
