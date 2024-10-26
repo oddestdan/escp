@@ -264,6 +264,7 @@ export function getUAOffsetHours(date: Date) {
 
   // TODO: make this summer time shit dynamic !!!
   const march30th = new Date(date.getFullYear(), 2, 30);
+  const october26th = new Date(date.getFullYear(), 9, 26);
 
-  return date < march30th ? 2 : 3;
+  return date < march30th || date > october26th ? 2 : 3;
 }
