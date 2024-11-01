@@ -31,7 +31,7 @@ export const bookingStepsDisplayData = [
 ];
 
 export enum BookingService {
-  assistance = "асистент",
+  // assistance = "асистент",
   instax = `instax (300 грн)`,
   instaxCartridged = "instax з картриджами (800 грн)",
   parking = "паркомісце",
@@ -39,7 +39,7 @@ export enum BookingService {
   extra = "інше",
 }
 export interface AdditionalServices {
-  assistance?: number;
+  // assistance?: number;
   instax?: string;
   instaxCartridged?: string;
   parking?: string;
@@ -48,7 +48,7 @@ export interface AdditionalServices {
 }
 
 export const bookingServicesList = [
-  BookingService.assistance,
+  // BookingService.assistance,
   BookingService.instax,
   BookingService.instaxCartridged,
   BookingService.parking,

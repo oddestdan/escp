@@ -11,16 +11,12 @@ import {
   saveServices,
   saveCurrentStep,
 } from "~/store/bookingSlice";
-import {
-  ASSISTANCE_HOURLY_PRICE,
-  INSTAX_CARTRIDGED_PRICE,
-  INSTAX_PRICE,
-} from "~/utils/constants";
+import { INSTAX_CARTRIDGED_PRICE, INSTAX_PRICE } from "~/utils/constants";
 import { BookingStepActions } from "../BookingStepActions";
 import ReactTooltip from "react-tooltip";
 
 const servicesLabelKeyMapper = {
-  [BookingService.assistance]: "допомога асистента (200 грн/год)",
+  // [BookingService.assistance]: "допомога асистента (200 грн/год)",
   [BookingService.instax]: "оренда instax square (300 грн)",
   [BookingService.instaxCartridged]:
     "оренда instax square з картриджем на 10 фото (800 грн)",
@@ -31,8 +27,8 @@ const servicesLabelKeyMapper = {
 };
 
 const servicesDetailsMapper = {
-  [BookingService.assistance]:
-    "Асистент допомагатиме вам з установкою світла, реквізитом та іншими питаннями",
+  // [BookingService.assistance]:
+  //   "Асистент допомагатиме вам з установкою світла, реквізитом та іншими питаннями",
   [BookingService.instax]: "",
   [BookingService.instaxCartridged]: "",
   [BookingService.parking]: "",
@@ -43,7 +39,7 @@ const servicesDetailsMapper = {
 
 export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
-  const { currentStep, services, dateTime, additionalServices, price } =
+  const { currentStep, services, /*dateTime,*/ additionalServices, price } =
     useSelector((store: StoreBooking) => store.booking);
 
   const [checkedServices, setCheckedServices] = useState(
@@ -53,9 +49,9 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     })
   );
 
-  const [assistanceHours, setAssistanceHours] = useState<number | undefined>(
-    additionalServices.assistance
-  );
+  // const [assistanceHours, setAssistanceHours] = useState<number | undefined>(
+  //   additionalServices.assistance
+  // );
   const [extraService, setExtraService] = useState(
     additionalServices.extra || ""
   );
@@ -71,23 +67,27 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     );
     dispatch(
       saveAdditionalServices({
-        assistance: assistanceHours || undefined,
+        // assistance: assistanceHours || undefined,
         extra: extraService.length > 0 ? extraService : undefined,
+        instax: checkedServices[0]?.checked ? BookingService.instax : undefined,
+        instaxCartridged: checkedServices[1]?.checked
+          ? BookingService.instaxCartridged
+          : undefined,
       })
     );
 
-    // NOTE: 1 or 2 is instax-related stuff
-    const instaxPrice = checkedServices[1].checked
+    // NOTE: 0 or 1 is instax-related stuff
+    const instaxPrice = checkedServices[0].checked
       ? INSTAX_PRICE
-      : checkedServices[2].checked
+      : checkedServices[1].checked
       ? INSTAX_CARTRIDGED_PRICE
       : 0;
-    const assistancePrice = assistanceHours
-      ? assistanceHours * ASSISTANCE_HOURLY_PRICE
-      : 0;
+    // const assistancePrice = assistanceHours
+    //   ? assistanceHours * ASSISTANCE_HOURLY_PRICE
+    //   : 0;
     dispatch(
       saveTotalPrice({
-        services: instaxPrice + assistancePrice,
+        services: instaxPrice /* + assistancePrice*/,
         booking: price.booking,
       })
     );
@@ -96,7 +96,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     dispatch,
     checkedServices,
     extraService,
-    assistanceHours,
+    // assistanceHours,
     price,
     currentStep,
   ]);
@@ -110,14 +110,14 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
       const updatedServices = [...checkedServices];
 
       // NOTE: 0 is assistance
-      if (i === 0 && checkedServices[i].checked) {
-        setAssistanceHours(undefined);
-      }
+      // if (i === 0 && checkedServices[i].checked) {
+      //   setAssistanceHours(undefined);
+      // }
 
-      // NOTE: 1 or 2 is instax-related stuff
+      // NOTE: 0 or 1 is instax-related stuff
       [
-        [1, 2],
-        [2, 1],
+        [0, 1],
+        [1, 0],
       ].forEach(([x, y]) => i === x && (updatedServices[y].checked = false));
 
       updatedServices[i].checked = !updatedServices[i].checked;
@@ -127,39 +127,37 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   );
 
   const memoedSelectedServicesList = useMemo(() => {
-    const assistance = checkedServices.find(
-      ({ service }) => service === BookingService.assistance
-    );
+    // const assistance = checkedServices.find(
+    //   ({ service }) => service === BookingService.assistance
+    // );
     const extra = checkedServices.find(
       ({ service }) => service === BookingService.extra
     );
 
-    const assistanceString =
-      assistance?.checked &&
-      assistanceHours &&
-      `${assistance.service}: ${assistanceHours} год. (${
-        ASSISTANCE_HOURLY_PRICE * assistanceHours
-      } грн)`;
+    // const assistanceString =
+    //   assistance?.checked &&
+    //   assistanceHours &&
+    //   `${assistance.service}: ${assistanceHours} год. (${
+    //     ASSISTANCE_HOURLY_PRICE * assistanceHours
+    //   } грн)`;
     const extraString =
       extra?.checked &&
       extraService.length > 0 &&
       `${extra.service}: ${extraService}`;
 
     return [
-      assistanceString,
+      // assistanceString,
       ...checkedServices
         .filter(
-          ({ service, checked }) =>
-            checked &&
-            service !== BookingService.extra &&
-            service !== BookingService.assistance
+          ({ service, checked }) => checked && service !== BookingService.extra
+          // && service !== BookingService.assistance
         )
         .map(({ service }) => service),
       extraString,
     ]
       .filter(Boolean)
       .join(", ");
-  }, [checkedServices, extraService, assistanceHours]);
+  }, [checkedServices, extraService]);
 
   return (
     <>
@@ -244,7 +242,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 />
               </label>
             )}
-            {service === BookingService.assistance && checked && (
+            {/* {service === BookingService.assistance && checked && (
               <div className="block w-full">
                 {[...Array(Math.ceil(dateTime.time.diff)).keys()].map(
                   (hours) => {
@@ -264,7 +262,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                   }
                 )}
               </div>
-            )}
+            )} */}
           </span>
         ))}
       </form>

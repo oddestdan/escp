@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import type { BookingState, StoreBooking } from "~/store/bookingSlice";
 import { BookingService } from "~/store/bookingSlice";
-import { ASSISTANCE_HOURLY_PRICE, KYIV_LOCALE } from "~/utils/constants";
+import { KYIV_LOCALE } from "~/utils/constants";
 import { getKyivDateFromDate } from "~/utils/date";
 
 type SummaryBookingState = Pick<
@@ -47,15 +47,15 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
   }, [dateTime, price]);
 
   const memoedSelectedServicesList = useMemo(() => {
-    const add =
-      additionalServices.assistance &&
-      services.find((s) => s === BookingService.assistance) &&
-      `${BookingService.assistance}: ${additionalServices.assistance} год. (${
-        additionalServices.assistance * ASSISTANCE_HOURLY_PRICE
-      } грн)`;
+    // const add =
+    //   additionalServices.assistance &&
+    //   services.find((s) => s === BookingService.assistance) &&
+    //   `${BookingService.assistance}: ${additionalServices.assistance} год. (${
+    //     additionalServices.assistance * ASSISTANCE_HOURLY_PRICE
+    //   } грн)`;
 
     const regular = services.filter(
-      (s) => s !== BookingService.assistance && s !== BookingService.extra
+      (s) => /*s !== BookingService.assistance &&*/ s !== BookingService.extra
     );
 
     const ext =
@@ -65,8 +65,8 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
 
     if (additionalServices.extra) regular.pop();
 
-    return [add, ...regular, ext].filter(Boolean).join(", ");
-  }, [services, additionalServices.assistance, additionalServices.extra]);
+    return [/*add, */ ...regular, ext].filter(Boolean).join(", ");
+  }, [services, /*additionalServices.assistance, */ additionalServices.extra]);
 
   const memoedContactInfo = useMemo(() => {
     const { firstName, lastName, tel } = contact;
