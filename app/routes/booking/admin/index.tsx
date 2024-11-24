@@ -62,12 +62,10 @@ export const getAppointmentDescription = (
 
   const {
     services,
-    additionalServices: { assistance, extra },
+    additionalServices: { extra },
   } = description;
 
-  const regular = services.filter(
-    (s) => s !== BookingService.assistance && s !== BookingService.extra
-  );
+  const regular = services.filter((s) => s !== BookingService.extra);
   if (extra) regular.pop();
 
   return (
@@ -75,7 +73,6 @@ export const getAppointmentDescription = (
       `${info.firstName}${info.lastName ? ` ${info.lastName}` : ""}`,
       info.tel,
       info.socialMedia || "",
-      `${assistance ? `ассистент: ${assistance} год` : ""}`,
       ...regular,
       `${extra ? `додатково: "${extra}"` : ""}`,
     ]
