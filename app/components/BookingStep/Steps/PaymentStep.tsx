@@ -39,8 +39,8 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
         />
       )}
 
-      <h4 className="mb-2 text-center font-mono font-medium">оплата</h4>
-      <h4 className="mb-2 text-center font-mono text-2xl font-medium underline">
+      <h4 className="mb-2 text-center font-medium">оплата</h4>
+      <h4 className="mb-2 text-center text-2xl font-medium underline">
         {price.booking + (price.services || 0)} грн
       </h4>
       <div className="my-4 flex flex-col">
@@ -85,7 +85,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
           <div className="relative">
             <div className="absolute right-[calc(50%-1.5ch)] top-0">
               <span
-                className="radius box-content inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full border-4 border-white bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
+                className="radius box-content inline-block h-[1.5rem] w-[1.5rem] cursor-pointer rounded-full border-4 border-white bg-stone-300 text-center not-italic text-stone-100 hover:bg-stone-400"
                 data-tip={`Ми в процесі оновлення платіжного сервісу,<br/> тому оплата поки що мануальна.<br />Скоро буде краще!`}
               >
                 i

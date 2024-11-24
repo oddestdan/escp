@@ -117,7 +117,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
 
   return (
     <>
-      <h4 className={`mb-2 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 text-center font-medium`}>
         контактна інформація{memoedInfo}
       </h4>
       <form className="mt-4 flex flex-wrap justify-between">
@@ -131,7 +131,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
                 !isMobile ? (i % 2 === 0 ? "pr-2" : "pl-2") : ""
               }`}
             >
-              <span className="block font-mono text-sm">
+              <span className="block text-sm">
                 {getContactLabelByKey(key)}
                 {isRequiredContactInfo(key) ? " *" : ""}
               </span>
@@ -203,7 +203,7 @@ export const ContactInfoStep: React.FC<{ isMobile?: boolean }> = ({
             checked={hasSeenTerms}
             readOnly={true}
           />
-          <span className="ml-2 block text-center font-mono text-sm italic">
+          <span className="ml-2 block text-center text-sm italic">
             ознайомлені та згодні з{" "}
             <Link
               className="text-stone-900 underline hover:text-stone-400"

@@ -391,7 +391,7 @@ export default function AdminBooking() {
 
   return (
     <div className="flex w-full justify-center">
-      <main className="flex w-full flex-col p-4 font-mono">
+      <main className="flex w-full flex-col p-4">
         <NavBar active="admin" />
 
         <div className="flex w-full flex-col items-center font-light">

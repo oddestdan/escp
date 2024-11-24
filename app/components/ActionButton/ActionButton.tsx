@@ -1,4 +1,4 @@
-const baseClass = "w-full py-3 px-4 font-mono";
+const baseClass = "w-full py-3 px-4 font-regular";
 const filledClass =
   "bg-stone-800 border-2 border-stone-800 text-stone-100 hover:bg-stone-700 hover:border-stone-700 focus:bg-stone-500 focus:border-stone-500";
 // const invertedClass =

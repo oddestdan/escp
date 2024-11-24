@@ -45,10 +45,12 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   }, [start]);
 
   return (
-    <div className="mt-4 mb-12 flex flex-col">
+    <div className="mb-4 flex flex-col md:mb-12">
       <div
         className={`flex w-full justify-between ${
-          vertical ? "flex-col lg:flex-row lg:gap-4" : "flex-row gap-2"
+          vertical
+            ? "flex-col xl:flex-row xl:gap-4"
+            : "flex-col gap-2 md:flex-row"
         }`}
       >
         {/* <Slider
@@ -62,9 +64,9 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
             <div
               key={studio.name}
               onClick={() => onSaveStudio(i)}
-              className={`flex flex-1 flex-col items-center text-stone-900 ${
+              className={`mb-4 flex flex-1 flex-col items-center text-stone-900 ${
                 isSelected ? "opacity-100" : ""
-              } ${vertical ? "mb-4" : ""}`}
+              }`}
             >
               <div
                 className={`relative flex w-full items-center justify-center text-transparent transition-all duration-200 ease-in-out ${
@@ -75,7 +77,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               >
                 <span className="relative w-full">
                   <img
-                    className={`aspect-[3/2] w-full border-b-2 border-transparent object-cover lg:aspect-[3/2] ${
+                    className={`aspect-[3/2] w-full border-b-2 border-transparent object-cover xl:aspect-[3/2] ${
                       isSelected || highlightable
                         ? "border-b-stone-800 bg-stone-400"
                         : "bg-stone-200 opacity-30 hover:border-b-stone-800 hover:opacity-80"
@@ -90,13 +92,13 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
                   </div>
                 </span>
                 <p
-                  className={`pointer-events-none absolute cursor-pointer text-6xl font-light lg:text-9xl `}
+                  className={`pointer-events-none absolute cursor-pointer text-6xl font-light xl:text-9xl `}
                 >
                   {studio.name[studio.name.length - 1]}
                 </p>
               </div>
               <span
-                className={`mx-auto mt-2 inline-flex justify-center text-center ${
+                className={`mx-auto mt-1 inline-flex justify-center text-center md:mt-2 ${
                   isSelected ? "underline underline-offset-2" : ""
                 }`}
               >

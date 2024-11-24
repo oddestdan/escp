@@ -39,8 +39,8 @@ export const links: LinksFunction = () => {
     // Regular fonts
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Commissioner:wght@100;300;400;500;700&display=swap",
-    }, // Commissioner
+      href: "https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&display=swap",
+    }, // Geologica
     // {
     //   rel: "stylesheet",
     //   href: "https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap",

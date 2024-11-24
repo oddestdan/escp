@@ -170,7 +170,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
         multiline
       />
 
-      <h4 className={`mb-2 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 text-center font-medium`}>
         додаткові сервіси
         {memoedSelectedServicesList.length
           ? " | " + memoedSelectedServicesList
@@ -216,7 +216,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
                 {/* https://www.npmjs.com/package/react-tooltip */}
                 {/* {servicesDetailsMapper[service].length > 0 && ( */}
                 <span
-                  className={`radius ml-2 inline-block h-[3ch] w-[3ch] rounded-full text-center font-mono ${
+                  className={`radius ml-2 inline-block h-[1.5rem] w-[1.5rem] rounded-full text-center ${
                     servicesDetailsMapper[service].length > 0
                       ? "inline-block cursor-pointer bg-stone-300 text-stone-100 hover:bg-stone-400"
                       : "invisible text-white"

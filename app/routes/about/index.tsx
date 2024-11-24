@@ -29,6 +29,7 @@ import lowres1_1 from "../../../public/images/lowres/r1 (1).jpg";
 import lowres1_2 from "../../../public/images/lowres/r1 (2).jpg";
 import lowres2_1 from "../../../public/images/lowres/r2 (1).jpg";
 import lowres2_2 from "../../../public/images/lowres/r2 (2).jpg";
+import Wrapper from "~/components/Wrapper/Wrapper";
 
 // pairs of [highQuality, lowQuality]
 const gallery1Images: [string, string][] = [
@@ -211,15 +212,11 @@ export default function About() {
   );
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center p-4">
-      <NavBar active={`about${studioId || ""}`} />
-
-      <div className="flex w-full flex-1 flex-col font-light">
-        <Header current={`about${studioId || ""}`} />
-
+    <Wrapper activePage="about">
+      <div className="flex h-full w-full flex-1 flex-col justify-center font-light">
         {studioId === undefined ? (
-          <div className="flex w-full flex-1 flex-col items-center font-light ">
-            <div className="mt-12 mb-4 w-full sm:w-3/5">
+          <div className="flex w-full flex-1 flex-col items-center font-light">
+            <div className="mb-4 mt-1 w-[90%]">
               <StudioSelector
                 studiosData={studiosData}
                 selectedStudioIndex={-1}
@@ -234,8 +231,8 @@ export default function About() {
             {/* About page content */}
             {<studio.Description />}
 
-            <div className="mb-4 flex flex-col-reverse justify-between lg:flex-row">
-              <div className="mb-4 mt-4 w-full lg:mt-0 lg:w-1/3">
+            <div className="mb-4 flex flex-col-reverse justify-between xl:flex-row">
+              <div className="mb-4 mt-4 w-full xl:mt-0 xl:w-1/3">
                 {/* desktop/left-side mobile/bottom*/}
                 <ul className="">
                   {studio.items.map((good: string | string[]) => (
@@ -263,7 +260,7 @@ export default function About() {
               </div>
 
               {/* desktop/right-side mobile/top*/}
-              <div className="w-full lg:w-2/3 lg:pl-4">
+              <div className="w-full xl:w-2/3 xl:pl-4">
                 {/* https://www.npmjs.com/package/react-image-gallery */}
                 <ImageGallery
                   items={studio.images.map(([high, low]) => ({
@@ -279,8 +276,6 @@ export default function About() {
           </div>
         )}
       </div>
-
-      <Footer />
-    </main>
+    </Wrapper>
   );
 }

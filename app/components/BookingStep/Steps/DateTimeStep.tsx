@@ -276,17 +276,17 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
         />
       )}
 
-      <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 px-4 text-center font-medium`}>
         {studio.name} | {memoedDateSummary}, {memoedTimeSlotSummary}{" "}
         <span
-          className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
+          className="radius inline-block h-[1.5rem] w-[1.5rem] cursor-pointer rounded-full bg-stone-300 text-center not-italic text-stone-100 hover:bg-stone-400"
           data-tip={`${BOOKING_HOURLY_PRICE} грн/год<br />Свайпайте тижні, обирайте слоти<br />Білі слоти - доступні до бронювання<br />Сірі слоти - зарезервовані`}
         >
           i
         </span>
       </h4>
 
-      <h4 className={`mb-2 px-4 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 px-4 text-center font-medium`}>
         {memoedAppointmentMonth}
       </h4>
 

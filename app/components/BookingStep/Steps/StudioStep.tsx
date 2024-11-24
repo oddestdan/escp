@@ -92,7 +92,7 @@ export const StudioStep: React.FC<{ isMobile?: boolean }> = () => {
 
   return (
     <>
-      <h4 className="mb-2 text-center font-mono font-medium">
+      <h4 className="mb-4 text-center font-medium md:mb-6">
         зал: {studio.name}
       </h4>
 

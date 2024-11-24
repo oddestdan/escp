@@ -6,6 +6,10 @@ module.exports = {
         pcard: "20ch", // width of credit card number with spaces in characters
       },
       keyframes: {
+        fadeIn: {
+          0: { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
         fadeInOut: {
           "5%, 95%": { opacity: "1" },
           "20%, 80%": { opacity: "0" },
@@ -16,15 +20,15 @@ module.exports = {
         },
       },
       animation: {
+        fadeIn: "fadeIn 400ms ease-in-out",
         fadeInOut: "fadeInOut 4000ms ease-in-out infinite",
         fadeInOutBlank: "fadeInOutBlank 4000ms ease-in-out infinite",
       },
     },
     fontFamily: {
-      // mono: ['"IBM Plex Mono"'],
       mono: ['"Roboto Mono"'],
-      sans: ["Commissioner", "Montserrat"],
-      head: ["Commissioner", "Montserrat"],
+      sans: ["Geologica", "Montserrat"],
+      head: ["Geologica", "Montserrat"],
     },
   },
   plugins: [],

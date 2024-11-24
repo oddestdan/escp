@@ -11,7 +11,6 @@ import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
-import Header from "~/components/Header/Header";
 import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import type { Appointment } from "~/models/appointment.server";
 import {
@@ -28,11 +27,10 @@ import {
   setErrorMessage,
   UNDER_MAINTENANCE,
   bookingStepsDisplayData,
+  IS_DEV,
 } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
-import NavBar from "~/components/NavBar/NavBar";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
-import Footer from "~/components/Footer/Footer";
 import {
   BOOKING_TIME_TAKEN_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
@@ -47,6 +45,7 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import type { StoreBooking } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
 import { slotOverlapsAnotherSlot } from "~/utils/slots";
+import Wrapper from "~/components/Wrapper/Wrapper";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
@@ -171,17 +170,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 };
 
-const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
-  <main className="flex min-h-screen w-full flex-col p-4">
-    <NavBar active="booking" />
-
+const BookingWrapper = ({
+  wrappedComponent,
+}: {
+  wrappedComponent: JSX.Element;
+}) => (
+  <Wrapper activePage="booking">
     <div className="flex w-full flex-1 flex-col items-center font-light ">
-      <Header current="booking" />
-      <div className="my-4 w-full sm:w-3/5">{wrappedComponent}</div>
+      <div className="w-full sm:w-3/5">{wrappedComponent}</div>
     </div>
-
-    <Footer />
-  </main>
+  </Wrapper>
 );
 
 export function CatchBoundary() {
@@ -202,7 +200,7 @@ export function CatchBoundary() {
   }
 
   return (
-    <Wrapper
+    <BookingWrapper
       wrappedComponent={
         <>
           <div className="mb-4 text-xl font-medium text-red-500">
@@ -284,7 +282,7 @@ export default function Booking() {
       {/* Fixed ErrorNotification */}
       {errorMessage && <ErrorNotification message={errorMessage} />}
 
-      <Wrapper
+      <BookingWrapper
         wrappedComponent={
           <>
             <ProgressBar
@@ -347,7 +345,11 @@ export default function Booking() {
                     <input
                       type="hidden"
                       name="price"
-                      value={`${price.booking + (price.services || 0)}`}
+                      value={
+                        IS_DEV
+                          ? `1`
+                          : `${price.booking + (price.services || 0)}`
+                      }
                     />
                     <input type="hidden" name="studioId" value={studioId} />
                     <ActionButton buttonType="submit" onClick={bookAppointment}>

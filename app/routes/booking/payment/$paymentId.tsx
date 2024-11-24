@@ -161,7 +161,11 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
+const BookingWrapper = ({
+  wrappedComponent,
+}: {
+  wrappedComponent: JSX.Element;
+}) => (
   <main className="flex min-h-screen w-full flex-col p-4">
     <NavBar active="booking" />
 
@@ -252,12 +256,10 @@ export default function Payment() {
   }, [dispatch, paymentData, submit]);
 
   return (
-    <Wrapper
+    <BookingWrapper
       wrappedComponent={
         <>
-          <h2 className="my-4 text-center font-mono font-medium">
-            оплачуємо...
-          </h2>
+          <h2 className="my-4 text-center font-medium">оплачуємо...</h2>
 
           <Form method="post" ref={formRef}>
             <input type="hidden" name="studio" value={studio} />

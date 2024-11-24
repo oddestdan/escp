@@ -3,9 +3,6 @@ import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ActionButton } from "~/components/ActionButton/ActionButton";
 import { BookingSummary } from "~/components/BookingSummary/BookingSummary";
-import Footer from "~/components/Footer/Footer";
-import Header from "~/components/Header/Header";
-import NavBar from "~/components/NavBar/NavBar";
 import { Separator } from "~/components/Separator/Separator";
 import { clearAll } from "~/store/bookingSlice";
 import { getAppointmentById } from "~/models/appointment.server";
@@ -22,6 +19,7 @@ import {
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import Wrapper from "~/components/Wrapper/Wrapper";
 
 const imageSrcHurray = "https://i.imgur.com/iGfxlZi.png";
 
@@ -50,24 +48,23 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 };
 
-const Wrapper = ({ wrappedComponent }: { wrappedComponent: JSX.Element }) => (
-  <main className="flex min-h-screen w-full flex-col p-4">
-    <NavBar active="booking" />
-
+const BookingWrapper = ({
+  wrappedComponent,
+}: {
+  wrappedComponent: JSX.Element;
+}) => (
+  <Wrapper activePage="booking">
     <div className="flex w-full flex-1 flex-col items-center font-light ">
-      <Header current="booking" />
-      <div className="my-4 w-full sm:w-3/5">{wrappedComponent}</div>
+      <div className="w-full sm:w-3/5">{wrappedComponent}</div>
     </div>
-
-    <Footer />
-  </main>
+  </Wrapper>
 );
 
 export function CatchBoundary() {
   const caught = useCatch();
 
   return (
-    <Wrapper
+    <BookingWrapper
       wrappedComponent={
         <>
           <div className="mb-4 text-xl font-medium text-red-500">
@@ -165,22 +162,22 @@ export default function Confirmation() {
   };
 
   return (
-    <Wrapper
+    <BookingWrapper
       wrappedComponent={
         <>
           <img
-            className="aspect-[1/1] my-4 mx-auto w-24 rounded-full text-center"
+            className="my-4 mx-auto aspect-[1/1] w-24 rounded-full text-center"
             src={imageSrcHurray}
             alt="Hurray"
           />
-          <h2 className="my-4 text-center font-mono font-medium">
+          <h2 className="my-4 text-center font-medium">
             ура!
             <br />
             замовлення успішно сплачено
             {/* замовлення успішно створено */}
           </h2>
 
-          <h4 className="mb-4 block text-center font-mono text-2xl font-medium underline">
+          <h4 className="mb-4 block text-center text-2xl font-medium underline">
             {mappedAppointment.price.booking +
               (mappedAppointment.price.services || 0)}{" "}
             грн

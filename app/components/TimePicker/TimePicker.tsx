@@ -183,7 +183,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
         />
       )}
 
-      <h4 className={`mb-2 text-center font-mono font-medium`}>
+      <h4 className={`mb-2 text-center font-medium`}>
         {timeSlots?.length > 0 && timeSlots.some((slot) => !slot.isBooked)
           ? renderTimeSlotsRange(
               timeSlots.map(({ slot }) => slot),
@@ -195,10 +195,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
             )
           : "Немає вільних слотів"}
       </h4>
-      <legend className="mx-auto mb-8 block text-center font-mono text-sm italic">
+      <legend className="mx-auto mb-8 block text-center text-sm italic">
         Клікайте та обирайте тайм-слоти ({BOOKING_HOURLY_PRICE} грн/год){" "}
         <span
-          className="radius inline-block h-[3ch] w-[3ch] cursor-pointer rounded-full bg-stone-300 text-center font-mono not-italic text-stone-100 hover:bg-stone-400"
+          className="radius inline-block h-[1.5rem] w-[1.5rem] cursor-pointer rounded-full bg-stone-300 text-center not-italic text-stone-100 hover:bg-stone-400"
           data-tip="Білі слоти - доступні до бронювання <br />Сірі слоти - зарезервовані"
         >
           i
