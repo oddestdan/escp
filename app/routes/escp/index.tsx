@@ -11,6 +11,7 @@ export default function Escp() {
           src={video}
           id="video"
           autoPlay
+          playsInline
           loop
           muted
           poster={videoPoster}
