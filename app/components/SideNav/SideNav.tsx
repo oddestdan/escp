@@ -24,7 +24,7 @@ const SideNav = ({
 }) => {
   return (
     <nav
-      className={`fixed -top-2 -right-2 z-50 h-[22rem] w-[26ch] transform rounded-xl bg-white py-10 px-3 text-stone-900 shadow-xl transition-all duration-300 ${
+      className={`fixed -top-2 -right-2 z-50 h-[22rem] w-[26ch] transform bg-white py-10 px-3 text-stone-900 shadow-xl transition-all duration-300 ${
         isOpen ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
@@ -40,7 +40,7 @@ const SideNav = ({
       <div className="mt-6 flex flex-col gap-2 font-normal">
         <Link
           to="/booking"
-          className={`mr-2 flex flex-row-reverse items-center gap-[10px] rounded-md py-2 pl-4 pr-4 hover:text-stone-400 ${
+          className={`mr-2 flex flex-row-reverse items-center gap-[10px]  py-2 pl-4 pr-4 hover:text-stone-400 ${
             active === "booking" ? "bg-stone-800 text-white" : ""
           }`}
         >
@@ -53,7 +53,7 @@ const SideNav = ({
         </Link>
         <Link
           to="/about"
-          className={`mr-2 flex flex-row-reverse items-center gap-[10px] rounded-md py-2 pl-4 pr-4 hover:text-stone-400 ${
+          className={`mr-2 flex flex-row-reverse items-center gap-[10px]  py-2 pl-4 pr-4 hover:text-stone-400 ${
             active === "about" ? "bg-stone-800 text-white" : ""
           }`}
         >
@@ -66,7 +66,7 @@ const SideNav = ({
         </Link>
         <Link
           to="/contacts"
-          className={`mr-2 flex flex-row-reverse items-center gap-[10px] rounded-md py-2 pl-4 pr-4 hover:text-stone-400 ${
+          className={`mr-2 flex flex-row-reverse items-center gap-[10px]  py-2 pl-4 pr-4 hover:text-stone-400 ${
             active === "contacts" ? "bg-stone-800 text-white" : ""
           }`}
         >
@@ -79,7 +79,7 @@ const SideNav = ({
         </Link>
         <Link
           to="/rules"
-          className={`mr-2 flex flex-row-reverse items-center gap-[10px] rounded-md py-2 pl-4 pr-4 hover:text-stone-400 ${
+          className={`mr-2 flex flex-row-reverse items-center gap-[10px]  py-2 pl-4 pr-4 hover:text-stone-400 ${
             active === "rules" ? "bg-stone-800 text-white" : ""
           }`}
         >
