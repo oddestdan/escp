@@ -8,13 +8,15 @@ import imageSrcRouteCar from "../../../public/images/route-car.jpg";
 import Wrapper from "~/components/Wrapper/Wrapper";
 
 const byFootText = `
-      <br />Прохідна через "Silver Centre"
-      <br />скажіть, що ви в фотостудію та попросіть пройти через турнікет
-      <br />йдіть прямо донизу до останнього корпусу
-      <br />перед ним ліворуч та з правого боку розташовані вхідні двері
-      <br />підніміться на 4й поверх`;
+      <br />Прохідна за магазином "Фора"
+      <br />йдіть прямо та поверніть праворуч в арку
+      <br />за аркою трохи лівіше та продовжуйте йти прямо між двома будівлями
+      <br />в кінці будівель ліворуч та ще раз ліворуч
+      <br />за навісним переходом між будівлями праворуч наші вхідні двері
+      <br />піднімайтесь на 4й поверх`;
 const byFootLink =
-  "https://www.youtube.com/embed/NignKJrDa3U?si=GOKjPQ9eyeYKx1tT?rel=0&showinfo=0&autohide=1";
+  "https://www.youtube.com/embed/jbK3TkREKY0?rel=0&showinfo=0&autohide=1";
+// "https://www.youtube.com/embed/NignKJrDa3U?si=GOKjPQ9eyeYKx1tT?rel=0&showinfo=0&autohide=1";
 
 const renderByFootTab = () => (
   <div className="flex flex-col flex-nowrap items-stretch justify-center pt-2 pb-4 xl:flex-row-reverse">
