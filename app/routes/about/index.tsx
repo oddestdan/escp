@@ -67,7 +67,7 @@ const room1Items = [
   "чорно-білі прапори",
   "фрост рама 1,5х2 м",
   "два спалахи godox qs-600 та один godox qs-400",
-  "два постійних світла godox fv150",
+  "два постійних світла: godox litemons la200d та la200bis",
   "софтбокси, зонт на просвіт, кольорові фільтри",
 ];
 const Studio1Description = () => (
@@ -119,7 +119,7 @@ const room2Items = [
   "чорно-білі прапори",
   "фрострама 1,8x1,8 м",
   "три спалахи profoto d1 500air",
-  "два постійних світла godox litemons la200d",
+  "два постійних світла: godox litemons la200d та la200bi",
   "софтбокси, портретна тарілка для profoto, зонт на просвіт, кольорові фільтри",
 ];
 const Studio2Description = () => (
