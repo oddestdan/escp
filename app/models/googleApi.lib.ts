@@ -9,6 +9,7 @@ export type GoogleAppointment = Pick<
 export const googleCalendarIdList = [
   process.env.GOOGLE_CALENDAR_ROOM_1_ID,
   process.env.GOOGLE_CALENDAR_ROOM_2_ID,
+  process.env.GOOGLE_CALENDAR_ROOM_3_ID,
 ];
 
 const beginString = "-----BEGIN PRIVATE KEY-----";

@@ -5,18 +5,9 @@ import { BookingStepActions } from "../BookingStepActions";
 import { useSearchParams } from "@remix-run/react";
 import { STUDIO_ID_QS } from "~/utils/constants";
 
-import imageSrcStudio1Front from "../../../../public/images/highq/r1/1.jpg";
-import imageSrcStudio1Back from "../../../../public/images/highq/r1/2.jpg";
-import imageSrcStudio2Front from "../../../../public/images/highq/r2/1.jpg";
-import imageSrcStudio2Back from "../../../../public/images/highq/r2/2.jpg";
-
-import imageSrcStudio1FrontLowres from "../../../../public/images/lowres/r1 (1).jpg";
-import imageSrcStudio1BackLowres from "../../../../public/images/lowres/r1 (2).jpg";
-import imageSrcStudio2FrontLowres from "../../../../public/images/lowres/r2 (1).jpg";
-import imageSrcStudio2BackLowres from "../../../../public/images/lowres/r2 (2).jpg";
-
 import type { StoreBooking } from "~/store/bookingSlice";
 import { StudioSelector } from "~/components/StudioSelector/StudioSelector";
+import { studiosData } from "~/utils/studiosData";
 
 type imageSet = {
   img: string;
@@ -26,33 +17,11 @@ type imageSet = {
 export interface StudioInfo {
   img: string;
   name: string;
+  shortName: string;
   area: number;
   altImg: string;
   lowres: imageSet;
 }
-
-export const studiosData: StudioInfo[] = [
-  {
-    img: imageSrcStudio1Front,
-    name: "room 1",
-    area: 90,
-    altImg: imageSrcStudio1Back,
-    lowres: {
-      img: imageSrcStudio1FrontLowres,
-      altImg: imageSrcStudio1BackLowres,
-    },
-  },
-  {
-    img: imageSrcStudio2Front,
-    name: "room 2",
-    area: 90,
-    altImg: imageSrcStudio2Back,
-    lowres: {
-      img: imageSrcStudio2FrontLowres,
-      altImg: imageSrcStudio2BackLowres,
-    },
-  },
-];
 
 export const StudioStep: React.FC<{ isMobile?: boolean }> = () => {
   const dispatch = useDispatch();
@@ -70,7 +39,7 @@ export const StudioStep: React.FC<{ isMobile?: boolean }> = () => {
   );
 
   const selectedStudioIndex = studiosData.findIndex(
-    (st) => st.name === studio.name
+    (st) => st.name === studio?.name
   );
 
   const onSaveStudio = useCallback(

@@ -23,31 +23,9 @@ import {
 import { setErrorMessage } from "~/store/bookingSlice";
 import { useDispatch } from "react-redux";
 import { useWFPWidgetListener } from "~/utils/hooks/useWFPWidgetListener.hook";
-import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import { type StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { useBeforeUnload } from "react-use";
-
-const studiosData: StudioInfo[] = [
-  {
-    img: "",
-    name: "room 1",
-    area: 90,
-    altImg: "",
-    lowres: {
-      img: "",
-      altImg: "",
-    },
-  },
-  {
-    img: "",
-    name: "room 2",
-    area: 90,
-    altImg: "",
-    lowres: {
-      img: "",
-      altImg: "",
-    },
-  },
-];
+import { studiosData } from "~/utils/studiosData";
 
 type LoaderData = {
   paymentData: Awaited<ReturnType<typeof generateAppointmentPaymentData>>;

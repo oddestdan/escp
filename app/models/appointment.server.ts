@@ -26,7 +26,7 @@ import {
 } from "~/lib/wayforpay.service";
 import { sendSMS } from "./smsNotificator.lib";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
-import { studiosData } from "~/components/BookingStep/Steps/StudioStep";
+import { studioColorCodesMap, studiosData } from "~/utils/studiosData";
 
 export type { Appointment } from "@prisma/client";
 
@@ -60,6 +60,7 @@ export async function getAppointments(
       GOOGLE_SERVICE_EMAIL,
       GOOGLE_CALENDAR_ROOM_1_ID,
       GOOGLE_CALENDAR_ROOM_2_ID,
+      GOOGLE_CALENDAR_ROOM_3_ID,
       GOOGLE_SERVICE_PRIVATE_KEY,
     } = process.env;
 
@@ -72,6 +73,7 @@ export async function getAppointments(
       GOOGLE_SERVICE_EMAIL,
       GOOGLE_CALENDAR_ROOM_1_ID,
       GOOGLE_CALENDAR_ROOM_2_ID,
+      GOOGLE_CALENDAR_ROOM_3_ID,
       GOOGLE_SERVICE_PRIVATE_KEY,
     });
   }
@@ -209,7 +211,8 @@ export async function createAppointment(
         },
       },
       // https://lukeboyle.com/blog/posts/google-calendar-api-color-id
-      colorId: studioInfo.name === studiosData[0].name ? "2" : "10",
+      // https://google-calendar-simple-api.readthedocs.io/en/latest/colors.html#list-event-colors
+      colorId: studioColorCodesMap[studioInfo.name],
       // if payment is not working or is not verifiable
       // colorId: "4",
     },

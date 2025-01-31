@@ -1,10 +1,10 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
-import { studiosData } from "~/components/BookingStep/Steps/StudioStep";
 import { START_FROM_MONDAY } from "~/utils/constants";
 import { addMonths, getDateFormat, getPrevMonday } from "~/utils/date";
 import { generateDateTimeSlots } from "~/utils/slots";
+import { studiosData } from "~/utils/studiosData";
 
 export const IS_DEV = false;
 export const UNDER_MAINTENANCE = false;

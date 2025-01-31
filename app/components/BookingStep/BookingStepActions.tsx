@@ -23,7 +23,7 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
   const isLastStep = currentStep === BookingStep.Payment;
 
   return (
-    <span
+    <div
       className={`${
         isLastStep
           ? "m-0 inline-block w-1/2"
@@ -44,6 +44,6 @@ export const BookingStepActions: React.FC<BookingStepActionsProps> = ({
           далі
         </ActionButton>
       )}
-    </span>
+    </div>
   );
 };

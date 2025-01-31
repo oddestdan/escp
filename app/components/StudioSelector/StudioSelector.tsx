@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import type { StudioInfo } from "../BookingStep/Steps/StudioStep";
+import ReactImageGallery from "react-image-gallery";
+import { studiosImages } from "~/utils/studiosData";
 // import Slider from "react-slick";
 
 export interface StudioSelectorProps {
@@ -7,7 +9,7 @@ export interface StudioSelectorProps {
   selectedStudioIndex: number;
   onSaveStudio: (i: number) => void;
   highlightable?: boolean;
-  vertical?: boolean;
+  tileOnly?: boolean;
 }
 
 // const sliderSettings = {
@@ -26,11 +28,13 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   selectedStudioIndex,
   onSaveStudio,
   highlightable = false,
-  vertical = false,
+  tileOnly = false,
 }) => {
   const [isAltImage, setIsAltImage] = useState(false);
   const [start, setStart] = useState<Date>();
   const [animationClasses, setAnimationClasses] = useState("");
+
+  const selectedStudioImages = studiosImages[selectedStudioIndex];
 
   useEffect(() => {
     setStart(new Date());
@@ -47,10 +51,10 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   return (
     <div className="mb-4 flex flex-col md:mb-12">
       <div
-        className={`flex w-full justify-between ${
-          vertical
-            ? "flex-col xl:flex-row xl:gap-4"
-            : "flex-col gap-2 md:flex-row"
+        className={`w-full ${
+          tileOnly
+            ? "flex flex-col xl:flex-row xl:gap-4"
+            : "grid grid-cols-3 gap-4"
         }`}
       >
         {/* <Slider
@@ -75,22 +79,23 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
                     : "hover:text-white hover:[text-shadow:0px_0px_10px_rgba(0,0,0,0.5)]"
                 }`}
               >
-                <span className="relative w-full">
+                <div className="relative w-full">
                   <img
-                    className={`aspect-[3/2] w-full border-b-2 border-transparent object-cover xl:aspect-[3/2] ${
-                      isSelected || highlightable
-                        ? "border-b-stone-800 bg-stone-400"
-                        : "bg-stone-200 opacity-30 hover:border-b-stone-800 hover:opacity-80"
+                    className={`aspect-[3/2] w-full bg-transparent object-cover outline outline-offset-2 xl:aspect-[3/2] ${
+                      highlightable ? "" : "opacity-30  hover:opacity-80"
+                    } ${
+                      isSelected
+                        ? "outline-stone-800"
+                        : "outline-transparent hover:outline-stone-800"
                     } ${highlightable || !isSelected ? "cursor-pointer" : ""}`}
                     src={isAltImage ? studio.lowres.altImg : studio.lowres.img}
                     alt={`Studio ${i}: ${studio.name}`}
                   />
+                  {/* White overlapping layer */}
                   <div
                     className={`pointer-events-none absolute top-[-1px] left-[-1px] h-[calc(100%+2px)] w-[calc(100%+2px)] bg-white ${animationClasses}`}
-                  >
-                    {/* White overlapping layer */}
-                  </div>
-                </span>
+                  />
+                </div>
                 <p
                   className={`pointer-events-none absolute cursor-pointer text-6xl font-light xl:text-9xl `}
                 >
@@ -99,16 +104,41 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
               </div>
               <span
                 className={`mx-auto mt-1 inline-flex justify-center text-center md:mt-2 ${
-                  isSelected ? "underline underline-offset-2" : ""
-                }`}
+                  isSelected ? "font-semibold" : ""
+                  // isSelected ? "underline underline-offset-2" : ""
+                } ${tileOnly ? "text-base" : "text-sm"}`}
               >
-                {studio.name} | {studio.area} м²
+                {tileOnly ? studio.name : studio.shortName}
+                {tileOnly ? " | " : " "}
+                {studio.area}м²
               </span>
             </div>
           );
         })}
         {/* </Slider> */}
       </div>
+      {selectedStudioImages && !tileOnly && (
+        <div className="w-full xl:w-2/3 xl:pl-4">
+          <ReactImageGallery
+            items={selectedStudioImages.map(([high /*, low*/]) => ({
+              original: high,
+              // thumbnail: low,
+            }))}
+            lazyLoad
+            showPlayButton={false}
+            slideDuration={200}
+          />
+          {/* <img
+            className={`aspect-[3/2] w-full bg-transparent object-cover xl:aspect-[3/2]`}
+            src={
+              isAltImage
+                ? selectedStudio.lowres.altImg
+                : selectedStudio.lowres.img
+            }
+            alt={`Studio ${selectedStudioIndex}: ${selectedStudio.name}`}
+          /> */}
+        </div>
+      )}
     </div>
   );
 };
