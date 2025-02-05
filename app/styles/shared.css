@@ -11,6 +11,9 @@
 }
 
 /* Image gallery component styles */
+.image-gallery {
+  max-width: 100%;
+}
 .image-gallery-icon {
   color: #fff;
   transition: all 0.3s ease-out;

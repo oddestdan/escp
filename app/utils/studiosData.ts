@@ -16,6 +16,16 @@ import highq2_2 from "../../public/images/highq/r2/2.jpg";
 import highq2_3 from "../../public/images/highq/r2/3.jpg";
 import highq2_4 from "../../public/images/highq/r2/4.jpg";
 
+import highq3_Numbered1 from "../../public/images/highq/r3/реквізит/1.png";
+import highq3_Numbered2 from "../../public/images/highq/r3/реквізит/2.png";
+import highq3_1 from "../../public/images/highq/r3/1.jpg";
+import highq3_2 from "../../public/images/highq/r3/2.jpg";
+import highq3_3 from "../../public/images/highq/r3/3.jpg";
+import highq3_4 from "../../public/images/highq/r3/4.jpg";
+import highq3_5 from "../../public/images/highq/r3/5.jpg";
+import highq3_6 from "../../public/images/highq/r3/6.jpg";
+import highq3_7 from "../../public/images/highq/r3/7.jpg";
+
 import lowres1_1 from "../../public/images/lowres/r1 (1).jpg";
 import lowres1_2 from "../../public/images/lowres/r1 (2).jpg";
 import lowres2_1 from "../../public/images/lowres/r2 (1).jpg";
@@ -45,14 +55,14 @@ export const studiosData: StudioInfo[] = [
     },
   },
   {
-    img: highq2_1, // TODO: get proper images
+    img: highq3_1,
     name: "room 3",
     shortName: "r3",
     area: 45,
-    altImg: highq2_2, // TODO: get proper images
+    altImg: highq3_2,
     lowres: {
-      img: lowres2_1, // TODO: get proper images
-      altImg: lowres2_2, // TODO: get proper images
+      img: highq3_1,
+      altImg: highq3_2,
     },
   },
 ];
@@ -73,10 +83,15 @@ export const gallery2ImagesNumbered: [string, string][] = [
   [highq2_4, highq2_4],
 ];
 export const gallery3ImagesNumbered: [string, string][] = [
-  [highq2_Numbered1, highq2_Numbered1], // TODO: add images
-  [highq2_Numbered2, highq2_Numbered2], // TODO: add images
-  [highq2_3, highq2_3], // TODO: add images
-  [highq2_4, highq2_4], // TODO: add images
+  [highq3_Numbered1, highq3_Numbered1],
+  [highq3_Numbered2, highq3_Numbered2],
+  // [highq3_1, highq3_1],
+  // [highq3_2, highq3_2],
+  [highq3_3, highq3_3],
+  [highq3_4, highq3_4],
+  // [highq3_5, highq3_5], // TODO
+  [highq3_6, highq3_6],
+  // [highq3_7, highq3_7], // TODO
 ];
 
 export const gallery1Images: [string, string][] = [
@@ -94,10 +109,13 @@ export const gallery2Images: [string, string][] = [
   [highq2_4, highq2_4],
 ];
 export const gallery3Images: [string, string][] = [
-  [highq2_1, highq2_1], // TODO: add images
-  [highq2_2, highq2_2], // TODO: add images
-  [highq2_3, highq2_3], // TODO: add images
-  [highq2_4, highq2_4], // TODO: add images
+  [highq3_1, highq3_1],
+  [highq3_2, highq3_2],
+  [highq3_3, highq3_3],
+  [highq3_4, highq3_4],
+  [highq3_5, highq3_5],
+  [highq3_6, highq3_6],
+  [highq3_7, highq3_7],
 ];
 
 export const studiosImagesNumbered = [

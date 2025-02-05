@@ -51,10 +51,8 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
   return (
     <div className="mb-4 flex flex-col md:mb-12">
       <div
-        className={`w-full ${
-          tileOnly
-            ? "flex flex-col xl:flex-row xl:gap-4"
-            : "grid grid-cols-3 gap-4"
+        className={`grid w-full gap-4 ${
+          tileOnly ? "grid-cols-2" : "grid-cols-3"
         }`}
       >
         {/* <Slider
@@ -118,7 +116,7 @@ export const StudioSelector: React.FC<StudioSelectorProps> = ({
         {/* </Slider> */}
       </div>
       {selectedStudioImages && !tileOnly && (
-        <div className="w-full xl:w-2/3 xl:pl-4">
+        <div className="mx-auto w-full xl:w-2/3">
           <ReactImageGallery
             items={selectedStudioImages.map(([high /*, low*/]) => ({
               original: high,

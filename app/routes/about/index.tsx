@@ -69,7 +69,7 @@ export default function About() {
               </div>
 
               {/* desktop/right-side mobile/top*/}
-              <div className="w-full xl:w-2/3 xl:pl-4">
+              <div className="flex w-full justify-center xl:w-2/3">
                 {/* https://www.npmjs.com/package/react-image-gallery */}
                 <ImageGallery
                   items={studio.images.map(([high, low]) => ({

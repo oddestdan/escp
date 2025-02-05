@@ -98,11 +98,25 @@ const Studio2Description = () => (
 );
 
 const room3Items = [
-  "вентилятор",
-  "дерев'яний ящик",
+  "стілець",
   "лавка",
-  "драбина",
-  "стіл на коліщатках",
+  "крісло на коліщатах",
+  "матрац",
+  "стіл",
+  "килим",
+  "чорно-білі прапори",
+  "вентилятор",
+  "дзеркало",
+  "світильник",
+  "табурети",
+  "рейл для одягу",
+  "колонка jbl",
+  "колонка jbl",
+  "відпарювач",
+  [
+    "гардероб",
+    "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
+  ],
 ];
 const Studio3Description = () => (
   <div className="my-4">
@@ -110,7 +124,11 @@ const Studio3Description = () => (
     <br />
     <p className="font-medium">45 м²</p>
     <br />
-    Нова зала.
+    Зала з деревʼяною підлогою. 2 великих деревʼяних вікна, виходять на північ.
+    <br />
+    Штори на просвіт.
+    <br />
+    Висота стель 4,3 м
     <br />
     <br />
     Що входить у вартість та який є реквізит:
@@ -155,7 +173,17 @@ export const room3Data = {
   images: studiosImagesNumbered[2],
   items: room3Items,
   Description: Studio3Description,
-  Additional: () => <p className="my-4">Додаткові штучки</p>,
+  Additional: () => (
+    <p className="my-4">
+      В залі тимчасово відсутнє студійне світло.
+      <br />
+      Додатково на зйомку можна орендувати два постійних світла aputure 600d 1
+      <br />
+      год - 250 грн/шт
+      <br />
+      від 3х год - 650 грн/шт
+    </p>
+  ),
   data: studiosData[2],
 };
 
