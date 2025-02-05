@@ -224,6 +224,7 @@ export default function AdminBooking() {
           img: "",
           altImg: "",
           lowres: { img: "", altImg: "" },
+          shortName: "",
         },
         JSON.parse(app.contactInfo),
         new Date(app.timeFrom),
