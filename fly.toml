@@ -7,6 +7,10 @@ processes = []
 
 [env]
 
+[build]
+  image = "flyio/hellofly:latest"
+  dockerfile = "Dockerfile"
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
