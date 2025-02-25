@@ -49,8 +49,8 @@ export interface AdditionalServices {
 
 export const bookingServicesList = [
   // BookingService.assistance,
-  BookingService.instax,
-  BookingService.instaxCartridged,
+  // BookingService.instax,
+  // BookingService.instaxCartridged,
   BookingService.parking,
   BookingService.elevator,
   BookingService.extra,

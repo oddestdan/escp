@@ -55,8 +55,17 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
     //   } грн)`;
 
     const regular = services.filter(
-      (s) => /*s !== BookingService.assistance &&*/ s !== BookingService.extra
+      (s) =>
+        /*s !== BookingService.assistance &&*/
+        s !== BookingService.parking && s !== BookingService.extra
     );
+
+    const parking =
+      additionalServices.parking &&
+      services.find((s) => s === BookingService.parking) &&
+      `${BookingService.parking}: ${additionalServices.parking}`;
+
+    if (additionalServices.parking) regular.pop();
 
     const ext =
       additionalServices.extra &&
@@ -65,8 +74,8 @@ export const BookingSummary: React.FC<BookingSummaryProps> = ({ summary }) => {
 
     if (additionalServices.extra) regular.pop();
 
-    return [/*add, */ ...regular, ext].filter(Boolean).join(", ");
-  }, [services, /*additionalServices.assistance, */ additionalServices.extra]);
+    return [/*add, */ ...regular, parking, ext].filter(Boolean).join(", ");
+  }, [services, additionalServices.parking, additionalServices.extra]);
 
   const memoedContactInfo = useMemo(() => {
     const { firstName, lastName, tel } = contact;
