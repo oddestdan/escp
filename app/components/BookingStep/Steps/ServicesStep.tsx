@@ -21,23 +21,19 @@ const servicesLabelKeyMapper = {
   [BookingService.instaxCartridged]:
     "оренда instax square з картриджем на 10 фото (800 грн)",
   [BookingService.parking]: (
-    <>
-      <span>мені потрібне паркомісце</span>
-      <br />
-      <span className="">
+    <span className="flex flex-wrap">
+      <span className="mr-1">мені потрібне паркомісце </span>
+      <span>
         (одне місце безкоштовно, за додаткові оплата у адміністратора)
       </span>
-    </>
+    </span>
   ),
   [BookingService.elevator]: "мені потрібен вантажний ліфт",
   [BookingService.extra]: (
-    <>
-      <span>додаткові побажання</span>
-      <br />
-      <span className="">
-        (фон / спеціалізована зйомка / велика группа людей тощо)
-      </span>
-    </>
+    <span className="flex flex-wrap">
+      <span className="mr-1">додаткові побажання</span>
+      <span>(фон / спеціалізована зйомка / велика группа людей тощо)</span>
+    </span>
   ),
 };
 
