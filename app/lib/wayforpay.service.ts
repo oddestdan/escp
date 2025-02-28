@@ -1,15 +1,13 @@
-import type { generateAppointmentPaymentData } from "~/models/appointment.server";
+import type { Appointment } from "@prisma/client";
+import crypto from "crypto";
+import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
+import type { ContactInfo } from "~/store/bookingSlice";
+import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
+import { studiosData } from "~/utils/studiosData";
 
 export const merchantAccount = process.env.WFP_MERCHANT_ACCOUNT;
 export const merchantDomainName = process.env.WFP_MERCHANT_DOMAIN_NAME;
 export const merchantSecretKey = process.env.WFP_MERCHANT_SECRET_KEY;
-
-export const loadScript = () => {
-  const script = document.createElement("script");
-  script.src = "https://secure.wayforpay.com/server/pay-widget.jsx";
-  script.async = true;
-  return script;
-};
 
 // const mockData = {
 //   merchantAccount: "test_merch_n1",
@@ -31,25 +29,81 @@ export const loadScript = () => {
 //   merchantSignature: "faecbcce0424b29e1ab22293b46d428f",
 // };
 
-// https://wiki.wayforpay.com/view/852091
-export const wayforpay = function (
-  wfpConstructor: any,
-  paymentData: Awaited<ReturnType<typeof generateAppointmentPaymentData>>
-) {
-  if (!wfpConstructor) return;
+// TODO: https://wiki.wayforpay.com/view/852102
+export async function generateAppointmentPaymentData({
+  id,
+  price,
+  timeFrom,
+  timeTo,
+  contactInfo,
+  studio,
+}: Pick<
+  Appointment,
+  "id" | "contactInfo" | "price" | "timeFrom" | "timeTo" | "studio"
+>) {
+  const isDev = Boolean(process.env.IS_DEV);
 
-  const wayforpay = new wfpConstructor();
+  const info: ContactInfo = JSON.parse(contactInfo);
+  const parsedStudio: StudioInfo = JSON.parse(studio);
+  const studioId =
+    studiosData.findIndex((s) => s.name === parsedStudio.name) || 0;
+  const returnUrl = `${
+    isDev ? "http://localhost:3000" : "https://escp90.studio"
+  }/WayForPay/${id}?${STUDIO_ID_QS}=${studioId}`;
+  const data = {
+    merchantAccount: merchantAccount,
+    merchantDomainName: merchantDomainName,
+    merchantTransactionSecureType: "AUTO",
+    // sends a POST request to this url instead of a regular redirect
+    returnUrl,
+    authorizationType: "SimpleSignature",
+    orderReference: `ESCP_${id}`,
+    orderDate: Date.now(),
+    amount: `${price}.00`,
+    currency: "UAH",
+    productName: `Бронювання залу "${`${parsedStudio.name}, ${parsedStudio.area} м²`}" студії escp.90 ${new Date(
+      timeFrom
+    ).toLocaleDateString(KYIV_LOCALE)}: ${new Date(timeFrom).toLocaleTimeString(
+      KYIV_LOCALE,
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: KYIV_TIME_ZONE,
+      }
+    )}–${new Date(timeTo).toLocaleTimeString(KYIV_LOCALE, {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: KYIV_TIME_ZONE,
+    })}`,
+    productPrice: price,
+    productCount: "1",
+    clientFirstName: info.firstName,
+    clientLastName: info.lastName || "Прізвище",
+    clientEmail: "some@mail.com",
+    clientPhone: info.tel,
+    language: "UA",
+    paymentSystems: "card;googlePay;applePay;privat24;qrCode",
+    defaultPaymentSystem: "applePay",
 
-  wayforpay.run(
-    { ...paymentData },
-    function (response: any) {
-      console.log("on approved");
-    },
-    function (response: any) {
-      console.log("on declined");
-    },
-    function (response: any) {
-      console.log("on pending or in processing");
-    }
-  );
-};
+    merchantSignature: "",
+  };
+  const hashString = [
+    data.merchantAccount,
+    data.merchantDomainName,
+    data.orderReference,
+    data.orderDate,
+    data.amount,
+    data.currency,
+    data.productName,
+    data.productCount,
+    data.productPrice,
+  ].join(";");
+
+  const hash = crypto
+    .createHmac("md5", merchantSecretKey || `flk3409refn54t54t*FNJRET`)
+    .update(hashString)
+    .digest("hex");
+  data.merchantSignature = hash;
+
+  return data;
+}
