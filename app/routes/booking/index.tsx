@@ -65,7 +65,6 @@ export const action: ActionFunction = async ({ request }) => {
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
   const price = formData.get("price");
-  // const price = "1"; // TODO: RETURN
   const studioId = Number(formData.get("studioId"));
 
   invariant(typeof studio === "string", "studio must be a string");
@@ -239,6 +238,18 @@ export default function Booking() {
     errorMessage,
     studio,
   } = useSelector((store: StoreBooking) => store.booking);
+
+  useEffect(() => {
+    // https://betterprogramming.pub/4-ways-of-adding-external-js-files-in-reactjs-823f85de3668
+    const script = document.createElement("script");
+    script.src = "https://secure.wayforpay.com/server/pay-widget.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
