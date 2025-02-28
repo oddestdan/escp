@@ -1,5 +1,4 @@
 import { prisma } from "~/db.server";
-import crypto from "crypto";
 import {
   addDays,
   addMonths,
@@ -16,14 +15,9 @@ import { google } from "googleapis";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
+import { KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
 import { sendMail } from "./nodemailer.lib";
 import type { ContactInfo } from "~/store/bookingSlice";
-import {
-  merchantAccount,
-  merchantDomainName,
-  merchantSecretKey,
-} from "~/lib/wayforpay.service";
 import { sendSMS } from "./smsNotificator.lib";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studioColorCodesMap, studiosData } from "~/utils/studiosData";
@@ -322,73 +316,4 @@ export async function confirmAppointment(
     where: { id: appointmentId },
     data: { confirmed: confirmed },
   });
-}
-
-export async function generateAppointmentPaymentData({
-  id,
-  price,
-  timeFrom,
-  timeTo,
-  contactInfo,
-  studio,
-}: Pick<
-  Appointment,
-  "id" | "contactInfo" | "price" | "timeFrom" | "timeTo" | "studio"
->) {
-  const info: ContactInfo = JSON.parse(contactInfo);
-  const parsedStudio: StudioInfo = JSON.parse(studio);
-  const data = {
-    merchantAccount: merchantAccount,
-    merchantDomainName: merchantDomainName,
-    authorizationType: "SimpleSignature",
-    orderReference: `ESCP_${id}`,
-    orderDate: Date.now(),
-    amount: `${price}.00`,
-    currency: "UAH",
-    productName: `Бронювання залу "${`${parsedStudio.name}, ${parsedStudio.area} м²`}" студії escp.90 ${new Date(
-      timeFrom
-    ).toLocaleDateString(KYIV_LOCALE)}: ${new Date(timeFrom).toLocaleTimeString(
-      KYIV_LOCALE,
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: KYIV_TIME_ZONE,
-      }
-    )}–${new Date(timeTo).toLocaleTimeString(KYIV_LOCALE, {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: KYIV_TIME_ZONE,
-    })}`,
-    productPrice: price,
-    productCount: "1",
-    clientFirstName: info.firstName,
-    clientLastName: info.lastName || "Прізвище",
-    clientEmail: "some@mail.com",
-    clientPhone: info.tel,
-    language: "UA",
-    // https://wiki.wayforpay.com/view/852102 : paymentSystems
-    paymentSystems: "card",
-    // paymentSystems: "card;googlePay;applePay;privat24;qrCode",
-    // defaultPaymentSystem: "applePay",
-
-    merchantSignature: "",
-  };
-  const hashString = [
-    data.merchantAccount,
-    data.merchantDomainName,
-    data.orderReference,
-    data.orderDate,
-    data.amount,
-    data.currency,
-    data.productName,
-    data.productCount,
-    data.productPrice,
-  ].join(";");
-
-  const hash = crypto
-    .createHmac("md5", merchantSecretKey || `flk3409refn54t54t*FNJRET`)
-    .update(hashString)
-    .digest("hex");
-  data.merchantSignature = hash;
-  return data;
 }
