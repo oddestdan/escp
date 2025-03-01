@@ -6,7 +6,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { redirect, json } from "@remix-run/server-runtime";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import invariant from "tiny-invariant";
@@ -25,7 +25,7 @@ import {
   saveCurrentStep,
   BookingStep,
   setErrorMessage,
-  UNDER_MAINTENANCE,
+  BOOKING_UNDER_MAINTENANCE,
   bookingStepsDisplayData,
   IS_DEV,
 } from "~/store/bookingSlice";
@@ -65,6 +65,7 @@ export const action: ActionFunction = async ({ request }) => {
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
   const price = formData.get("price");
+  // const price = "1"; // TODO: RETURN --> use bookingSlice IS_DEV
   const studioId = Number(formData.get("studioId"));
 
   invariant(typeof studio === "string", "studio must be a string");
@@ -226,6 +227,7 @@ export default function Booking() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [overrideMaintenance, setOverrideMaintenance] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
@@ -238,18 +240,6 @@ export default function Booking() {
     errorMessage,
     studio,
   } = useSelector((store: StoreBooking) => store.booking);
-
-  useEffect(() => {
-    // https://betterprogramming.pub/4-ways-of-adding-external-js-files-in-reactjs-823f85de3668
-    const script = document.createElement("script");
-    script.src = "https://secure.wayforpay.com/server/pay-widget.js";
-    script.async = true;
-
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   const onStepClick = useCallback(
     (step: BookingStep) => {
@@ -281,6 +271,30 @@ export default function Booking() {
     }
   }, [dispatch, searchParams, setSearchParams]);
 
+  if (BOOKING_UNDER_MAINTENANCE && !overrideMaintenance) {
+    return (
+      <BookingWrapper
+        wrappedComponent={
+          <div className="flex h-[50vh] w-full flex-col items-center justify-center text-center text-stone-800">
+            <h3 className="text-2xl font-semibold">
+              Наразі{" "}
+              <span onDoubleClick={() => setOverrideMaintenance(true)}>
+                сайт
+              </span>{" "}
+              оновлюється
+            </h3>
+            <p className="mt-4">
+              Напишіть нам, з радістю допоможемо забронювати потрібний час.
+            </p>
+            <p className="my-4 flex justify-center">
+              <ContactLinks />
+            </p>
+          </div>
+        }
+      />
+    );
+  }
+
   return (
     <>
       {/* Fixed ErrorNotification */}
@@ -296,7 +310,7 @@ export default function Booking() {
             />
 
             {/* const sameAsKyivTimezone = new Date().getTimezoneOffset() === -120; // Intl.DateTimeFormat().resolvedOptions().timeZone */}
-            {UNDER_MAINTENANCE || new Date().getTimezoneOffset() > 0 ? (
+            {new Date().getTimezoneOffset() > 0 ? (
               <div className="w-full">
                 <p className="text-center text-red-500">
                   {new Date().getTimezoneOffset()} |{" "}

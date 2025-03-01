@@ -7,7 +7,7 @@ import { generateDateTimeSlots } from "~/utils/slots";
 import { studiosData } from "~/utils/studiosData";
 
 export const IS_DEV = false;
-export const UNDER_MAINTENANCE = false;
+export const BOOKING_UNDER_MAINTENANCE = true;
 
 export interface StoreBooking {
   booking: BookingState;
@@ -121,19 +121,22 @@ export const initialState: BookingState = {
   dateTime: {
     slots: get3MonthSlots(),
     date: getDateFormat(),
-    time: IS_DEV
-      ? {
-          start: `${getDateFormat()}T09:00:00.000Z`,
-          end: `${getDateFormat()}T12:00:00.000Z`,
-          diff: 3,
-        }
-      : { start: "", end: "", diff: 0 },
+    time: { start: "", end: "", diff: 0 },
+    // time: IS_DEV
+    //   ? {
+    //       start: `${getDateFormat()}T09:00:00.000Z`,
+    //       end: `${getDateFormat()}T12:00:00.000Z`,
+    //       diff: 3,
+    //     }
+    //   : { start: "", end: "", diff: 0 },
     hasWeekChanged: false,
   },
   services: [],
   additionalServices: {},
-  currentStep: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
-  maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
+  currentStep: BookingStep.Studio,
+  // currentStep: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
+  maxStepVisited: BookingStep.Studio,
+  // maxStepVisited: IS_DEV ? BookingStep.Payment : BookingStep.Studio,
   price: {
     booking: IS_DEV ? 1 : 0,
     services: 0,
