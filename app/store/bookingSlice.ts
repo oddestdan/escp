@@ -7,7 +7,7 @@ import { generateDateTimeSlots } from "~/utils/slots";
 import { studiosData } from "~/utils/studiosData";
 
 export const IS_DEV = false;
-export const BOOKING_UNDER_MAINTENANCE = false;
+export const BOOKING_UNDER_MAINTENANCE = true;
 
 export interface StoreBooking {
   booking: BookingState;
