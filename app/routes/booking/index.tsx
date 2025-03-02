@@ -30,7 +30,10 @@ import {
   IS_DEV,
 } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
-import { ActionButton } from "~/components/ActionButton/ActionButton";
+import {
+  ActionButton,
+  invertedClass,
+} from "~/components/ActionButton/ActionButton";
 import {
   BOOKING_TIME_TAKEN_ERROR_MSG,
   BOOKING_TIME_TAKEN_QS,
@@ -297,6 +300,32 @@ export default function Booking() {
               </span>{" "}
               оновлюється
             </h3>
+            <p className="mt-4 flex items-center gap-x-4">
+              <a
+                className={`px-4 py-1 ${invertedClass}`}
+                href="https://calendar.google.com/calendar/embed?src=sepd88tfbu0lamcultu9uuivdc%40group.calendar.google.com&ctz=Europe%2FKiev&wkst=1"
+                target="_blank"
+                rel="noreferrer"
+              >
+                room 1
+              </a>
+              <a
+                className={`px-4 py-1 ${invertedClass}`}
+                href="https://calendar.google.com/calendar/embed?src=d713ad72fa246089c84c1666a282e883b5d3887d081af3b406f230adf8ac5a65%40group.calendar.google.com&ctz=Europe%2FKiev"
+                target="_blank"
+                rel="noreferrer"
+              >
+                room 2
+              </a>
+              <a
+                className={`px-4 py-1 ${invertedClass}`}
+                href="https://calendar.google.com/calendar/embed?src=3d1681a08dd91228dbe36c6adfc779b983d54ed7a52e90962d0810e36577def5%40group.calendar.google.com&ctz=Europe%2FKiev"
+                target="_blank"
+                rel="noreferrer"
+              >
+                room 3
+              </a>
+            </p>
             <p className="mt-4">
               Напишіть нам, з радістю допоможемо забронювати потрібний час.
             </p>
