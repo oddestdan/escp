@@ -22,7 +22,6 @@ import {
 } from "~/lib/wayforpay.service";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studiosData } from "~/utils/studiosData";
-import { useDeleteAppointmentBeforeUnload } from "~/utils/hooks/useDeleteAppointmentBeforeUnload";
 
 type LoaderData = {
   appointment: Appointment;
@@ -131,7 +130,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export default function WayForPay() {
   const formRef = useRef<HTMLFormElement>(null);
-  const { paymentData, appointment } = useLoaderData() as unknown as LoaderData;
+  const { paymentData } = useLoaderData() as unknown as LoaderData;
 
   useEffect(() => {
     // Automatically submit the form when the component loads
@@ -141,7 +140,7 @@ export default function WayForPay() {
     }
   }, []);
 
-  useDeleteAppointmentBeforeUnload(appointment.id);
+  // useDeleteAppointmentBeforeUnload(appointment.id);
 
   return (
     <div>

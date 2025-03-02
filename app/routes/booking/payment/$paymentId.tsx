@@ -8,7 +8,6 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import { STUDIO_ID_QS } from "~/utils/constants";
 import Wrapper from "~/components/Wrapper/Wrapper";
-import { useDeleteAppointmentBeforeUnload } from "~/utils/hooks/useDeleteAppointmentBeforeUnload";
 
 type LoaderData = {
   appointment: Appointment;
@@ -67,8 +66,6 @@ export default function Payment() {
     price,
     id: prismaId,
   } = appointment;
-
-  useDeleteAppointmentBeforeUnload(prismaId);
 
   useEffect(() => {
     navigate(`/WayForPay/${paymentId}`);

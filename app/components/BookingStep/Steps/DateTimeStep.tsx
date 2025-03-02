@@ -153,11 +153,12 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           ) || [];
 
         // Shows temporary prisma appointments
-        const todaysPrismaAppointments = // [];
+        const todaysPrismaAppointments =
           prismaAppointments.filter(
             ({ date, timeFrom, timeTo }) =>
               timeFrom && timeTo && date === getDateFormat(weekDate)
           ) || [];
+        // [] as Appointment[];
 
         // all appointments' time slots for a day
         const bookedSlots = mapAppointmentsToSlots(

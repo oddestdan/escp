@@ -144,7 +144,13 @@ export async function getPrismaAppointmentsByDate(
   console.log("**************************************");
   console.log(`> Getting all appointments from Prisma for date ${date}...`);
 
-  return prisma.appointment.findMany({ where: { date, studioId } });
+  return prisma.appointment.findMany({
+    where: {
+      date,
+      studioId,
+      expiresAt: { gt: new Date() }, // Only get appointments where expiresAt is in the future
+    },
+  });
 }
 
 export async function getPrismaAppointmentById(id: string) {
@@ -273,7 +279,13 @@ export async function createPrismaAppointment(
   //   return null;
   // }
 
-  return prisma.appointment.create({ data: appointment });
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+  const createdAppointment = await prisma.appointment.create({
+    data: { ...appointment, expiresAt },
+  });
+
+  return createdAppointment;
 }
 
 export async function updateAppointment(
@@ -309,7 +321,6 @@ export async function deletePrismaAppointment(appointmentId: string) {
 
   try {
     return prisma.appointment.delete({ where: { id: appointmentId } });
-    console.log(`>> Successfully deleted appointment id=${appointmentId}`);
   } catch (error) {
     console.error(error);
   }

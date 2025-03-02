@@ -50,8 +50,9 @@ model Appointment {
   price       String @default("0")
   services    String
 
-  confirmed Boolean @default(false)
+  confirmed   Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime?  // Make it optional first
 }
