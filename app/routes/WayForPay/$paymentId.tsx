@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLoaderData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
+import type { Appointment } from "~/models/appointment.server";
 import {
   createAppointment,
   deletePrismaAppointment,
@@ -9,7 +10,11 @@ import {
 import invariant from "tiny-invariant";
 
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
-import { BOOKING_TIME_TAKEN_QS, STUDIO_ID_QS } from "~/utils/constants";
+import {
+  BOOKING_TIME_TAKEN_QS,
+  STUDIO_ID_QS,
+  WFP_ERROR_QS,
+} from "~/utils/constants";
 import type { WayForPayPaymentResponse } from "~/lib/wayforpay.service";
 import {
   generateAppointmentPaymentData,
@@ -17,8 +22,10 @@ import {
 } from "~/lib/wayforpay.service";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studiosData } from "~/utils/studiosData";
+import { useDeleteAppointmentBeforeUnload } from "~/utils/hooks/useDeleteAppointmentBeforeUnload";
 
 type LoaderData = {
+  appointment: Appointment;
   paymentData: Awaited<ReturnType<typeof generateAppointmentPaymentData>>;
 };
 
@@ -30,7 +37,9 @@ export const loader: LoaderFunction = async ({ params }) => {
     console.log({ at: "paymentId", prismaAppointment: appointment });
 
     if (!appointment) {
-      console.error({ message: "Appointment not found Error" });
+      console.error({
+        message: `WayForPay/Loader: Appointment not found Error (${params.paymentId})`,
+      });
       return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
 
@@ -42,7 +51,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
 
-    return json<LoaderData>({ paymentData });
+    return json<LoaderData>({ paymentData, appointment });
   } catch (error) {
     console.error(error);
     console.error({ message: "Payment Error" });
@@ -62,20 +71,14 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (method) {
     case "POST": {
-      // https://wiki.wayforpay.com/ru/view/852131
-      if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
-        console.error({
-          message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
-        });
-        return redirect(`/booking?${STUDIO_ID_QS}=0`);
-      }
-
       invariant(params.paymentId, "Expected params.paymentId");
 
       const appointment = await getPrismaAppointmentById(params.paymentId);
 
       if (!appointment) {
-        console.error({ message: "Appointment not found Error" });
+        console.error({
+          message: `WayForPay/Action.POST: Appointment not found Error (${params.paymentId})`,
+        });
         return redirect(`/booking?${STUDIO_ID_QS}=0`);
       }
 
@@ -84,6 +87,24 @@ export const action: ActionFunction = async ({ request, params }) => {
       const studioParsed = JSON.parse(appointment.studio) as StudioInfo;
       const studioId =
         studiosData.findIndex((s) => s.name === studioParsed.name) || 0;
+
+      // https://wiki.wayforpay.com/ru/view/852131
+      if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
+        console.error({
+          message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
+        });
+
+        try {
+          await deletePrismaAppointment(params.paymentId);
+        } catch (error) {
+          console.log({ at: "deletePrismaError", error });
+        }
+
+        return redirect(
+          `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
+        );
+      }
+
       const createdAppointment = await createAppointment(appointment, studioId);
 
       console.log({ googleCreatedAppointment: createdAppointment });
@@ -110,7 +131,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export default function WayForPay() {
   const formRef = useRef<HTMLFormElement>(null);
-  const { paymentData } = useLoaderData() as unknown as LoaderData;
+  const { paymentData, appointment } = useLoaderData() as unknown as LoaderData;
 
   useEffect(() => {
     // Automatically submit the form when the component loads
@@ -119,6 +140,8 @@ export default function WayForPay() {
       formRef.current.submit();
     }
   }, []);
+
+  useDeleteAppointmentBeforeUnload(appointment.id);
 
   return (
     <div>

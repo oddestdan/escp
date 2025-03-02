@@ -26,6 +26,7 @@ export const LS_FOOT_OR_CAR = "escp90-foot-or-car";
 export const STUDIO_ID_QS = "studioId";
 export const CONTACTS_CURRENT_TAB_QS = "tab";
 export const BOOKING_TIME_TAKEN_QS = "booked";
+export const WFP_ERROR_QS = "wfp";
 
 // Messages
 export const NUMBER_COPIED_MSG = "номер скопійовано!";
@@ -44,3 +45,4 @@ export const ERROR_404_APPOINTMENT_BY_ID_MSG =
   "Не вдалося підвантажити замовлення по ID";
 export const ERROR_APPOINTMENT_ALREADY_BOOKED =
   "Бронювання на вказаний час вже здійснено. \nБудь-ласка, спробуйте ще раз";
+export const ERROR_WFP_UNSUCCESSFUL = "WayForPay: неуспішна оплата";

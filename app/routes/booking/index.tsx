@@ -37,7 +37,9 @@ import {
   ERROR_404_APPOINTMENTS_MSG,
   ERROR_APPOINTMENT_ALREADY_BOOKED,
   ERROR_SOMETHING_BAD_HAPPENED,
+  ERROR_WFP_UNSUCCESSFUL,
   STUDIO_ID_QS,
+  WFP_ERROR_QS,
 } from "~/utils/constants";
 import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotification";
 
@@ -89,7 +91,7 @@ export const action: ActionFunction = async ({ request }) => {
   };
 
   const isPaymentWorking = true;
-  const enableOverlaps = false;
+  const enableOverlaps = true;
   if (isPaymentWorking) {
     if (enableOverlaps) {
       const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
@@ -260,6 +262,18 @@ export default function Booking() {
     [submit]
   );
 
+  // effect to display WFP payment error
+  useEffect(() => {
+    if (searchParams.get(WFP_ERROR_QS)) {
+      searchParams.delete(WFP_ERROR_QS);
+      setSearchParams(searchParams);
+
+      dispatch(setErrorMessage(ERROR_WFP_UNSUCCESSFUL));
+      setTimeout(() => dispatch(setErrorMessage("")), 10000);
+    }
+  }, [dispatch, searchParams, setSearchParams]);
+
+  // effect to display "Booking slot already taken" error
   useEffect(() => {
     if (searchParams.get(BOOKING_TIME_TAKEN_QS)) {
       dispatch(saveCurrentStep(BookingStep.DateTime));
@@ -267,7 +281,7 @@ export default function Booking() {
       setSearchParams(searchParams);
 
       dispatch(setErrorMessage(BOOKING_TIME_TAKEN_ERROR_MSG));
-      setTimeout(() => dispatch(setErrorMessage("")), 7000);
+      setTimeout(() => dispatch(setErrorMessage("")), 10000);
     }
   }, [dispatch, searchParams, setSearchParams]);
 

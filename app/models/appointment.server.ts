@@ -300,8 +300,16 @@ export async function deleteAppointment(appointmentId: string) {
 }
 
 export async function deletePrismaAppointment(appointmentId: string) {
+  console.log(`> Deleting an appointment id=${appointmentId} from Prisma...`);
+
+  const foundPrismaId = await getPrismaAppointmentById(appointmentId);
+  console.log(`>> No appointment found for id=${appointmentId}`);
+
+  if (!foundPrismaId) return;
+
   try {
     return prisma.appointment.delete({ where: { id: appointmentId } });
+    console.log(`>> Successfully deleted appointment id=${appointmentId}`);
   } catch (error) {
     console.error(error);
   }

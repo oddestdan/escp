@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
-import {
-  deletePrismaAppointment,
-  getPrismaAppointmentById,
-} from "~/models/appointment.server";
+import { getPrismaAppointmentById } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
 
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { Appointment } from "~/models/appointment.server";
 import { STUDIO_ID_QS } from "~/utils/constants";
-import { useBeforeUnload } from "react-use";
 import Wrapper from "~/components/Wrapper/Wrapper";
+import { useDeleteAppointmentBeforeUnload } from "~/utils/hooks/useDeleteAppointmentBeforeUnload";
 
 type LoaderData = {
   appointment: Appointment;
@@ -25,7 +22,9 @@ export const loader: LoaderFunction = async ({ params }) => {
     const appointment = await getPrismaAppointmentById(params.paymentId);
 
     if (!appointment) {
-      console.error({ message: "Appointment not found Error" });
+      console.error({
+        message: `PaymentId: Appointment not found Error (${params.paymentId})`,
+      });
       return redirect(`/booking?${STUDIO_ID_QS}=0`);
     }
 
@@ -69,14 +68,7 @@ export default function Payment() {
     id: prismaId,
   } = appointment;
 
-  const deleteFromPrisma = useCallback(() => {
-    deletePrismaAppointment(prismaId);
-  }, [prismaId]);
-
-  useBeforeUnload(() => {
-    deleteFromPrisma();
-    return true;
-  });
+  useDeleteAppointmentBeforeUnload(prismaId);
 
   useEffect(() => {
     navigate(`/WayForPay/${paymentId}`);
