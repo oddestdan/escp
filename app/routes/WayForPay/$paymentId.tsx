@@ -32,6 +32,8 @@ export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.paymentId, "Expected params.paymentId");
 
   try {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second delay
+
     const appointment = await getPrismaAppointmentById(params.paymentId);
     console.log({ at: "paymentId", prismaAppointment: appointment });
 
