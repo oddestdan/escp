@@ -134,7 +134,15 @@ export async function getPrismaAppointments(
   console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   console.log(`> Getting all appointments from Prisma...`);
 
-  return prisma.appointment.findMany({ where: { studioId } });
+  return prisma.appointment.findMany({
+    where: {
+      studioId,
+      OR: [
+        { expiresAt: null }, // Include appointments where expiresAt is null
+        { expiresAt: { gt: new Date() } }, // Include appointments where expiresAt is in the future
+      ],
+    },
+  });
 }
 
 export async function getPrismaAppointmentsByDate(
@@ -148,7 +156,10 @@ export async function getPrismaAppointmentsByDate(
     where: {
       date,
       studioId,
-      expiresAt: { gt: new Date() }, // Only get appointments where expiresAt is in the future
+      OR: [
+        { expiresAt: null }, // Include appointments where expiresAt is null
+        { expiresAt: { gt: new Date() } }, // Include appointments where expiresAt is in the future
+      ],
     },
   });
 }
