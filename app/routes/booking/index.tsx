@@ -14,9 +14,7 @@ import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import type { Appointment } from "~/models/appointment.server";
 import {
-  createAppointment,
   createPrismaAppointment,
-  deletePrismaAppointment,
   getAppointments,
   getPrismaAppointments,
   getPrismaAppointmentsByDate,
@@ -93,65 +91,48 @@ export const action: ActionFunction = async ({ request }) => {
     studioId,
   };
 
-  const isPaymentWorking = true;
   const enableOverlaps = true;
-  if (isPaymentWorking) {
-    if (enableOverlaps) {
-      const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
-        studioId,
-        date
+  if (enableOverlaps) {
+    const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
+      studioId,
+      date
+    );
+    const calendarAppointments = await getAppointments(studioId, date);
+    const todaysCalendarAppointments = calendarAppointments.filter(
+      (app) => app.date === date
+    );
+    const overlaps = [
+      ...todaysPrismaAppointments,
+      ...todaysCalendarAppointments,
+    ].filter((todays) => slotOverlapsAnotherSlot(todays, appointmentDTO));
+
+    console.log({ todaysPrismaAppointments, overlaps });
+
+    // if the dates match and timeFrom + timeTo are overlapping any of the existing appointments
+    if (overlaps.length > 0) {
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
       );
-      const calendarAppointments = await getAppointments(studioId, date);
-      const todaysCalendarAppointments = calendarAppointments.filter(
-        (app) => app.date === date
-      );
-      const overlaps = [
-        ...todaysPrismaAppointments,
-        ...todaysCalendarAppointments,
-      ].filter((todays) => slotOverlapsAnotherSlot(todays, appointmentDTO));
-
-      console.log({ todaysPrismaAppointments, overlaps });
-
-      // if the dates match and timeFrom + timeTo are overlapping any of the existing appointments
-      if (overlaps.length > 0) {
-        return redirect(
-          `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
-        );
-      }
     }
-    // create Prisma Appointment and redirect to booking/payment
-
-    const createdPrismaAppointment = await createPrismaAppointment(
-      appointmentDTO
-    );
-    console.log({ createdPrismaAppointment });
-
-    console.log(
-      `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
-    );
-    setTimeout(
-      () => deletePrismaAppointment(createdPrismaAppointment.id),
-      1000 * 60 * 10
-    );
-
-    return redirect(
-      `/booking/payment/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
-    );
-  } else {
-    const createdAppointment = await createAppointment(
-      appointmentDTO,
-      studioId
-    );
-    console.log(createdAppointment);
-
-    if (!createdAppointment) {
-      return redirect(`/booking?${BOOKING_TIME_TAKEN_QS}=true`);
-    }
-
-    return redirect(
-      `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
-    );
   }
+  // create Prisma Appointment and redirect to booking/payment
+
+  const createdPrismaAppointment = await createPrismaAppointment(
+    appointmentDTO
+  );
+  console.log({ createdPrismaAppointment });
+
+  console.log(
+    `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
+  );
+  // setTimeout(
+  //   () => deletePrismaAppointment(createdPrismaAppointment.id),
+  //   1000 * 60 * 10
+  // );
+
+  return redirect(
+    `/booking/payment/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+  );
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {

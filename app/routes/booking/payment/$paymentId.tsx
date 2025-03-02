@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       console.error({
         message: `PaymentId: Appointment not found Error (${params.paymentId})`,
       });
-      return redirect(`/booking?${STUDIO_ID_QS}=0`);
+      return redirect(`/booking?${STUDIO_ID_QS}=0&lenya=serezha`);
     }
 
     return json<LoaderData>({
