@@ -41,7 +41,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       console.error({
         message: `WayForPay/Loader: Appointment not found Error (${params.paymentId})`,
       });
-      return redirect(`/booking?${STUDIO_ID_QS}=0`);
+      return redirect(`/booking?${STUDIO_ID_QS}=0&notFound=wayforpay`);
     }
 
     const paymentData = await generateAppointmentPaymentData(appointment);
