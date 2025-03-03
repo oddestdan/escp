@@ -166,6 +166,7 @@ export async function getPrismaAppointmentsByDate(
 
 export async function getPrismaAppointmentById(id: string) {
   console.log(`> Getting an appointment id=${id} from Prisma...`);
+  return prisma.appointment.findUnique({ where: { id } });
 
   let appointment: Appointment | null = null;
   // Array.from(Array(3).keys()).map(async (idx) => {

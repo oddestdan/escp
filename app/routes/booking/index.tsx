@@ -1,23 +1,19 @@
 import {
-  Form,
   useCatch,
+  useFetcher,
   useLoaderData,
   useSearchParams,
-  useSubmit,
 } from "@remix-run/react";
-import { redirect, json } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import { useEffect, useRef, useCallback, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import invariant from "tiny-invariant";
 import ActiveBookingStep from "~/components/BookingStep/BookingStep";
 import { ContactLinks } from "~/components/ContactLinks/ContactLinks";
 import type { Appointment } from "~/models/appointment.server";
 import {
-  createPrismaAppointment,
   getAppointments,
   getPrismaAppointments,
-  getPrismaAppointmentsByDate,
 } from "~/models/appointment.server";
 import {
   saveCurrentStep,
@@ -26,7 +22,6 @@ import {
   BOOKING_UNDER_MAINTENANCE,
   bookingStepsDisplayData,
   IS_DEV,
-  ENABLE_OVERLAPS,
 } from "~/store/bookingSlice";
 import ProgressBar from "~/components/ProgressBar/ProgressBar";
 import {
@@ -48,8 +43,10 @@ import { ErrorNotification } from "~/components/ErrorNotification/ErrorNotificat
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import type { StoreBooking } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
-import { slotOverlapsAnotherSlot } from "~/utils/slots";
 import Wrapper from "~/components/Wrapper/Wrapper";
+import type { GeneratedPaymentData } from "./booking.helper";
+import { handleFormAppointmentCreation } from "./booking.helper";
+import { generateAppointmentPaymentData } from "~/lib/wayforpay.service";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
@@ -58,88 +55,13 @@ type LoaderData = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log(">> creating appointment into Prisma");
-
   const formData = await request.formData();
+  const appointment = await handleFormAppointmentCreation(formData);
+  const paymentData = await generateAppointmentPaymentData(appointment);
 
-  const studio = formData.get("studio");
-  const date = formData.get("date");
-  const timeFrom = formData.get("timeFrom");
-  const timeTo = formData.get("timeTo");
-  const services = formData.get("services");
-  const contactInfo = formData.get("contactInfo");
-  const price = formData.get("price");
-  // const price = "1"; // TODO: RETURN --> use bookingSlice IS_DEV
-  const studioId = Number(formData.get("studioId"));
+  console.log({ paymentData });
 
-  invariant(typeof studio === "string", "studio must be a string");
-  invariant(typeof date === "string", "date must be a string");
-  invariant(typeof timeFrom === "string", "timeFrom must be a string");
-  invariant(typeof timeTo === "string", "timeTo must be a string");
-  invariant(typeof services === "string", "services must be a string");
-  invariant(typeof contactInfo === "string", "contactInfo must be a string");
-  invariant(typeof price === "string", "price must be a string");
-  invariant(typeof studioId === "number", "studioId must be a number");
-
-  const appointmentDTO = {
-    studio,
-    date,
-    timeFrom,
-    timeTo,
-    services,
-    contactInfo,
-    price,
-    studioId,
-  };
-
-  if (ENABLE_OVERLAPS) {
-    const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
-      studioId,
-      date
-    );
-    const calendarAppointments = await getAppointments(studioId, date);
-    const todaysCalendarAppointments = calendarAppointments.filter(
-      (app) => app.date === date
-    );
-    const overlaps = [
-      ...todaysPrismaAppointments,
-      ...todaysCalendarAppointments,
-    ].filter((todays) => slotOverlapsAnotherSlot(todays, appointmentDTO));
-
-    console.log({ todaysPrismaAppointments, overlaps });
-
-    // if the dates match and timeFrom + timeTo are overlapping any of the existing appointments
-    if (overlaps.length > 0) {
-      return redirect(
-        `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
-      );
-    }
-  }
-
-  const createdPrismaAppointment = await createPrismaAppointment(
-    appointmentDTO
-  );
-  console.log({ createdPrismaAppointment });
-
-  console.log(
-    `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
-  );
-
-  // const paymentData = await generateAppointmentPaymentData(
-  //   createdPrismaAppointment
-  // );
-  // console.log({ paymentData });
-
-  // if (!paymentData) {
-  //   console.error({ message: "Payment info generation Error" });
-  //   return redirect(
-  //     `/booking?${STUDIO_ID_QS}=${studioId}&notFound=paymentData&${BOOKING_TIME_TAKEN_QS}=true`
-  //   );
-  // }
-
-  return redirect(
-    `/booking/WayForPay/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
-  );
+  return json({ paymentData });
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -216,12 +138,16 @@ export function CatchBoundary() {
 
 export default function Booking() {
   const { studioId } = useLoaderData() as unknown as LoaderData;
-  const submit = useSubmit();
   const dispatch = useDispatch();
+  const fetcher = useFetcher();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [overrideMaintenance, setOverrideMaintenance] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const paymentFormRef = useRef<HTMLFormElement>(null);
+  const [paymentData, setPaymentData] = useState<GeneratedPaymentData | null>(
+    null
+  );
 
   const {
     currentStep,
@@ -248,10 +174,19 @@ export default function Booking() {
   const bookAppointment = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
-      submit(formRef.current);
+      fetcher.submit(formRef.current, { method: "post" });
+      // submit(formRef.current);
     },
-    [submit]
+    [fetcher]
   );
+
+  // effect to run WFP once payment data is generated
+  useEffect(() => {
+    if (fetcher.data && fetcher.data.paymentData) {
+      setPaymentData(fetcher.data.paymentData);
+      setTimeout(() => paymentFormRef.current?.submit(), 0);
+    }
+  }, [fetcher.data]);
 
   // effect to display WFP payment error
   useEffect(() => {
@@ -360,51 +295,73 @@ export default function Booking() {
               <>
                 <ActiveBookingStep />
                 {currentStep === BookingStep.Payment && (
-                  <Form
-                    method="post"
-                    className="inline-block w-1/2"
-                    ref={formRef}
-                  >
-                    <input
-                      type="hidden"
-                      name="studio"
-                      value={JSON.stringify(studio)}
-                    />
-                    <input type="hidden" name="date" value={selectedDate} />
-                    <input
-                      type="hidden"
-                      name="timeFrom"
-                      value={selectedTime.start}
-                    />
-                    <input
-                      type="hidden"
-                      name="timeTo"
-                      value={selectedTime.end}
-                    />
-                    <input
-                      type="hidden"
-                      name="services"
-                      value={JSON.stringify({ services, additionalServices })}
-                    />
-                    <input
-                      type="hidden"
-                      name="contactInfo"
-                      value={JSON.stringify(contact)}
-                    />
-                    <input
-                      type="hidden"
-                      name="price"
-                      value={
-                        IS_DEV
-                          ? `1`
-                          : `${price.booking + (price.services || 0)}`
-                      }
-                    />
-                    <input type="hidden" name="studioId" value={studioId} />
-                    <ActionButton buttonType="submit" onClick={bookAppointment}>
-                      оплатити
-                    </ActionButton>
-                  </Form>
+                  <>
+                    <fetcher.Form
+                      method="post"
+                      className="inline-block w-1/2"
+                      ref={formRef}
+                    >
+                      <input
+                        type="hidden"
+                        name="studio"
+                        value={JSON.stringify(studio)}
+                      />
+                      <input type="hidden" name="date" value={selectedDate} />
+                      <input
+                        type="hidden"
+                        name="timeFrom"
+                        value={selectedTime.start}
+                      />
+                      <input
+                        type="hidden"
+                        name="timeTo"
+                        value={selectedTime.end}
+                      />
+                      <input
+                        type="hidden"
+                        name="services"
+                        value={JSON.stringify({ services, additionalServices })}
+                      />
+                      <input
+                        type="hidden"
+                        name="contactInfo"
+                        value={JSON.stringify(contact)}
+                      />
+                      <input
+                        type="hidden"
+                        name="price"
+                        value={
+                          IS_DEV
+                            ? `1`
+                            : `${price.booking + (price.services || 0)}`
+                        }
+                      />
+                      <input type="hidden" name="studioId" value={studioId} />
+                      <ActionButton
+                        buttonType="submit"
+                        onClick={bookAppointment}
+                      >
+                        оплатити
+                      </ActionButton>
+                    </fetcher.Form>
+                    {paymentData && (
+                      <form
+                        method="post"
+                        ref={paymentFormRef}
+                        action="https://secure.wayforpay.com/pay"
+                        encType="application/x-www-form-urlencoded"
+                      >
+                        {Object.entries(paymentData).map(([key, value]) => (
+                          <input
+                            key={key}
+                            type="hidden"
+                            name={key}
+                            value={value}
+                          />
+                        ))}
+                      </form>
+                    )}
+                  </>
                 )}
               </>
             )}
