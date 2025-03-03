@@ -8,7 +8,7 @@ export const useDeleteAppointmentBeforeUnload = (appointmentId: string) => {
   }, [appointmentId]);
 
   useBeforeUnload(() => {
-    console.log(`> Deleting from Prisma before unload of /paymentId`);
+    console.log(`> Deleting from Prisma before unload`);
     deleteFromPrisma();
     return true;
   });

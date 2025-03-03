@@ -167,13 +167,25 @@ export async function getPrismaAppointmentsByDate(
 export async function getPrismaAppointmentById(id: string) {
   console.log(`> Getting an appointment id=${id} from Prisma...`);
 
-  // OPTION 1 -- Force Reading from the Primary Database
-  // await prisma.$queryRaw`SET session_replication_role = 'origin'`;
-  // return prisma.appointment.findUnique({ where: { id } });
+  let appointment: Appointment | null = null;
+  // Array.from(Array(3).keys()).map(async (idx) => {
+  //   if (appointment?.id) return;
+
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second delay
+
+  // appointment = await prisma.appointment.findUnique({ where: { id } });
 
   // OPTION 2 -- Using findFirst instead of findUnique
   // to prevent Prisma caching issues
-  return prisma.appointment.findFirst({ where: { id } });
+  appointment = await prisma.appointment.findUnique({ where: { id } });
+  // appointment = (
+  //   await prisma.$transaction([
+  //     prisma.appointment.findFirst({ where: { id } }),
+  //   ])
+  // )[0];
+  // });
+
+  return appointment;
 }
 
 export async function createAppointment(

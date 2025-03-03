@@ -52,7 +52,7 @@ export async function generateAppointmentPaymentData({
     // sends a POST request to this url instead of a regular redirect
     returnUrl: `${
       IS_DEV ? "http://localhost:3000" : "https://escp90.studio"
-    }/WayForPay/${id}?${STUDIO_ID_QS}=${studioId}`,
+    }/booking/WayForPay/${id}?${STUDIO_ID_QS}=${studioId}`,
     authorizationType: "SimpleSignature",
     orderReference: `ESCP_${id}`,
     orderDate: Date.now(),

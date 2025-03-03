@@ -49,6 +49,7 @@ import type { StoreBooking } from "~/store/bookingSlice";
 import type { GoogleAppointment } from "~/models/googleApi.lib";
 import { slotOverlapsAnotherSlot } from "~/utils/slots";
 import Wrapper from "~/components/Wrapper/Wrapper";
+import { generateAppointmentPaymentData } from "~/lib/wayforpay.service";
 
 type LoaderData = {
   appointments: GoogleAppointment[];
@@ -91,7 +92,7 @@ export const action: ActionFunction = async ({ request }) => {
     studioId,
   };
 
-  const enableOverlaps = true;
+  const enableOverlaps = false;
   if (enableOverlaps) {
     const todaysPrismaAppointments = await getPrismaAppointmentsByDate(
       studioId,
@@ -115,7 +116,6 @@ export const action: ActionFunction = async ({ request }) => {
       );
     }
   }
-  // create Prisma Appointment and redirect to booking/payment
 
   const createdPrismaAppointment = await createPrismaAppointment(
     appointmentDTO
@@ -125,13 +125,25 @@ export const action: ActionFunction = async ({ request }) => {
   console.log(
     `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
   );
+
+  const paymentData = await generateAppointmentPaymentData(
+    createdPrismaAppointment
+  );
+  console.log({ paymentData });
+
+  if (!paymentData) {
+    console.error({ message: "Payment info generation Error" });
+    return redirect(
+      `/booking?${STUDIO_ID_QS}=${studioId}&notFound=paymentData&${BOOKING_TIME_TAKEN_QS}=true`
+    );
+  }
   // setTimeout(
   //   () => deletePrismaAppointment(createdPrismaAppointment.id),
   //   1000 * 60 * 10
   // );
 
   return redirect(
-    `/booking/payment/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+    `/booking/WayForPay/${createdPrismaAppointment.id}?${STUDIO_ID_QS}=${studioId}`
   );
 };
 

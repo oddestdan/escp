@@ -22,6 +22,7 @@ import {
 } from "~/lib/wayforpay.service";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studiosData } from "~/utils/studiosData";
+import Wrapper from "~/components/Wrapper/Wrapper";
 
 type LoaderData = {
   appointment: Appointment;
@@ -32,8 +33,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.paymentId, "Expected params.paymentId");
 
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second delay
-
     const appointment = await getPrismaAppointmentById(params.paymentId);
     console.log({ at: "paymentId", prismaAppointment: appointment });
 
@@ -41,7 +40,9 @@ export const loader: LoaderFunction = async ({ params }) => {
       console.error({
         message: `WayForPay/Loader: Appointment not found Error (${params.paymentId})`,
       });
-      return redirect(`/booking?${STUDIO_ID_QS}=0&notFound=wayforpay`);
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=0&notFound=wayforpay&${BOOKING_TIME_TAKEN_QS}=true`
+      );
     }
 
     const paymentData = await generateAppointmentPaymentData(appointment);
@@ -130,6 +131,18 @@ export const action: ActionFunction = async ({ request, params }) => {
   }
 };
 
+const BookingWrapper = ({
+  wrappedComponent,
+}: {
+  wrappedComponent: JSX.Element;
+}) => (
+  <Wrapper activePage="booking">
+    <div className="flex w-full flex-1 flex-col items-center font-light ">
+      <div className="my-4 w-full sm:w-3/5">{wrappedComponent}</div>
+    </div>
+  </Wrapper>
+);
+
 export default function WayForPay() {
   const formRef = useRef<HTMLFormElement>(null);
   const { paymentData } = useLoaderData() as unknown as LoaderData;
@@ -145,15 +158,19 @@ export default function WayForPay() {
   // useDeleteAppointmentBeforeUnload(appointment.id);
 
   return (
-    <div>
-      WayForPay page
-      <form
-        ref={formRef}
-        method="POST"
-        action="https://secure.wayforpay.com/pay"
-        encType="application/x-www-form-urlencoded"
-      >
-        {/* <input
+    <BookingWrapper
+      wrappedComponent={
+        <>
+          <h2 className="my-4 text-center font-medium">
+            WayForPay: оплачуємо...
+          </h2>
+          <form
+            ref={formRef}
+            method="POST"
+            action="https://secure.wayforpay.com/pay"
+            encType="application/x-www-form-urlencoded"
+          >
+            {/* <input
           type="hidden"
           name="merchantAccount"
           value={paymentData.merchantAccount}
@@ -163,10 +180,12 @@ export default function WayForPay() {
           name="merchantDomainName"
           value={paymentData.merchantDomainName}
         /> */}
-        {Object.entries(paymentData).map(([key, value]) => (
-          <input key={key} type="hidden" name={key} value={value} />
-        ))}
-      </form>
-    </div>
+            {Object.entries(paymentData).map(([key, value]) => (
+              <input key={key} type="hidden" name={key} value={value} />
+            ))}
+          </form>
+        </>
+      }
+    />
   );
 }
