@@ -8,6 +8,7 @@ import { studiosData } from "~/utils/studiosData";
 
 export const IS_DEV = false;
 export const BOOKING_UNDER_MAINTENANCE = false;
+export const ENABLE_OVERLAPS = false;
 
 export interface StoreBooking {
   booking: BookingState;

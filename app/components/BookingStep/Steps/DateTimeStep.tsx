@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import DatePicker from "~/components/DatePicker/DatePicker";
-import { saveCurrentStep, saveDate } from "~/store/bookingSlice";
+import {
+  ENABLE_OVERLAPS,
+  saveCurrentStep,
+  saveDate,
+} from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 import { generateTimeSlots } from "~/utils/slots";
 import TimePickerTable from "~/components/TimePickerTable/TimePickerTable";
@@ -153,12 +157,12 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
           ) || [];
 
         // Shows temporary prisma appointments
-        const todaysPrismaAppointments =
-          prismaAppointments.filter(
-            ({ date, timeFrom, timeTo }) =>
-              timeFrom && timeTo && date === getDateFormat(weekDate)
-          ) || [];
-        // [] as Appointment[];
+        const todaysPrismaAppointments = ENABLE_OVERLAPS
+          ? prismaAppointments.filter(
+              ({ date, timeFrom, timeTo }) =>
+                timeFrom && timeTo && date === getDateFormat(weekDate)
+            ) || []
+          : ([] as Appointment[]);
 
         // all appointments' time slots for a day
         const bookedSlots = mapAppointmentsToSlots(
