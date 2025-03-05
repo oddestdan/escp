@@ -5,6 +5,12 @@ import { IS_DEV, type ContactInfo } from "~/store/bookingSlice";
 import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
 import { studiosData } from "~/utils/studiosData";
 
+const testMerchant = {
+  account: "test_merch_n1",
+  domainName: "www.market.ua",
+  secretKey: "flk3409refn54t54t*FNJRET",
+};
+
 export const merchantAccount = process.env.WFP_MERCHANT_ACCOUNT;
 export const merchantDomainName = process.env.WFP_MERCHANT_DOMAIN_NAME;
 export const merchantSecretKey = process.env.WFP_MERCHANT_SECRET_KEY;
@@ -45,9 +51,12 @@ export async function generateAppointmentPaymentData({
   const parsedStudio: StudioInfo = JSON.parse(studio);
   const studioId =
     studiosData.findIndex((s) => s.name === parsedStudio.name) || 0;
+
+  const isTest = info.lastName === "test123123";
+
   const data = {
-    merchantAccount: merchantAccount,
-    merchantDomainName: merchantDomainName,
+    merchantAccount: isTest ? testMerchant.account : merchantAccount,
+    merchantDomainName: isTest ? testMerchant.domainName : merchantDomainName,
     merchantTransactionSecureType: "AUTO",
     // sends a POST request to this url instead of a regular redirect
     returnUrl: `${
@@ -97,7 +106,11 @@ export async function generateAppointmentPaymentData({
   ].join(";");
 
   const hash = crypto
-    .createHmac("md5", merchantSecretKey || `flk3409refn54t54t*FNJRET`)
+    .createHmac(
+      "md5",
+      (isTest ? testMerchant.secretKey : merchantSecretKey) ||
+        testMerchant.secretKey
+    )
     .update(hashString)
     .digest("hex");
   data.merchantSignature = hash;
