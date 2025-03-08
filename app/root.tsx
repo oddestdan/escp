@@ -11,6 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteError,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -82,6 +83,30 @@ export const meta: MetaFunction = () => {
     viewport: "width=device-width,initial-scale=1", // <meta name="viewport" content="width=device-width,initial-scale=1">
   };
 };
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error("помилка на UI");
+  console.error(error);
+
+  return (
+    <Provider store={store}>
+      <html lang="en" className="h-full">
+        <head>
+          <title>Упс! Помилка</title>
+          <Meta />
+          <Links />
+        </head>
+        <body className="h-full selection:bg-stone-800 selection:text-stone-100">
+          Щось пішло не так
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
+    </Provider>
+  );
+}
 
 type LoaderData = {
   user: Awaited<ReturnType<typeof getUser>>;
