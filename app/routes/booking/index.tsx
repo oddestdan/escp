@@ -184,7 +184,7 @@ export default function Booking() {
   useEffect(() => {
     if (fetcher.data && fetcher.data.paymentData) {
       setPaymentData(fetcher.data.paymentData);
-      setTimeout(() => paymentFormRef.current?.submit(), 0);
+      setTimeout(() => paymentFormRef.current?.submit(), 1000);
     }
   }, [fetcher.data]);
 
