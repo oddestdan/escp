@@ -66,16 +66,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   useEffect(() => setToday(getDateFormat()), []);
 
-  // const onDateChangeHandler = (date: DateSlot) => {
-  //   if (getIsDateValid(date) && date.date !== selectedDate) {
-  //     onChangeDate(date.date);
-  //   }
-  // };
-
-  const getIsDateValid = (date: DateSlot) =>
-    date.isValid &&
-    date.availableTimeSlots &&
-    date.availableTimeSlots?.length > 0;
+  const getIsDateValid = useCallback(
+    (date: DateSlot) =>
+      date.isValid &&
+      date.availableTimeSlots &&
+      date.availableTimeSlots?.length > 0,
+    []
+  );
 
   const onWeekChange = useCallback(
     (newIndex: number) => {
@@ -93,49 +90,52 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     [onChangeDate, today, dispatch]
   );
 
+  const renderDateOptions = useMemo(() => {
+    return dateTimeSlots.map((date, i) => (
+      <label aria-label={`${date.dayOfWeek} ${date.date}`} key={i}>
+        <input
+          type="radio"
+          name="date"
+          disabled={!getIsDateValid(date)}
+          checked={date.date === selectedDate}
+          readOnly={true}
+        />
+        <button
+          className={`XXX-date__box cursor-grabbing ${
+            className ? className : ""
+          }`}
+        >
+          <div className={`XXX-week-date cursor-grabbing`}>
+            {getWeekDayFormat(date.date)}
+          </div>
+          <div
+            className={`XXX-numeral-date cursor-grabbing ${
+              date.date === today ? "underline underline-offset-4" : ""
+            }`}
+          >
+            <span
+              data-tip={`Клікайте на вільні годинки нижче<br/>щоб обрати зручний час і дату`}
+            >
+              {getDateNumber(date.date)}
+            </span>
+          </div>
+        </button>
+      </label>
+    ));
+  }, [dateTimeSlots, selectedDate, getIsDateValid, className, today]);
+
   return (
     <div className="cursor-grabbing">
       <Slider
         className={`date-carousel XXX-carousel XXX-date-carousel`}
         {...sliderSettings}
         initialSlide={activeSlideIndex}
-        afterChange={onWeekChange} // TODO: maybe beforeChange is better
+        afterChange={onWeekChange}
       >
-        {dateTimeSlots.map((date, i) => (
-          <label aria-label={`${date.dayOfWeek} ${date.date}`} key={i}>
-            <input
-              type="radio"
-              name="date"
-              disabled={!getIsDateValid(date)}
-              checked={date.date === selectedDate}
-              readOnly={true}
-            />
-            <button
-              className={`XXX-date__box cursor-grabbing ${
-                className ? className : ""
-              }`}
-              // onClick={() => onDateChangeHandler(date)}
-            >
-              <div className={`XXX-week-date cursor-grabbing`}>
-                {getWeekDayFormat(date.date)}
-              </div>
-              <div
-                className={`XXX-numeral-date cursor-grabbing ${
-                  date.date === today ? "underline underline-offset-4" : ""
-                }`}
-              >
-                <span
-                  data-tip={`Клікайте на вільні годинки нижче<br/>щоб обрати зручний час і дату`}
-                >
-                  {getDateNumber(date.date)}
-                </span>
-              </div>
-            </button>
-          </label>
-        ))}
+        {renderDateOptions}
       </Slider>
     </div>
   );
 };
 
-export default DatePicker;
+export default React.memo(DatePicker);

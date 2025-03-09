@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { saveCurrentStep, saveStudio } from "~/store/bookingSlice";
+import {
+  initialState,
+  saveCurrentStep,
+  saveDate,
+  saveStudio,
+  saveTime,
+} from "~/store/bookingSlice";
 import { BookingStepActions } from "../BookingStepActions";
 import { useSearchParams } from "@remix-run/react";
 import { STUDIO_ID_QS } from "~/utils/constants";
@@ -52,8 +58,11 @@ export const StudioStep: React.FC<{ isMobile?: boolean }> = () => {
 
       searchParams.set(STUDIO_ID_QS, `${studioIndex}`);
       setSearchParams(searchParams);
+
+      dispatch(saveDate(initialState.dateTime.date));
+      dispatch(saveTime(initialState.dateTime.time));
     },
-    [searchParams, setSearchParams, studio]
+    [searchParams, setSearchParams, studio, dispatch]
   );
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));

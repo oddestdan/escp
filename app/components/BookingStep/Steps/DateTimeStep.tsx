@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import DatePicker from "~/components/DatePicker/DatePicker";
@@ -106,6 +106,22 @@ const mapAppointmentsToSlots = (
   });
 };
 
+const initialState = {
+  dayOfWeek: getDayOfWeekNumbered(new Date()),
+  hasMounted: false,
+};
+
+const reducer = (state: any, action: { type: string; payload?: any }) => {
+  switch (action.type) {
+    case "SET_DAY_OF_WEEK":
+      return { ...state, dayOfWeek: action.payload };
+    case "SET_HAS_MOUNTED":
+      return { ...state, hasMounted: true };
+    default:
+      return state;
+  }
+};
+
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   onChangeDate,
   onChangeTime,
@@ -121,14 +137,11 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     price,
   } = useSelector((store: StoreBooking) => store.booking);
 
-  // Mounted check for React Tooltip
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
-  useEffect(() => setHasMounted(true), []);
+  const [state, localDispatch] = useReducer(reducer, initialState);
 
-  // Keep track of day of week (0 to 6)
-  const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>(
-    getDayOfWeekNumbered(new Date(selectedDate))
-  );
+  useEffect(() => {
+    localDispatch({ type: "SET_HAS_MOUNTED" });
+  }, []);
 
   const weeks: Date[] = useMemo(
     () =>
@@ -192,7 +205,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     return bookableSlots;
   }, [slots, weeks, appointments, prismaAppointments]);
 
-  const timeSlots = timeSlotsMatrix[dayOfWeek];
+  const timeSlots = timeSlotsMatrix[state.dayOfWeek];
   const firstValidIndex = useMemo(() => {
     return timeSlots
       ? timeSlots.findIndex(
@@ -230,7 +243,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     return monthWording;
   }, [weeks]);
 
-  // Callbacks passed inside components
   const stepNext = useCallback(() => {
     dispatch(saveCurrentStep(currentStep + 1));
   }, [dispatch, currentStep]);
@@ -239,15 +251,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   }, [dispatch, currentStep]);
   const onChangeDayOfWeek = useCallback(
     (newDayOfWeek: DayOfWeek) => {
-      // console.log("> onChangeDayOfWeek");
-      // console.log({
-      //   newDayOfWeek,
-      //   timeSlotsMatrix,
-      //   savedDate: getDateFormat(
-      //     new Date(timeSlotsMatrix[newDayOfWeek][0].slot)
-      //   ),
-      // });
-      setDayOfWeek(newDayOfWeek);
+      localDispatch({ type: "SET_DAY_OF_WEEK", payload: newDayOfWeek });
       dispatch(
         saveDate(getDateFormat(new Date(timeSlotsMatrix[newDayOfWeek][0].slot)))
       );
@@ -256,12 +260,10 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   );
   const onChangeDateWeekday = useCallback(
     (dateString: string) => {
-      // console.log("> onChangeDateWeekday");
-      // console.log({
-      //   dayOfWeekNumbered: getDayOfWeekNumbered(new Date(dateString)),
-      //   dateString,
-      // });
-      setDayOfWeek(getDayOfWeekNumbered(new Date(dateString)));
+      localDispatch({
+        type: "SET_DAY_OF_WEEK",
+        payload: getDayOfWeekNumbered(new Date(dateString)),
+      });
       onChangeDate(dateString);
     },
     [onChangeDate]
@@ -270,10 +272,9 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
   // make it a client-only component by only rendering if mounted
   // https://github.com/remix-run/remix/discussions/1023
   // https://github.com/ashikmeerankutty/client-test/pull/1/files
-  return hasMounted ? (
+  return state.hasMounted ? (
     <div className="w-screen -translate-x-4 sm:w-[calc(100vw-10%)] sm:-translate-x-[calc(20%-2px)] md:w-[calc(100vw-30%)] md:-translate-x-[calc(15%-2px)] lg:w-full lg:translate-x-0 lg:px-4">
-      {/* Standalone Tooltip */}
-      {hasMounted && (
+      {state.hasMounted && (
         <ReactTooltip
           backgroundColor="#2b2b2b"
           textColor="#ffffff"
@@ -307,7 +308,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
       <div className="w-full border-t-[2px] border-stone-800 px-0 sm:px-4 md:px-0">
         <TimePickerTable
           hasWeekChanged={hasWeekChanged}
-          dayOfWeek={dayOfWeek}
+          dayOfWeek={state.dayOfWeek}
           selectedDate={selectedDate}
           timeSlotsMatrix={timeSlotsMatrix}
           onChangeDayOfWeek={onChangeDayOfWeek}
