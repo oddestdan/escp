@@ -56,10 +56,18 @@ type LoaderData = {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  const appointment = await handleFormAppointmentCreation(formData);
-  const paymentData = await generateAppointmentPaymentData(appointment);
+  const { createdPrismaAppointment, preCreatedCalendarAppointmentId } =
+    await handleFormAppointmentCreation(formData);
 
-  console.log({ paymentData });
+  const paymentData = await generateAppointmentPaymentData(
+    createdPrismaAppointment,
+    preCreatedCalendarAppointmentId
+  );
+
+  console.log({
+    paymentData,
+    preCreatedCalendarAppointmentId,
+  });
 
   return json({ paymentData });
 };

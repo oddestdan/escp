@@ -4,7 +4,6 @@ import {
   addMonths,
   fromISOToRFC3339,
   fromRFC3339ToISO,
-  getUAFormattedFullDateString,
 } from "~/utils/date";
 import {
   getAppointmentDescription,
@@ -12,16 +11,15 @@ import {
 } from "~/routes/booking/admin";
 import { calendarAPI, googleAuth, googleCalendarIdList } from "./googleApi.lib";
 import { google } from "googleapis";
+import { KYIV_TIME_ZONE } from "~/utils/constants";
+import { studioColorCodesMap, unverifiedColorCode } from "~/utils/studiosData";
+import { runEmailNotifier, runSmsNotifier } from "./notifiers.lib";
 
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
-import { KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
-import { sendMail } from "./nodemailer.lib";
-import type { ContactInfo } from "~/store/bookingSlice";
-import { sendSMS } from "./smsNotificator.lib";
+import { IS_POST_CREATION_FLOW, type ContactInfo } from "~/store/bookingSlice";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
-import { studioColorCodesMap, studiosData } from "~/utils/studiosData";
-
+import type { AppointmentDTO, CreateEventDTO } from "~/types/appointment.type";
 export type { Appointment } from "@prisma/client";
 
 const createAllDayEvent = (dateString: string) => {
@@ -100,13 +98,6 @@ export async function getAppointments(
       };
     })
     .filter((gApp) => gApp.date >= new Date().toISOString().split("T")[0]);
-
-  // console.log({
-  //   googleAppointments: googleAppointments
-  //     .slice(0, 5)
-  //     .map((x) => ({ ...x, ...x.start })),
-  //   mappedGoogleAppointments: mappedGoogleAppointments.slice(0, 5),
-  // });
 
   return mappedGoogleAppointments;
 }
@@ -190,17 +181,9 @@ export async function getPrismaAppointmentById(id: string) {
 }
 
 export async function createAppointment(
-  appointment: Pick<
-    Appointment,
-    | "date"
-    | "timeFrom"
-    | "timeTo"
-    | "services"
-    | "contactInfo"
-    | "price"
-    | "studio"
-  >,
-  calendarIndex = 0 // TODO: get dynamic value instead of 0 for calendarIndex
+  appointment: AppointmentDTO,
+  calendarIndex: number,
+  isUnverified = false
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
   console.log({ appointment });
@@ -209,7 +192,7 @@ export async function createAppointment(
   const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
-  const createEventDTO = {
+  const createEventDTO: CreateEventDTO = {
     calendarId: googleCalendarIdList[calendarIndex],
     requestBody: {
       summary: getAppointmentTitle(
@@ -242,35 +225,25 @@ export async function createAppointment(
       },
       // https://lukeboyle.com/blog/posts/google-calendar-api-color-id
       // https://google-calendar-simple-api.readthedocs.io/en/latest/colors.html#list-event-colors
-      colorId: studioColorCodesMap[studioInfo.name],
-      // if payment is not working or is not verifiable
-      // colorId: "4",
+      colorId: isUnverified
+        ? unverifiedColorCode
+        : studioColorCodesMap[calendarIndex],
     },
   };
+  console.log("====================================");
+  console.log(1);
   const createdEvent = await calendarAPI.events.insert(createEventDTO);
+  console.log(2);
   console.log({ createdEvent: createdEvent.data });
 
-  // send new appointment notification email to admin
-  console.log(`> Sending mail to ${process.env.ADMIN_EMAIL}`);
-  const formattedUADateString = getUAFormattedFullDateString(dateFrom, dateTo);
-  const studioId = studiosData.findIndex((s) => s.name === studioInfo.name);
-  sendMail(
-    {
-      text: `${createEventDTO.requestBody.summary}\n\n${formattedUADateString}\n\n${createEventDTO.requestBody.description}\n\n${process.env.SMS_DOMAIN}/booking/confirmation/${createdEvent.data.id}?${STUDIO_ID_QS}=${studioId}`,
-    },
-    `R${studioInfo.name[studioInfo.name.length - 1]}`
-  );
+  await runEmailNotifier(appointment, createEventDTO, createdEvent.data.id);
+  console.log(3);
+  if (IS_POST_CREATION_FLOW) {
+    await runSmsNotifier(appointment, createdEvent.data.id);
+    console.log(3.1);
+  }
 
-  // send new appointment notification SMS to client
-  console.log(`> Sending SMS to ${contactInfo.tel}`);
-  sendSMS(
-    studioInfo.name,
-    formattedUADateString,
-    contactInfo.tel,
-    createdEvent.data.id,
-    studioId
-  );
-
+  console.log("------------------------------------");
   return createdEvent.data;
 }
 
@@ -309,13 +282,17 @@ export async function createPrismaAppointment(
   //   return null;
   // }
 
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 60 minutes from now
 
-  const createdAppointment = await prisma.appointment.create({
+  const prismaAppointment = await prisma.appointment.create({
     data: { ...appointment, expiresAt },
   });
+  console.log({ prismaAppointment });
+  console.log(
+    `Prisma Appointment ${prismaAppointment.id} will self destruct in 60 minutes`
+  );
 
-  return createdAppointment;
+  return prismaAppointment;
 }
 
 export async function updateAppointment(
@@ -357,6 +334,30 @@ export async function deletePrismaAppointment(appointmentId: string) {
 }
 
 export async function confirmAppointment(
+  appointment: Appointment,
+  appointmentId: string,
+  calendarIndex: number
+) {
+  console.log("> Updating an appointment in Google Calendar API...");
+  const updatedCalendarEvent = await calendarAPI.events.patch({
+    eventId: appointmentId,
+    calendarId: googleCalendarIdList[calendarIndex],
+    requestBody: { colorId: studioColorCodesMap[calendarIndex] },
+  });
+
+  const confirmedAppointment = updatedCalendarEvent.data;
+  console.log({
+    confirmedAppointment,
+    appointmentId,
+    calendarIndex,
+  });
+
+  runSmsNotifier(appointment, confirmedAppointment.id);
+
+  return confirmedAppointment;
+}
+
+export async function confirmPrismaAppointment(
   appointmentId: string,
   confirmed = true
 ) {

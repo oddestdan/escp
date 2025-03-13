@@ -34,7 +34,8 @@ export const sendMail = (
     { ...defaultMailOptions, ...overrideMailOptions },
     (error, info) => {
       if (error) {
-        console.log(error);
+        console.error("Email not sent");
+        console.error(error);
       } else {
         console.log(`> Email sent: ${info.response}`);
       }

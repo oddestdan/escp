@@ -1,7 +1,8 @@
 import { redirect } from "@remix-run/server-runtime";
+import type { Appointment } from "~/models/appointment.server";
 import {
+  confirmAppointment,
   createAppointment,
-  deletePrismaAppointment,
   getPrismaAppointmentById,
 } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
@@ -13,47 +14,118 @@ import {
   WFP_ERROR_QS,
 } from "~/utils/constants";
 import type { WayForPayPaymentResponse } from "~/lib/wayforpay.service";
-import { WFP_OK_STATUS_CODE } from "~/lib/wayforpay.service";
+import {
+  WFP_OK_STATUS_CODE,
+  wfpRedirectDelimeter,
+} from "~/lib/wayforpay.service";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import { studiosData } from "~/utils/studiosData";
 import Wrapper from "~/components/Wrapper/Wrapper";
+import { IS_POST_CREATION_FLOW } from "~/store/bookingSlice";
 
-// type LoaderData = {
-//   appointment: Appointment;
-//   paymentData: Awaited<ReturnType<typeof generateAppointmentPaymentData>>;
-// };
+const retrieveStudioId = (appointment: Appointment) => {
+  const studioParsed = JSON.parse(appointment.studio) as StudioInfo;
+  return studiosData.findIndex((s) => s.name === studioParsed.name) || 0;
+};
 
-// export const loader: LoaderFunction = async ({ params }) => {
-//   invariant(params.paymentId, "Expected params.paymentId");
+// TODO: remove preCreated calndar appointment on error cases
+const modifyCalendarAppointment = async (
+  wfpResponse: WayForPayPaymentResponse,
+  paymentId: string,
+  preCreatedCalendarAppointmentId: string
+) => {
+  try {
+    console.log(">> Modifying an appointment in Google API");
+    const prismaAppointment = await getPrismaAppointmentById(paymentId);
 
-//   try {
-//     const appointment = await getPrismaAppointmentById(params.paymentId);
-//     console.log({ at: "paymentId", prismaAppointment: appointment });
+    if (!prismaAppointment) {
+      console.error({
+        message: `WayForPay/Action.POST: Prisma Appointment not found Error (${paymentId})`,
+      });
+      return redirect(`/booking?${STUDIO_ID_QS}=0&notFound=prisma`);
+    }
 
-//     if (!appointment) {
-//       console.error({
-//         message: `WayForPay/Loader: Appointment not found Error (${params.paymentId})`,
-//       });
-//       return redirect(
-//         `/booking?${STUDIO_ID_QS}=0&notFound=wayforpay&${BOOKING_TIME_TAKEN_QS}=true`
-//       );
-//     }
+    const studioId = retrieveStudioId(prismaAppointment);
 
-//     const paymentData = await generateAppointmentPaymentData(appointment);
-//     console.log({ paymentData });
+    if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
+      console.error({
+        message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
+      });
 
-//     if (!paymentData) {
-//       console.error({ message: "Payment info generation Error" });
-//       return redirect(`/booking?${STUDIO_ID_QS}=0`);
-//     }
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
+      );
+    }
 
-//     return json<LoaderData>({ paymentData, appointment });
-//   } catch (error) {
-//     console.error(error);
-//     console.error({ message: "Payment Error" });
-//     return redirect(`/booking?${STUDIO_ID_QS}=0`);
-//   }
-// };
+    const modifiedAppointment = await confirmAppointment(
+      prismaAppointment,
+      preCreatedCalendarAppointmentId,
+      studioId
+    );
+
+    return redirect(
+      `/booking/confirmation/${modifiedAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+    );
+  } catch (error) {
+    console.error("Error modifying calendar appointment");
+    console.error(error);
+    return null;
+  }
+};
+
+const createCalendarAppointment = async (
+  wfpResponse: WayForPayPaymentResponse,
+  paymentId: string
+) => {
+  try {
+    console.log(">> Creating an appointment into Google API");
+    const appointment = await getPrismaAppointmentById(paymentId);
+
+    if (!appointment) {
+      console.error({
+        message: `WayForPay/Action.POST: Appointment not found Error (${paymentId})`,
+      });
+      return redirect(`/booking?${STUDIO_ID_QS}=0&notFound=wayforpay`);
+    }
+
+    const studioId = retrieveStudioId(appointment);
+    console.log({ studioId, appointment, wfpResponse });
+
+    // https://wiki.wayforpay.com/ru/view/852131
+    if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
+      console.error({
+        message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
+      });
+
+      // deletePrismaAppointment(params.paymentId); ???
+
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
+      );
+    }
+
+    console.log(">> Creating an appointment into Google API");
+    const createdAppointment = await createAppointment(appointment, studioId);
+
+    console.log({ googleCreatedAppointment: createdAppointment });
+
+    // deletePrismaAppointment(params.paymentId); ???
+
+    if (!createdAppointment) {
+      return redirect(
+        `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
+      );
+    }
+    console.log("REDIRECTING TO CONFIRMATION");
+    return redirect(
+      `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
+    );
+  } catch (error) {
+    console.error("Error creating calendar appointment");
+    console.error(error);
+    return null;
+  }
+};
 
 export const action: ActionFunction = async ({ request, params }) => {
   console.log("RUNNING ACTION WAYFORPAY");
@@ -62,63 +134,27 @@ export const action: ActionFunction = async ({ request, params }) => {
   const wfpResponse = Object.fromEntries(
     formData
   ) as unknown as WayForPayPaymentResponse;
+  console.log({ wfpResponse, params, request });
 
   const method = request.method;
 
   switch (method) {
     case "POST": {
       invariant(params.paymentId, "Expected params.paymentId");
+      if (IS_POST_CREATION_FLOW) {
+        // create a new appointment
+        return createCalendarAppointment(wfpResponse, params.paymentId);
+      } else {
+        // modify already existing appointment
+        const [paymentId, preCreatedCalendarAppointmentId] =
+          params.paymentId.split(wfpRedirectDelimeter);
 
-      const appointment = await getPrismaAppointmentById(params.paymentId);
-
-      if (!appointment) {
-        console.error({
-          message: `WayForPay/Action.POST: Appointment not found Error (${params.paymentId})`,
-        });
-        return redirect(`/booking?${STUDIO_ID_QS}=0`);
-      }
-
-      console.log(">> Creating an appointment into Google API");
-
-      const studioParsed = JSON.parse(appointment.studio) as StudioInfo;
-      const studioId =
-        studiosData.findIndex((s) => s.name === studioParsed.name) || 0;
-
-      // https://wiki.wayforpay.com/ru/view/852131
-      if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
-        console.error({
-          message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
-        });
-
-        try {
-          await deletePrismaAppointment(params.paymentId);
-        } catch (error) {
-          console.log({ at: "deletePrismaError", error });
-        }
-
-        return redirect(
-          `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
+        return modifyCalendarAppointment(
+          wfpResponse,
+          paymentId,
+          preCreatedCalendarAppointmentId
         );
       }
-
-      const createdAppointment = await createAppointment(appointment, studioId);
-
-      console.log({ googleCreatedAppointment: createdAppointment });
-
-      try {
-        deletePrismaAppointment(params.paymentId);
-      } catch (error) {
-        console.log({ at: "deletePrismaError", error });
-      }
-
-      if (!createdAppointment) {
-        return redirect(
-          `/booking?${STUDIO_ID_QS}=${studioId}&${BOOKING_TIME_TAKEN_QS}=true`
-        );
-      }
-      return redirect(
-        `/booking/confirmation/${createdAppointment.id}?${STUDIO_ID_QS}=${studioId}`
-      );
     }
     default:
       return null;
@@ -138,19 +174,6 @@ const BookingWrapper = ({
 );
 
 export default function WayForPay() {
-  // const formRef = useRef<HTMLFormElement>(null);
-  // const { paymentData } = useLoaderData() as unknown as LoaderData;
-
-  // useEffect(() => {
-  //   // Automatically submit the form when the component loads
-  //   console.log("Automatically submit the form when the component loads");
-  //   if (formRef.current) {
-  //     formRef.current.submit();
-  //   }
-  // }, []);
-
-  // useDeleteAppointmentBeforeUnload(appointment.id);
-
   return (
     <BookingWrapper
       wrappedComponent={
@@ -158,26 +181,6 @@ export default function WayForPay() {
           <h2 className="my-4 text-center font-medium">
             WayForPay: оплачуємо...
           </h2>
-          {/* <form
-            ref={formRef}
-            method="POST"
-            action="https://secure.wayforpay.com/pay"
-            encType="application/x-www-form-urlencoded"
-          > */}
-          {/* <input
-          type="hidden"
-          name="merchantAccount"
-          value={paymentData.merchantAccount}
-        />
-        <input
-          type="hidden"
-          name="merchantDomainName"
-          value={paymentData.merchantDomainName}
-        /> */}
-          {/* {Object.entries(paymentData).map(([key, value]) => (
-              <input key={key} type="hidden" name={key} value={value} />
-            ))}
-          </form> */}
         </>
       }
     />

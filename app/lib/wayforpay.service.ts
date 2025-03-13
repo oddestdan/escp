@@ -1,7 +1,11 @@
 import type { Appointment } from "@prisma/client";
 import crypto from "crypto";
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
-import { IS_DEV, type ContactInfo } from "~/store/bookingSlice";
+import {
+  IS_DEV,
+  IS_POST_CREATION_FLOW,
+  type ContactInfo,
+} from "~/store/bookingSlice";
 import { KYIV_LOCALE, KYIV_TIME_ZONE, STUDIO_ID_QS } from "~/utils/constants";
 import { studiosData } from "~/utils/studiosData";
 
@@ -35,24 +39,34 @@ export const merchantSecretKey = process.env.WFP_MERCHANT_SECRET_KEY;
 //   merchantSignature: "faecbcce0424b29e1ab22293b46d428f",
 // };
 
+export const wfpRedirectDelimeter = "__";
+
 // TODO: https://wiki.wayforpay.com/view/852102
-export async function generateAppointmentPaymentData({
-  id,
-  price,
-  timeFrom,
-  timeTo,
-  contactInfo,
-  studio,
-}: Pick<
-  Appointment,
-  "id" | "contactInfo" | "price" | "timeFrom" | "timeTo" | "studio"
->) {
+export async function generateAppointmentPaymentData(
+  {
+    id,
+    price,
+    timeFrom,
+    timeTo,
+    contactInfo,
+    studio,
+  }: Pick<
+    Appointment,
+    "id" | "contactInfo" | "price" | "timeFrom" | "timeTo" | "studio"
+  >,
+  preCreatedCalendarAppointmentId?: string | null
+) {
   const info: ContactInfo = JSON.parse(contactInfo);
   const parsedStudio: StudioInfo = JSON.parse(studio);
   const studioId =
     studiosData.findIndex((s) => s.name === parsedStudio.name) || 0;
 
   const isTest = info.lastName === "test123123";
+
+  let paymentId = id;
+  if (!IS_POST_CREATION_FLOW && preCreatedCalendarAppointmentId) {
+    paymentId = `${paymentId}${wfpRedirectDelimeter}${preCreatedCalendarAppointmentId}`;
+  }
 
   const data = {
     merchantAccount: isTest ? testMerchant.account : merchantAccount,
@@ -61,7 +75,7 @@ export async function generateAppointmentPaymentData({
     // sends a POST request to this url instead of a regular redirect
     returnUrl: `${
       IS_DEV ? "http://localhost:3000" : "https://escp90.studio"
-    }/booking/WayForPay/${id}?${STUDIO_ID_QS}=${studioId}`,
+    }/booking/WayForPay/${paymentId}?${STUDIO_ID_QS}=${studioId}`,
     authorizationType: "SimpleSignature",
     orderReference: `ESCP_${id}`,
     orderDate: Date.now(),
@@ -88,7 +102,7 @@ export async function generateAppointmentPaymentData({
     clientEmail: "some@mail.com",
     clientPhone: info.tel,
     language: "UA",
-    paymentSystems: "card;googlePay;applePay;privat24;qrCode",
+    paymentSystems: "card;qrCode;privat24;applePay;googlePay",
     defaultPaymentSystem: "applePay",
 
     merchantSignature: "",

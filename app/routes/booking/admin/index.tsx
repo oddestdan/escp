@@ -2,7 +2,7 @@
 import { useCallback, useRef, useState } from "react";
 import { redirect, json } from "@remix-run/server-runtime";
 import {
-  confirmAppointment,
+  confirmPrismaAppointment,
   createAppointment,
   updateAppointment,
   deleteAppointment,
@@ -137,15 +137,18 @@ export const action: ActionFunction = async ({ request }) => {
           }
         : { tel: "+380000000000", firstName: title };
 
-      return await createAppointment({
-        timeFrom,
-        timeTo,
-        date,
-        services: "[]",
-        contactInfo: JSON.stringify(contact),
-        price: "0",
-        studio: "",
-      });
+      return await createAppointment(
+        {
+          timeFrom,
+          timeTo,
+          date,
+          services: "[]",
+          contactInfo: JSON.stringify(contact),
+          price: "0",
+          studio: "",
+        },
+        0
+      );
     }
     case "PUT": {
       // Change
@@ -167,7 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
       invariant(typeof id === "string", "appointmentId must be a string");
       invariant(typeof confirmed === "boolean", "confirmed must be a boolean");
 
-      return await confirmAppointment(id, confirmed);
+      return await confirmPrismaAppointment(id, confirmed);
     }
     case "DELETE": {
       // Remove
@@ -290,7 +293,7 @@ export default function AdminBooking() {
     [submit]
   );
 
-  const onConfirmAppointment = useCallback(() => {
+  const onconfirmPrismaAppointment = useCallback(() => {
     if (!selectedAppointment || !selectedAppointment.id) {
       alert("Нема що підтвердити, невірна бронь");
       return;
@@ -412,7 +415,7 @@ export default function AdminBooking() {
                   <button
                     type="button"
                     className="mt-4 mr-4 rounded-md bg-green-500 p-2 text-white"
-                    onClick={onConfirmAppointment}
+                    onClick={onconfirmPrismaAppointment}
                   >
                     {selectedAppointment?.confirmed
                       ? "Скасувати 1"

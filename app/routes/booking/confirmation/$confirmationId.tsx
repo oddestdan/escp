@@ -39,7 +39,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     );
 
     if (!appointmentResponse) {
-      throw json({ message: "Not Found", id: params.confirmationId }, 404);
+      throw json(
+        {
+          message: "Not Found Calendar Appointment",
+          id: params.confirmationId,
+        },
+        404
+      );
     }
 
     return json<LoaderData>({ appointmentResponse });

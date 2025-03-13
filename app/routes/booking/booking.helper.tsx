@@ -3,11 +3,12 @@ import invariant from "tiny-invariant";
 import type { generateAppointmentPaymentData } from "~/lib/wayforpay.service";
 import type { Appointment } from "~/models/appointment.server";
 import {
+  createAppointment,
   createPrismaAppointment,
   getAppointments,
   getPrismaAppointmentsByDate,
 } from "~/models/appointment.server";
-import { ENABLE_OVERLAPS } from "~/store/bookingSlice";
+import { ENABLE_OVERLAPS, IS_POST_CREATION_FLOW } from "~/store/bookingSlice";
 import { BOOKING_TIME_TAKEN_QS, STUDIO_ID_QS } from "~/utils/constants";
 import { slotOverlapsAnotherSlot } from "~/utils/slots";
 
@@ -62,7 +63,6 @@ export const handleFormAppointmentCreation = async (formData: FormData) => {
   const services = formData.get("services");
   const contactInfo = formData.get("contactInfo");
   const price = formData.get("price");
-  // const price = "1"; // TODO: RETURN --> use bookingSlice IS_DEV
   const studioId = Number(formData.get("studioId"));
 
   invariant(typeof studio === "string", "studio must be a string");
@@ -91,10 +91,17 @@ export const handleFormAppointmentCreation = async (formData: FormData) => {
   const createdPrismaAppointment = await createPrismaAppointment(
     appointmentDTO
   );
-  console.log({ createdPrismaAppointment });
-  console.log(
-    `Prisma Appointment ${createdPrismaAppointment.id} will self destruct in 10 minutes`
-  );
 
-  return createdPrismaAppointment;
+  if (!IS_POST_CREATION_FLOW) {
+    const preCreatedCalendarAppointment = await createAppointment(
+      appointmentDTO,
+      studioId,
+      true
+    );
+    const preCreatedCalendarAppointmentId = preCreatedCalendarAppointment.id;
+
+    return { createdPrismaAppointment, preCreatedCalendarAppointmentId };
+  }
+
+  return { createdPrismaAppointment };
 };

@@ -125,8 +125,5 @@ export const studiosImagesNumbered = [
 ];
 export const studiosImages = [gallery1Images, gallery2Images, gallery3Images];
 
-export const studioColorCodesMap = {
-  [studiosData[0].name]: "2",
-  [studiosData[1].name]: "10",
-  [studiosData[2].name]: "5",
-};
+export const studioColorCodesMap = ["2", "10", "5"];
+export const unverifiedColorCode = "4";

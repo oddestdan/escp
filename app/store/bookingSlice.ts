@@ -7,6 +7,7 @@ import { generateDateTimeSlots } from "~/utils/slots";
 import { studiosData } from "~/utils/studiosData";
 
 export const IS_DEV = false;
+export const IS_POST_CREATION_FLOW = false;
 export const BOOKING_UNDER_MAINTENANCE = false;
 export const ENABLE_OVERLAPS = false;
 
