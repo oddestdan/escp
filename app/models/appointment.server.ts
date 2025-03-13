@@ -312,19 +312,32 @@ export async function deleteAppointment(
   deleteAppointmentId: string,
   calendarIndex: number
 ) {
-  await calendarAPI.events.delete({
-    eventId: deleteAppointmentId,
-    calendarId: googleCalendarIdList[calendarIndex],
-  });
+  console.log(
+    `> Deleting an appointment id=${deleteAppointmentId} from Google Calendar=${deleteAppointmentId}/${googleCalendarIdList[calendarIndex]}...`
+  );
 
-  console.log({
-    deleteAppointmentId,
-    calendarIndex,
-  });
+  try {
+    await calendarAPI.events.delete({
+      eventId: deleteAppointmentId,
+      calendarId: googleCalendarIdList[calendarIndex],
+    });
+    console.log({
+      deleteAppointmentId,
+      calendarIndex,
+    });
+  } catch (error) {
+    console.error(
+      "Error deleting Google Calendar appointment id=",
+      deleteAppointmentId
+    );
+    console.error(error);
+  }
 }
 
 export async function deletePrismaAppointment(appointmentId: string) {
-  console.log(`> Deleting an appointment id=${appointmentId} from Prisma...`);
+  console.log(
+    `> Deleting a Prisma appointment id=${appointmentId} from Prisma...`
+  );
 
   const foundPrismaId = await getPrismaAppointmentById(appointmentId);
   console.log(`>> No appointment found for id=${appointmentId}`);
