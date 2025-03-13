@@ -3,6 +3,7 @@ import type { Appointment } from "~/models/appointment.server";
 import {
   confirmAppointment,
   createAppointment,
+  deleteAppointment,
   getPrismaAppointmentById,
 } from "~/models/appointment.server";
 import invariant from "tiny-invariant";
@@ -42,6 +43,11 @@ const modifyCalendarAppointment = async (
       console.error({
         message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
       });
+
+      await deleteAppointment(
+        preCreatedCalendarAppointmentId,
+        Number(studioId)
+      );
 
       return redirect(
         `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`

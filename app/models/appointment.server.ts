@@ -308,14 +308,19 @@ export async function updateAppointment(
   });
 }
 
-export async function deleteAppointment(appointmentId: string) {
-  // GOOGLE CALENDAR
-  // const res = await calendar.events.delete({
-  // calendarId: googleCalendarIdList[0], // needs get dynamic value instead of 0
-  //   eventId: appointmentId || "",
-  // });
-  // console.log(`deleted item ${appointmentId}`);
-  // console.log(res);
+export async function deleteAppointment(
+  deleteAppointmentId: string,
+  calendarIndex: number
+) {
+  await calendarAPI.events.delete({
+    eventId: deleteAppointmentId,
+    calendarId: googleCalendarIdList[calendarIndex],
+  });
+
+  console.log({
+    deleteAppointmentId,
+    calendarIndex,
+  });
 }
 
 export async function deletePrismaAppointment(appointmentId: string) {
