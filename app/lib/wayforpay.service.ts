@@ -65,7 +65,7 @@ export async function generateAppointmentPaymentData(
 
   let paymentId = id;
   if (!IS_POST_CREATION_FLOW && preCreatedCalendarAppointmentId) {
-    paymentId = `${paymentId}${wfpRedirectDelimeter}${preCreatedCalendarAppointmentId}`;
+    paymentId = `${paymentId}${wfpRedirectDelimeter}${preCreatedCalendarAppointmentId}${wfpRedirectDelimeter}${studioId}`;
   }
 
   const data = {
@@ -102,7 +102,7 @@ export async function generateAppointmentPaymentData(
     clientEmail: "some@mail.com",
     clientPhone: info.tel,
     language: "UA",
-    paymentSystems: "card;qrCode;privat24;applePay;googlePay",
+    paymentSystems: "card;privat24;applePay;googlePay", // removed qrCode
     defaultPaymentSystem: "applePay",
 
     merchantSignature: "",

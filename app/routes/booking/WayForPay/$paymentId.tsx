@@ -28,24 +28,15 @@ const retrieveStudioId = (appointment: Appointment) => {
   return studiosData.findIndex((s) => s.name === studioParsed.name) || 0;
 };
 
-// TODO: remove preCreated calndar appointment on error cases
+// TODO: remove preCreated calendar appointment on error cases
 const modifyCalendarAppointment = async (
   wfpResponse: WayForPayPaymentResponse,
   paymentId: string,
-  preCreatedCalendarAppointmentId: string
+  preCreatedCalendarAppointmentId: string,
+  studioId = "0"
 ) => {
   try {
     console.log(">> Modifying an appointment in Google API");
-    const prismaAppointment = await getPrismaAppointmentById(paymentId);
-
-    if (!prismaAppointment) {
-      console.error({
-        message: `WayForPay/Action.POST: Prisma Appointment not found Error (${paymentId})`,
-      });
-      return redirect(`/booking?${STUDIO_ID_QS}=0&notFound=prisma`);
-    }
-
-    const studioId = retrieveStudioId(prismaAppointment);
 
     if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
       console.error({
@@ -57,10 +48,22 @@ const modifyCalendarAppointment = async (
       );
     }
 
+    const prismaAppointment = await getPrismaAppointmentById(paymentId);
+
+    if (!prismaAppointment) {
+      console.error({
+        message: `WayForPay/Action.POST: Prisma Appointment not found Error (${paymentId})`,
+      });
+
+      return redirect(
+        `/booking/confirmation/${preCreatedCalendarAppointmentId}?${STUDIO_ID_QS}=${studioId}&notFound=prisma`
+      );
+    }
+
     const modifiedAppointment = await confirmAppointment(
       prismaAppointment,
       preCreatedCalendarAppointmentId,
-      studioId
+      Number(studioId)
     );
 
     return redirect(
@@ -79,6 +82,18 @@ const createCalendarAppointment = async (
 ) => {
   try {
     console.log(">> Creating an appointment into Google API");
+
+    // https://wiki.wayforpay.com/ru/view/852131
+    if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
+      console.error({
+        message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
+      });
+
+      // deletePrismaAppointment(params.paymentId); ???
+
+      return redirect(`/booking?${STUDIO_ID_QS}=0&${WFP_ERROR_QS}=true`);
+    }
+
     const appointment = await getPrismaAppointmentById(paymentId);
 
     if (!appointment) {
@@ -90,19 +105,6 @@ const createCalendarAppointment = async (
 
     const studioId = retrieveStudioId(appointment);
     console.log({ studioId, appointment, wfpResponse });
-
-    // https://wiki.wayforpay.com/ru/view/852131
-    if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
-      console.error({
-        message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
-      });
-
-      // deletePrismaAppointment(params.paymentId); ???
-
-      return redirect(
-        `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
-      );
-    }
 
     console.log(">> Creating an appointment into Google API");
     const createdAppointment = await createAppointment(appointment, studioId);
@@ -146,13 +148,21 @@ export const action: ActionFunction = async ({ request, params }) => {
         return createCalendarAppointment(wfpResponse, params.paymentId);
       } else {
         // modify already existing appointment
-        const [paymentId, preCreatedCalendarAppointmentId] =
+        const [paymentId, preCreatedCalendarAppointmentId, studioId] =
           params.paymentId.split(wfpRedirectDelimeter);
+
+        invariant(paymentId, "Expected paymentId as string");
+        invariant(
+          preCreatedCalendarAppointmentId,
+          "Expected preCreatedCalendarAppointmentId as string"
+        );
+        invariant(studioId, "Expected studioId as string");
 
         return modifyCalendarAppointment(
           wfpResponse,
           paymentId,
-          preCreatedCalendarAppointmentId
+          preCreatedCalendarAppointmentId,
+          studioId
         );
       }
     }
