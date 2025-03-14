@@ -156,6 +156,13 @@ export default function Booking() {
   const [paymentData, setPaymentData] = useState<GeneratedPaymentData | null>(
     null
   );
+  const [hasSubmittedPayment, setHasSubmittedPayment] = useState(false);
+
+  useEffect(() => {
+    if (hasSubmittedPayment) {
+      setTimeout(() => setHasSubmittedPayment(false), 5000);
+    }
+  }, [hasSubmittedPayment]);
 
   const {
     currentStep,
@@ -181,9 +188,9 @@ export default function Booking() {
 
   const bookAppointment = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
+      setHasSubmittedPayment(true);
       event.preventDefault();
       fetcher.submit(formRef.current, { method: "post" });
-      // submit(formRef.current);
     },
     [fetcher]
   );
@@ -348,6 +355,7 @@ export default function Booking() {
                       <ActionButton
                         buttonType="submit"
                         onClick={bookAppointment}
+                        disabled={hasSubmittedPayment}
                       >
                         оплатити
                       </ActionButton>
