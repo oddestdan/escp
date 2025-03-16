@@ -156,8 +156,25 @@ export interface WayForPayPaymentResponse {
 }
 
 export const WFP_OK_STATUS_CODE = 1100;
+export const WFP_OK_ALT_STATUS_CODE = 4100;
 export const WFP_ERROR_STATUS_CODE = 1101;
-export enum WayForPayStatusCode {
-  OK = WFP_OK_STATUS_CODE,
-  ERROR = WFP_ERROR_STATUS_CODE,
+export const WFP_TRANSACTION_IN_PROCESSING_CODE = 1131;
+export const WFP_TRANSACTION_IS_PENDING_CODE = 1134;
+
+export const validWfpStatusCodes = [
+  WFP_OK_STATUS_CODE,
+  WFP_OK_ALT_STATUS_CODE,
+  WFP_TRANSACTION_IN_PROCESSING_CODE,
+  WFP_TRANSACTION_IS_PENDING_CODE,
+];
+
+export enum WayForPayTransaction {
+  InProcessing = "InProcessing", // В обробці
+  WaitingAuthComplete = "WaitingAuthComplete", // Успішний Hold
+  Approved = "Approved", // Успішний платіж
+  Pending = "Pending", // На перевірці Antifraud
+  Expired = "Expired", // Закінчився термін оплати
+  RefundedVoided = "Refunded/Voided", // Повернення
+  Declined = "Declined", // Відхилений
+  RefundInProcessing = "RefundInProcessing", // Повернення в обробці
 }

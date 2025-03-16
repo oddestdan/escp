@@ -16,6 +16,7 @@ import {
 } from "~/utils/constants";
 import type { WayForPayPaymentResponse } from "~/lib/wayforpay.service";
 import {
+  validWfpStatusCodes,
   WFP_OK_STATUS_CODE,
   wfpRedirectDelimeter,
 } from "~/lib/wayforpay.service";
@@ -37,11 +38,12 @@ const modifyCalendarAppointment = async (
   studioId = "0"
 ) => {
   try {
-    console.log(">> Modifying an appointment in Google API");
+    console.log(">> Checking WayForPay response");
 
-    if (Number(wfpResponse.reasonCode) !== WFP_OK_STATUS_CODE) {
+    // Response codes: https://wiki.wayforpay.com/view/852131
+    if (!validWfpStatusCodes.includes(Number(wfpResponse.reasonCode))) {
       console.error({
-        message: `WayForPay Error: "${wfpResponse.reason}" ${wfpResponse.reasonCode}: "${wfpResponse.transactionStatus}"`,
+        message: `WayForPay Error. ${wfpResponse.reasonCode}: "${wfpResponse.reason} / ${wfpResponse.transactionStatus}"`,
       });
 
       await deleteAppointment(
@@ -53,6 +55,8 @@ const modifyCalendarAppointment = async (
         `/booking?${STUDIO_ID_QS}=${studioId}&${WFP_ERROR_QS}=true`
       );
     }
+
+    console.log(">> Modifying an appointment in Google API");
 
     const prismaAppointment = await getPrismaAppointmentById(paymentId);
 
@@ -136,13 +140,13 @@ const createCalendarAppointment = async (
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  console.log("RUNNING ACTION WAYFORPAY");
+  console.log("----- RUNNING ACTION WAYFORPAY -----");
 
   const formData = await request.formData();
   const wfpResponse = Object.fromEntries(
     formData
   ) as unknown as WayForPayPaymentResponse;
-  console.log({ wfpResponse, params, request });
+  console.log({ wfpResponse, wfpResponseParams: params.paymentId });
 
   const method = request.method;
 
