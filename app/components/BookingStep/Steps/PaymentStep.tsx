@@ -52,7 +52,7 @@ export const PaymentStep: React.FC<{ isMobile?: boolean }> = () => {
           <p className="mb-4">
             <span className="mb-1 block">
               Будь-ласка, <span className="font-bold">обов'язково</span>{" "}
-              поверніться до сайту після оплати, щоб побачити
+              зачекайте переадресації після оплати, щоб побачити
               сторінку-підтвердження.
             </span>
             <span className="block">
