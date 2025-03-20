@@ -64,7 +64,7 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   //   additionalServices.assistance
   // );
   const [parkingService, setParkingService] = useState(
-    additionalServices.parking || "1"
+    additionalServices.parking || ""
   );
   const [extraService, setExtraService] = useState(
     additionalServices.extra || ""
@@ -124,6 +124,11 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
   const onChangeCheckbox = useCallback(
     (i: number) => {
       const updatedServices = [...checkedServices];
+
+      // parking service reset
+      if (i === 0) {
+        setParkingService("");
+      }
 
       // NOTE: 0 is assistance
       // if (i === 0 && checkedServices[i].checked) {
