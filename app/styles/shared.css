@@ -716,6 +716,7 @@
 
 .XXX-aoa-stepbar-item.inactive {
   background-color: #cacaca;
+  cursor: default;
   width: 35px;
   height: 35px;
 }

@@ -34,4 +34,5 @@ export type AppointmentDTO = Pick<
   | "contactInfo"
   | "price"
   | "studio"
+  | "studioId"
 >;

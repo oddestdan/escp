@@ -117,7 +117,7 @@ const createCalendarAppointment = async (
     console.log({ studioId, appointment, wfpResponse });
 
     console.log(">> Creating an appointment into Google API");
-    const createdAppointment = await createAppointment(appointment, studioId);
+    const createdAppointment = await createAppointment(appointment);
 
     console.log({ googleCreatedAppointment: createdAppointment });
 

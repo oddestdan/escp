@@ -95,7 +95,6 @@ export const handleFormAppointmentCreation = async (formData: FormData) => {
   if (!IS_POST_CREATION_FLOW) {
     const preCreatedCalendarAppointment = await createAppointment(
       appointmentDTO,
-      studioId,
       true
     );
     const preCreatedCalendarAppointmentId = preCreatedCalendarAppointment.id;

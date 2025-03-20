@@ -182,7 +182,6 @@ export async function getPrismaAppointmentById(id: string) {
 
 export async function createAppointment(
   appointment: AppointmentDTO,
-  calendarIndex: number,
   isUnverified = false
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
@@ -193,7 +192,7 @@ export async function createAppointment(
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
   const createEventDTO: CreateEventDTO = {
-    calendarId: googleCalendarIdList[calendarIndex],
+    calendarId: googleCalendarIdList[appointment.studioId],
     requestBody: {
       summary: getAppointmentTitle(
         studioInfo,
@@ -227,7 +226,7 @@ export async function createAppointment(
       // https://google-calendar-simple-api.readthedocs.io/en/latest/colors.html#list-event-colors
       colorId: isUnverified
         ? unverifiedColorCode
-        : studioColorCodesMap[calendarIndex],
+        : studioColorCodesMap[appointment.studioId],
     },
   };
   console.log("====================================");
