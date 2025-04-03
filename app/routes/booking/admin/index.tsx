@@ -7,10 +7,9 @@ import { prettyFormatDate } from "~/components/AdminCalendar/AdminCalendar";
 
 import type { AdminCalendarEvent } from "~/components/AdminCalendar/AdminCalendar";
 import type { AdditionalServices, ContactInfo } from "~/store/bookingSlice";
-import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 
 export const getAppointmentTitle = (
-  studioInfo: StudioInfo,
+  studioId: number,
   info: ContactInfo,
   startDate: Date,
   endDate: Date,
@@ -22,9 +21,9 @@ export const getAppointmentTitle = (
 
   const duration = Math.abs(getHoursDiffBetweenDates(endDate, startDate));
 
-  return `R${studioInfo.name[studioInfo.name.length - 1]}, ${duration}h, ${
-    info.firstName
-  }${info.lastName ? ` ${info.lastName[0]}.` : ""}, ${price}`;
+  return `R${studioId + 1}, ${duration}h, ${info.firstName}${
+    info.lastName ? ` ${info.lastName[0]}.` : ""
+  }, ${price}UAH`;
 };
 
 export const getAppointmentDescription = (

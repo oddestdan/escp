@@ -18,7 +18,6 @@ import { runEmailNotifier, runSmsNotifier } from "./notifiers.lib";
 import type { Appointment } from "@prisma/client";
 import type { GoogleAppointment } from "./googleApi.lib";
 import { IS_POST_CREATION_FLOW, type ContactInfo } from "~/store/bookingSlice";
-import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 import type { AppointmentDTO, CreateEventDTO } from "~/types/appointment.type";
 export type { Appointment } from "@prisma/client";
 
@@ -187,7 +186,8 @@ export async function createAppointment(
   console.log("> Creating an appointment into Google Calendar API...");
   console.log({ appointment });
 
-  const studioInfo: StudioInfo = JSON.parse(appointment.studio);
+  // TODO: check if studioInfo is more correct than appointment.studioID
+  // const studioInfo: StudioInfo = JSON.parse(appointment.studio);
   const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
@@ -195,7 +195,7 @@ export async function createAppointment(
     calendarId: googleCalendarIdList[appointment.studioId],
     requestBody: {
       summary: getAppointmentTitle(
-        studioInfo,
+        appointment.studioId,
         contactInfo,
         dateFrom,
         dateTo,
