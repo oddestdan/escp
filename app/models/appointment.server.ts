@@ -12,7 +12,11 @@ import {
 import { calendarAPI, googleAuth, googleCalendarIdList } from "./googleApi.lib";
 import { google } from "googleapis";
 import { KYIV_TIME_ZONE } from "~/utils/constants";
-import { studioColorCodesMap, unverifiedColorCode } from "~/utils/studiosData";
+import {
+  getStudioIdByInfo,
+  studioColorCodesMap,
+  unverifiedColorCode,
+} from "~/utils/studiosData";
 import { runEmailNotifier, runSmsNotifier } from "./notifiers.lib";
 
 import type { Appointment } from "@prisma/client";
@@ -184,18 +188,22 @@ export async function createAppointment(
   isUnverified = false
 ) {
   console.log("> Creating an appointment into Google Calendar API...");
-  console.log({ appointment });
+  const studioId = getStudioIdByInfo(appointment.studio);
 
-  // TODO: check if studioInfo is more correct than appointment.studioID
-  // const studioInfo: StudioInfo = JSON.parse(appointment.studio);
+  console.log({
+    appointment,
+    appointmentStudioId: appointment.studioId,
+    infoStudioId: studioId,
+  });
+
   const contactInfo: ContactInfo = JSON.parse(appointment.contactInfo);
   const dateFrom = new Date(appointment.timeFrom);
   const dateTo = new Date(appointment.timeTo);
   const createEventDTO: CreateEventDTO = {
-    calendarId: googleCalendarIdList[appointment.studioId],
+    calendarId: googleCalendarIdList[studioId],
     requestBody: {
       summary: getAppointmentTitle(
-        appointment.studioId,
+        studioId,
         contactInfo,
         dateFrom,
         dateTo,
@@ -226,7 +234,7 @@ export async function createAppointment(
       // https://google-calendar-simple-api.readthedocs.io/en/latest/colors.html#list-event-colors
       colorId: isUnverified
         ? unverifiedColorCode
-        : studioColorCodesMap[appointment.studioId],
+        : studioColorCodesMap[studioId],
     },
   };
   console.log("====================================");

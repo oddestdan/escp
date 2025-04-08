@@ -125,24 +125,13 @@ export const ServicesStep: React.FC<{ isMobile?: boolean }> = () => {
     (i: number) => {
       const updatedServices = [...checkedServices];
 
-      // parking service reset
-      if (i === 0) {
-        setParkingService("");
-      }
-
-      // NOTE: 0 is assistance
-      // if (i === 0 && checkedServices[i].checked) {
-      //   setAssistanceHours(undefined);
-      // }
-
-      // NOTE: 0 or 1 is instax-related stuff
-      // [
-      //   [0, 1],
-      //   [1, 0],
-      // ].forEach(([x, y]) => i === x && (updatedServices[y].checked = false));
-
       updatedServices[i].checked = !updatedServices[i].checked;
       setCheckedServices(updatedServices);
+
+      // parking service reset
+      if (i === 0) {
+        setParkingService(updatedServices[i].checked ? "1" : "");
+      }
     },
     [checkedServices]
   );

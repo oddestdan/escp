@@ -127,3 +127,12 @@ export const studiosImages = [gallery1Images, gallery2Images, gallery3Images];
 
 export const studioColorCodesMap = ["2", "10", "5"];
 export const unverifiedColorCode = "4";
+
+export const getStudioIdByParsedInfo = (studioInfo: StudioInfo) => {
+  return studiosData.findIndex((s) => s.name === studioInfo.name);
+};
+
+export const getStudioIdByInfo = (studio: string) => {
+  const studioInfo: StudioInfo = JSON.parse(studio);
+  return getStudioIdByParsedInfo(studioInfo);
+};
