@@ -26,7 +26,7 @@ const room1Items = [
   "чорно-білі прапори",
   "фрост рама 1,5х2 м",
   "два спалахи godox qs-600 та один godox qs-400",
-  "два постійних світла: godox litemons la200d та la200bis",
+  "два постійних світла: godox litemons la200d та la200bi",
   "софтбокси, зонт на просвіт, кольорові фільтри",
 ];
 const Studio1Description = () => (
@@ -117,6 +117,8 @@ const room3Items = [
     "гардероб",
     "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3OTI5OTQwMTg4NjM0ODE1?igshid=MDJmNzVkMjY",
   ],
+  "постійне світло godox litemons la200bi",
+  "софтбокси, зонт на просвіт, кольорові фільтри",
 ];
 const Studio3Description = () => (
   <div className="my-4">
@@ -175,8 +177,6 @@ export const room3Data = {
   Description: Studio3Description,
   Additional: () => (
     <p className="my-4">
-      В залі тимчасово відсутнє студійне світло.
-      <br />
       Додатково на зйомку можна орендувати два постійних світла aputure 600d 1
       <br />
       год - 250 грн/шт
