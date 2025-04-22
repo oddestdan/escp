@@ -15,8 +15,8 @@ const byFootText = `
       <br />за навісним переходом між будівлями праворуч наші вхідні двері
       <br />піднімайтесь на 4й поверх`;
 const byFootLink =
-  "https://www.youtube.com/embed/jbK3TkREKY0?rel=0&showinfo=0&autohide=1";
-// "https://www.youtube.com/embed/NignKJrDa3U?si=GOKjPQ9eyeYKx1tT?rel=0&showinfo=0&autohide=1";
+  "https://www.youtube.com/embed/JqN3QQpe8K8?rel=0&showinfo=0&autohide=1";
+// "https://www.youtube.com/embed/jbK3TkREKY0?rel=0&showinfo=0&autohide=1";
 
 const renderByFootTab = () => (
   <div className="flex flex-col flex-nowrap items-stretch justify-center pt-2 pb-4 xl:flex-row-reverse">
@@ -48,7 +48,8 @@ const byCarText = `
       <br />(escp.90), а праворуч — вхідні двері
       <br />підніміться на 4й поверх`;
 const byCarLink =
-  "https://www.youtube.com/embed/2XAhrZxe2rA?si=Wa54MKEPm3llD0-c";
+  "https://www.youtube.com/embed/86ykAtLvo8Y?si=Wa54MKEPm3llD0-c";
+// "https://www.youtube.com/embed/2XAhrZxe2rA?si=Wa54MKEPm3llD0-c";
 
 const renderByCarTab = () => (
   <div className="flex flex-col flex-nowrap items-stretch justify-center pt-2 pb-4 xl:flex-row-reverse">
