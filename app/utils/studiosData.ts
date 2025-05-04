@@ -1,35 +1,30 @@
 import type { StudioInfo } from "~/components/BookingStep/Steps/StudioStep";
 
-import highq1_Numbered1 from "../../public/images/highq/r1/реквізит/1.png";
-import highq1_Numbered2 from "../../public/images/highq/r1/реквізит/2.png";
+// import highq1_Numbered1 from "../../public/images/highq/r1/реквізит/1.png";
+// import highq1_Numbered2 from "../../public/images/highq/r1/реквізит/2.png";
 import highq1_1 from "../../public/images/highq/r1/1.jpg";
 import highq1_2 from "../../public/images/highq/r1/2.jpg";
-// import highq1_3 from "../../public/images/highq/r1/3.jpg";
+import highq1_3 from "../../public/images/highq/r1/3.jpg";
 import highq1_4 from "../../public/images/highq/r1/4.jpg";
-import highq1_5 from "../../public/images/highq/r1/5.jpg";
-import highq1_6 from "../../public/images/highq/r1/6.jpg";
+// import highq1_5 from "../../public/images/highq/r1/5.jpg";
+// import highq1_6 from "../../public/images/highq/r1/6.jpg";
 
-import highq2_Numbered1 from "../../public/images/highq/r2/реквізит/1.png";
-import highq2_Numbered2 from "../../public/images/highq/r2/реквізит/2.png";
+// import highq2_Numbered1 from "../../public/images/highq/r2/реквізит/1.png";
+// import highq2_Numbered2 from "../../public/images/highq/r2/реквізит/2.png";
 import highq2_1 from "../../public/images/highq/r2/1.jpg";
 import highq2_2 from "../../public/images/highq/r2/2.jpg";
 import highq2_3 from "../../public/images/highq/r2/3.jpg";
 import highq2_4 from "../../public/images/highq/r2/4.jpg";
 
-import highq3_Numbered1 from "../../public/images/highq/r3/реквізит/1.png";
-import highq3_Numbered2 from "../../public/images/highq/r3/реквізит/2.png";
+// import highq3_Numbered1 from "../../public/images/highq/r3/реквізит/1.png";
+// import highq3_Numbered2 from "../../public/images/highq/r3/реквізит/2.png";
 import highq3_1 from "../../public/images/highq/r3/1.jpg";
 import highq3_2 from "../../public/images/highq/r3/2.jpg";
 import highq3_3 from "../../public/images/highq/r3/3.jpg";
 import highq3_4 from "../../public/images/highq/r3/4.jpg";
-import highq3_5 from "../../public/images/highq/r3/5.jpg";
-import highq3_6 from "../../public/images/highq/r3/6.jpg";
-import highq3_7 from "../../public/images/highq/r3/7.jpg";
-
-import lowres1_1 from "../../public/images/lowres/r1 (1).jpg";
-import lowres1_2 from "../../public/images/lowres/r1 (2).jpg";
-import lowres2_1 from "../../public/images/lowres/r2 (1).jpg";
-import lowres2_2 from "../../public/images/lowres/r2 (2).jpg";
+// import highq3_5 from "../../public/images/highq/r3/5.jpg";
+// import highq3_6 from "../../public/images/highq/r3/6.jpg";
+// import highq3_7 from "../../public/images/highq/r3/7.jpg";
 
 export const studiosData: StudioInfo[] = [
   {
@@ -39,8 +34,8 @@ export const studiosData: StudioInfo[] = [
     area: 90,
     altImg: highq1_2,
     lowres: {
-      img: lowres1_1,
-      altImg: lowres1_2,
+      img: highq1_1,
+      altImg: highq1_2,
     },
   },
   {
@@ -50,8 +45,8 @@ export const studiosData: StudioInfo[] = [
     area: 90,
     altImg: highq2_2,
     lowres: {
-      img: lowres2_1,
-      altImg: lowres2_2,
+      img: highq2_1,
+      altImg: highq2_2,
     },
   },
   {
@@ -69,38 +64,29 @@ export const studiosData: StudioInfo[] = [
 
 // pairs of [highQuality, lowQuality]
 export const gallery1ImagesNumbered: [string, string][] = [
-  [highq1_Numbered1, highq1_Numbered1],
-  [highq1_Numbered2, highq1_Numbered2],
-  // [highq1_3, highq1_3],
+  [highq1_1, highq1_1],
+  [highq1_2, highq1_2],
+  [highq1_3, highq1_3],
   [highq1_4, highq1_4],
-  [highq1_5, highq1_5],
-  [highq1_6, highq1_6],
 ];
 export const gallery2ImagesNumbered: [string, string][] = [
-  [highq2_Numbered1, highq2_Numbered1],
-  [highq2_Numbered2, highq2_Numbered2],
+  [highq2_1, highq2_1],
+  [highq2_2, highq2_2],
   [highq2_3, highq2_3],
   [highq2_4, highq2_4],
 ];
 export const gallery3ImagesNumbered: [string, string][] = [
-  [highq3_Numbered1, highq3_Numbered1],
-  [highq3_Numbered2, highq3_Numbered2],
-  // [highq3_1, highq3_1],
-  // [highq3_2, highq3_2],
+  [highq3_1, highq3_1],
+  [highq3_2, highq3_2],
   [highq3_3, highq3_3],
   [highq3_4, highq3_4],
-  // [highq3_5, highq3_5], // TODO
-  [highq3_6, highq3_6],
-  // [highq3_7, highq3_7], // TODO
 ];
 
 export const gallery1Images: [string, string][] = [
   [highq1_1, highq1_1],
   [highq1_2, highq1_2],
-  // [highq1_3, highq1_3],
+  [highq1_3, highq1_3],
   [highq1_4, highq1_4],
-  [highq1_5, highq1_5],
-  [highq1_6, highq1_6],
 ];
 export const gallery2Images: [string, string][] = [
   [highq2_1, highq2_1],
@@ -113,9 +99,6 @@ export const gallery3Images: [string, string][] = [
   [highq3_2, highq3_2],
   [highq3_3, highq3_3],
   [highq3_4, highq3_4],
-  [highq3_5, highq3_5],
-  [highq3_6, highq3_6],
-  [highq3_7, highq3_7],
 ];
 
 export const studiosImagesNumbered = [
